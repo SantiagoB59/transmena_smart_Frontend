@@ -9,5 +9,5 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'https://transmenasmart.com/api'
+  apiUrl: 'https://transmenasmart.com'
 };
