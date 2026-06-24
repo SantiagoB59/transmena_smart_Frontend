@@ -1,0 +1,486 @@
+:host {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* =========================
+   SIDEBAR BASE
+========================= */
+.sidebar-container {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border-right: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 6px 0 24px rgba(15, 23, 42, 0.06);
+
+  transition: all 0.35s ease;
+  overflow: hidden;
+  z-index: 100;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header-section {
+  position: relative;
+  z-index: 20;
+  padding: 1.25rem 1.5rem !important;
+
+  .logo-expanded {
+    transition: all 0.3s ease;
+    min-width: 0;
+  }
+
+  .toggle-btn {
+    padding: 0.875rem !important;
+    min-width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(15, 23, 42, 0.05) !important;
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    i {
+      font-size: 15px !important;
+    }
+  }
+}
+
+/* =========================
+   CONTENT
+========================= */
+.content-section {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* =========================
+   SIDEBAR COLLAPSED
+========================= */
+.sidebar-container.collapsed {
+
+  .header-section {
+    padding: 1.5rem 1rem !important;
+    justify-content: center;
+
+    .logo-expanded {
+      opacity: 0;
+      transform: translateX(-15px) scale(0.9);
+      width: 0;
+      overflow: hidden;
+    }
+
+    .toggle-btn {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  .content-section {
+    padding: 1.5rem 0.75rem !important;
+
+    .menu-label,
+    .logout-label {
+      opacity: 0 !important;
+      transform: translateX(-10px) scale(0.9) !important;
+      width: 0 !important;
+      margin-left: 0 !important;
+      overflow: hidden;
+    }
+  }
+
+  .menu-btn,
+  .logout-btn {
+    justify-content: center;
+  }
+}
+
+/* =========================
+   BOTONES
+========================= */
+.menu-btn,
+.logout-btn {
+  height: 3.5rem;
+  border: 1px solid transparent;
+
+  display: flex;
+  align-items: center;
+
+  border-radius: 14px;
+  cursor: pointer;
+
+  padding: 0 1rem;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(15, 23, 42, 0.04);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* =========================
+   ICONOS
+========================= */
+.menu-btn i,
+.logout-btn i {
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
+
+.menu-btn:hover i,
+.logout-btn:hover i {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* =========================
+   ACTIVO
+========================= */
+.menu-btn.bg-slate-100,
+.menu-btn.bg-emerald-50 {
+  background: rgba(15, 23, 42, 0.06) !important;
+  color: #0f172a;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+/* =========================
+   LABELS
+========================= */
+.menu-label,
+.logout-label {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* =========================
+   SUBMENU
+========================= */
+.submenu {
+  overflow: hidden;
+  animation: fadeSlide 0.18s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   DIVIDER
+========================= */
+.border-t {
+  height: 1px;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* =========================
+   TABLET
+========================= */
+@media (max-width: 1024px) {
+
+  .sidebar-container.expanded {
+    width: 260px !important;
+  }
+
+  .menu-btn,
+  .logout-btn {
+    height: 3.25rem;
+  }
+}
+
+/* =========================
+   MOBILE NAV
+========================= */
+.mobile-bottom-nav {
+  display: none;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px) {
+
+  /* ocultar sidebar */
+  .sidebar-container {
+    display: none !important;
+  }
+
+  /* NAV BOTTOM */
+  .mobile-bottom-nav {
+    display: flex;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 74px;
+
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-top: 1px solid rgba(226,232,240,0.8);
+
+    justify-content: space-around;
+    align-items: center;
+
+    padding: 0 8px;
+
+    z-index: 9999;
+
+    box-shadow: 0 -6px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  /* BOTONES MOBILE */
+  .bottom-btn {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    border: none;
+    background: transparent;
+
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    height: 100%;
+
+    transition: all 0.2s ease;
+
+    cursor: pointer;
+
+    border-radius: 12px;
+
+    i {
+      font-size: 20px;
+      transition: all 0.2s ease;
+    }
+
+    span {
+      max-width: 70px;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    &:hover {
+      color: #0f172a;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  /* ACTIVO MOBILE */
+  .bottom-btn.bg-slate-100,
+  .bottom-btn.bg-emerald-50 {
+    color: #0f172a;
+
+    i {
+      transform: scale(1.1);
+    }
+  }
+
+  /* LOGOUT */
+  .logout-mobile {
+    color: #ef4444;
+  }
+
+  /* espacio inferior para evitar que tape contenido */
+  :host {
+    padding-bottom: 80px;
+  }
+}
+
+/* =========================
+   MOBILE PEQUEÑO
+========================= */
+@media (max-width: 480px) {
+
+  .mobile-bottom-nav {
+    height: 68px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .bottom-btn {
+    font-size: 9px;
+
+    i {
+      font-size: 18px;
+    }
+
+    span {
+      max-width: 55px;
+      font-size: 9px;
+    }
+  }
+}
+
+/* =========================
+   MOBILE MUY PEQUEÑO
+========================= */
+@media (max-width: 360px) {
+
+  .bottom-btn {
+
+    i {
+      font-size: 16px;
+    }
+
+    span {
+      font-size: 8px;
+    }
+  }
+}
+
+/* =========================
+   MOBILE SUBMENU
+========================= */
+.mobile-parent {
+  position: relative;
+  flex: 1;
+  height: 100%;
+}
+
+.mobile-submenu {
+  position: fixed;
+
+  left: 16px;
+  right: 16px;
+  bottom: 88px;
+
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  border: 1px solid rgba(255,255,255,0.4);
+
+  border-radius: 24px;
+
+  padding: 14px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  box-shadow:
+    0 10px 30px rgba(15,23,42,0.10),
+    0 2px 10px rgba(15,23,42,0.06);
+
+  animation: mobileSheet 0.22s ease;
+
+  z-index: 99999;
+}
+
+.mobile-submenu-btn {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  border: none;
+
+  background: rgba(248,250,252,0.9);
+
+  padding: 16px 18px;
+
+  border-radius: 18px;
+
+  color: #0f172a;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 18px;
+    width: 22px;
+    opacity: 0.9;
+  }
+
+  span {
+    flex: 1;
+    text-align: left;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    background: white;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.08);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+@keyframes mobileSheet {
+
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

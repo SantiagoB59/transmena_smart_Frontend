@@ -1,0 +1,339 @@
+<div class="p-4 lg:p-6 bg-gray-100 min-h-screen">
+
+  <!-- ================================================= -->
+  <!-- HEADER PREMIUM -->
+  <!-- ================================================= -->
+
+  <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between mb-6 gap-4">
+
+    <div>
+
+      <h1 class="text-2xl lg:text-3xl font-black text-gray-800">
+        Centro de Reportes
+      </h1>
+
+      <p class="text-gray-500 mt-1 text-sm lg:text-base">
+        Monitoreo corporativo de alertas y mantenimientos en tiempo real
+      </p>
+
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
+
+      <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
+        (click)="exportarExcelAlertas()">
+        Exportar Alertas
+      </button>
+
+      <button class="bg-gray-800 hover:bg-black text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
+        (click)="exportarExcelMantenimientos()">
+        Exportar Mantenimientos
+      </button>
+      <button class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
+        (click)="exportarExcelAlertasFormato()">
+        Formato Alertas
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ================================================= -->
+  <!-- KPI CARDS -->
+  <!-- ================================================= -->
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+
+    <div class="bg-white rounded-2xl shadow-lg p-5">
+      <p class="text-gray-500 text-sm">Críticas</p>
+      <h2 class="text-3xl font-black text-red-600 mt-2">
+        {{ semaforo.criticas || 0 }}
+      </h2>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-5">
+      <p class="text-gray-500 text-sm">Altas</p>
+      <h2 class="text-3xl font-black text-orange-500 mt-2">
+        {{ semaforo.altas || 0 }}
+      </h2>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-5">
+      <p class="text-gray-500 text-sm">Medias</p>
+      <h2 class="text-3xl font-black text-yellow-500 mt-2">
+        {{ semaforo.medias || 0 }}
+      </h2>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-5">
+      <p class="text-gray-500 text-sm">Bajas</p>
+      <h2 class="text-3xl font-black text-green-600 mt-2">
+        {{ semaforo.bajas || 0 }}
+      </h2>
+    </div>
+
+  </div>
+  <!-- ================================================= -->
+  <!-- FILTROS -->
+  <!-- ================================================= -->
+
+  <div class="bg-white rounded-2xl shadow-lg p-5 mb-6">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4">
+
+      <!-- ============================================= -->
+      <!-- TIPO -->
+      <!-- ============================================= -->
+
+      <div>
+
+        <label class="text-sm text-gray-600">
+          Tipo de reporte
+        </label>
+
+        <select class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.tipo">
+
+          <option value="diario">
+            Diario
+          </option>
+
+          <option value="semanal">
+            Semanal
+          </option>
+
+          <option value="mensual">
+            Mensual
+          </option>
+
+          <option value="rango">
+            Rango
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- ============================================= -->
+      <!-- CATEGORÍA -->
+      <!-- ============================================= -->
+
+      <div>
+
+        <label class="text-sm text-gray-600">
+          Categoría
+        </label>
+
+        <select class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.categoria">
+
+          <option value="">
+            Todas
+          </option>
+
+          <option value="DOCUMENTO">
+            Documentos
+          </option>
+
+          <option value="GPS">
+            GPS
+          </option>
+
+          <option value="MANTENIMIENTO">
+            Mantenimiento
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- ============================================= -->
+      <!-- VEHÍCULO -->
+      <!-- ============================================= -->
+
+      <div>
+
+        <label class="text-sm text-gray-600">
+          Vehículo
+        </label>
+
+        <select class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.vehiculo_id">
+
+          <option value="">
+            Todos
+          </option>
+
+          <option *ngFor="let v of vehiculos" [value]="v.id">
+            {{ v.placa }}
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- ============================================= -->
+      <!-- FECHA INICIO -->
+      <!-- ============================================= -->
+
+      <div *ngIf="filtros.tipo === 'rango'">
+
+        <label class="text-sm text-gray-600">
+          Inicio
+        </label>
+
+        <input type="date" class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.fecha_inicio">
+
+      </div>
+
+      <!-- ============================================= -->
+      <!-- FECHA FIN -->
+      <!-- ============================================= -->
+
+      <div *ngIf="filtros.tipo === 'rango'">
+
+        <label class="text-sm text-gray-600">
+          Fin
+        </label>
+
+        <input type="date" class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.fecha_fin">
+
+      </div>
+
+      <!-- ============================================= -->
+      <!-- BOTÓN -->
+      <!-- ============================================= -->
+
+      <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold px-5 py-3 self-end"
+        (click)="aplicarFiltros()">
+        Aplicar filtros
+      </button>
+
+    </div>
+
+  </div>
+  <!-- ================================================= -->
+  <!-- TABS MODERNOS -->
+  <!-- ================================================= -->
+
+  <div class="flex gap-3 mb-6">
+
+    <button (click)="cambiarTab('alertas')" class="px-5 py-3 rounded-xl font-semibold transition" [ngClass]="tab === 'alertas'
+        ? 'bg-blue-600 text-white shadow'
+        : 'bg-white text-gray-700 shadow hover:bg-gray-100'">
+      Alertas
+    </button>
+
+    <button (click)="cambiarTab('mantenimientos')" class="px-5 py-3 rounded-xl font-semibold transition" [ngClass]="tab === 'mantenimientos'
+        ? 'bg-blue-600 text-white shadow'
+        : 'bg-white text-gray-700 shadow hover:bg-gray-100'">
+      Mantenimientos
+    </button>
+
+  </div>
+
+  <!-- ================================================= -->
+  <!-- LOADING -->
+  <!-- ================================================= -->
+
+  <div *ngIf="loading" class="bg-white rounded-2xl shadow-lg p-10 text-center">
+    Cargando información...
+  </div>
+
+  <!-- ================================================= -->
+  <!-- TABLA ALERTAS -->
+  <!-- ================================================= -->
+
+  <div *ngIf="tab === 'alertas'" class="bg-white rounded-2xl shadow-lg overflow-hidden">
+
+    <div class="overflow-x-auto">
+
+      <table class="min-w-[900px] w-full">
+
+        <thead class="bg-gray-100 border-b">
+          <tr>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Vehículo</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Tipo</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Categoría</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Prioridad</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Estado</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Fecha</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let item of alertas" class="border-b hover:bg-gray-50">
+
+            <td class="px-6 py-4 font-semibold text-gray-800">{{ item.vehiculo }}</td>
+            <td class="px-6 py-4">{{ item.tipo }}</td>
+            <td class="px-6 py-4">{{ item.categoria }}</td>
+
+            <td class="px-6 py-4">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-100">
+                {{ item.prioridad }}
+              </span>
+            </td>
+
+            <td class="px-6 py-4">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-200">
+                {{ item.estado }}
+              </span>
+            </td>
+
+            <td class="px-6 py-4 text-gray-500 text-sm">
+              {{ item.fecha | date:'short' }}
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- ================================================= -->
+  <!-- TABLA MANTENIMIENTOS -->
+  <!-- ================================================= -->
+
+  <div *ngIf="tab === 'mantenimientos'" class="bg-white rounded-2xl shadow-lg overflow-hidden mt-6">
+
+    <div class="overflow-x-auto">
+
+      <table class="min-w-[900px] w-full">
+
+        <thead class="bg-gray-100 border-b">
+          <tr>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">ID</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Vehículo</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Tipo</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Fecha</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">KM</th>
+            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Valor</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let item of mantenimientos" class="border-b hover:bg-gray-50">
+
+            <td class="px-6 py-4">#{{ item.id }}</td>
+            <td class="px-6 py-4 font-semibold">{{ item.vehiculo }}</td>
+            <td class="px-6 py-4">{{ item.tipo }}</td>
+            <td class="px-6 py-4">{{ item.fecha }}</td>
+            <td class="px-6 py-4">{{ item.km }}</td>
+            <td class="px-6 py-4 font-semibold text-green-600">
+              {{ item.valor | currency }}
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

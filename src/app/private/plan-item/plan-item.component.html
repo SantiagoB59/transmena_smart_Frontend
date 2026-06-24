@@ -1,0 +1,491 @@
+<div class="content">
+
+    <section class="vehiculos-page">
+
+        <!-- HEADER -->
+        <div class="page-header">
+
+            <div>
+                <h2 class="page-title">
+                    Plan de Mantenimientos
+                </h2>
+
+                <p class="page-subtitle">
+                    Administración de mantenimientos preventivos y correctivos
+                </p>
+            </div>
+
+            <button class="btn-primary" (click)="abrirCrear()">
+                <i class="fas fa-plus"></i>
+                Nuevo mantenimiento
+            </button>
+
+        </div>
+
+
+
+        <!-- FILTROS -->
+        <div class="filters-bar">
+
+            <!-- SEARCH -->
+            <div class="search-box">
+
+                <i class="fas fa-search"></i>
+
+                <input type="text" placeholder="Buscar mantenimiento..." [(ngModel)]="searchTerm"
+                    [ngModelOptions]="{standalone:true}" (input)="filtrar()">
+
+            </div>
+
+            <!-- SISTEMA -->
+            <select [(ngModel)]="filtroSistema" [ngModelOptions]="{standalone:true}" (change)="filtrar()"
+                class="filter-select">
+
+                <option value="">
+                    Todos los sistemas
+                </option>
+
+                <option *ngFor="let s of sistemas" [value]="s.nombre">
+                      {{ s.nombre }}
+                </option>
+
+            </select>
+
+            <!-- CONTROL -->
+            <select [(ngModel)]="filtroTipoControl" [ngModelOptions]="{standalone:true}" (change)="filtrar()"
+                class="filter-select">
+
+                <option value="">
+                    Todos los controles
+                </option>
+
+                <option value="KM">
+                    Kilometraje
+                </option>
+
+                <option value="DIAS">
+                    Tiempo
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- ERROR -->
+        <div *ngIf="error" class="alert-error">
+
+            <i class="fas fa-exclamation-triangle"></i>
+
+            {{ error }}
+
+            <button (click)="error=''">
+                <i class="fas fa-times"></i>
+            </button>
+
+        </div>
+
+        <!-- TABLA -->
+        <div class="table-card">
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Sistema</th>
+
+                            <th>Mantenimiento</th>
+
+                            <th>Tipo</th>
+
+                            <th>Control</th>
+
+                            <th class="text-center">
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <!-- LOADING -->
+                        <tr *ngIf="loading">
+
+                            <td colspan="8" class="loading-row">
+
+                                <div class="spinner"></div>
+
+                                Cargando mantenimientos...
+
+                            </td>
+
+                        </tr>
+
+                        <!-- EMPTY -->
+                        <tr *ngIf="!loading && filteredItems.length === 0">
+
+                            <td colspan="8" class="empty-row">
+
+                                <i class="fas fa-tools"></i>
+
+                                <br>
+
+                                No hay mantenimientos registrados
+
+                            </td>
+
+                        </tr>
+
+                        <!-- ITEMS -->
+                        <tr *ngFor="let item of filteredItems; trackBy: trackById" class="table-row">
+
+                            <!-- SISTEMA -->
+                            <td>
+
+                                <span class="gps-pill">
+
+                                    <i class="fas fa-cogs"></i>
+
+                                    {{ item.sistema }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- NOMBRE -->
+                            <td>
+
+                                <div class="placa">
+                                    {{ item.nombre }}
+                                </div>
+
+                                <div class="text-muted">
+                                    {{ item.descripcion || 'Sin descripción' }}
+                                </div>
+
+                            </td>
+
+                            <!-- TIPO -->
+                            <td>
+
+                                <span class="badge badge-operativo">
+                                    {{ item.tipo_mantenimiento }}
+                                </span>
+
+                            </td>
+
+                            <!-- CONTROL -->
+                            <td>
+
+                                <span class="badge" [ngClass]="
+                    item.tipo_control == 'KM'
+                    ? 'badge-operativo'
+                    : 'badge-taller'
+                  ">
+
+                                    {{ item.tipo_control }}
+
+                                </span>
+
+                            </td>
+
+                            
+                            <!-- ACCIONES -->
+                            <td class="actions">
+
+                                <!-- VER -->
+                                <button class="action-btn action-btn--view" (click)="abrirVer(item)">
+
+                                    <i class="fas fa-eye"></i>
+
+                                </button>
+
+                                <!-- EDIT -->
+                                <button class="action-btn action-btn--edit" (click)="abrirEditar(item)">
+
+                                    <i class="fas fa-edit"></i>
+
+                                </button>
+
+                                <!-- DELETE -->
+                                <button class="action-btn action-btn--delete" (click)="confirmarEliminar(item)">
+
+                                    <i class="fas fa-trash-alt"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ═════════════════════════════ -->
+    <!-- MODAL -->
+    <!-- ═════════════════════════════ -->
+
+    <div *ngIf="showModal" class="modal-backdrop" (click)="cerrarModal()">
+
+        <div class="modal-panel" (click)="$event.stopPropagation()">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+
+                <div>
+
+                    <h3>
+                        {{ titulo }}
+                    </h3>
+
+                    <p>
+                        Gestión de mantenimiento
+                    </p>
+
+                </div>
+
+                <button class="modal-close" (click)="cerrarModal()">
+
+                    <i class="fas fa-times-circle"></i>
+
+                </button>
+
+            </div>
+
+            <!-- FORM -->
+            <form [formGroup]="form" (ngSubmit)="guardar()" class="modal-form">
+
+                <!-- GENERAL -->
+                <div class="form-section">
+
+                    <div class="form-section-title">
+
+                        <i class="fas fa-tools"></i>
+
+                        Información general
+
+                    </div>
+
+                    <div class="form-grid">
+
+                        <!-- SISTEMA -->
+                        <div class="form-field">
+
+                            <label>
+                                Sistema *
+                            </label>
+
+                            <select formControlName="sistema">
+
+                                <option value="">
+                                    Seleccione sistema
+                                </option>
+
+                                <option *ngFor="let s of sistemas" [value]="s.nombre">
+                                    {{ s.nombre }}
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- NOMBRE -->
+                        <div class="form-field">
+
+                            <label>
+                                Nombre *
+                            </label>
+
+                            <input formControlName="nombre" placeholder="Ej: Cambio de aceite">
+
+                        </div>
+
+                        <!-- TIPO -->
+                        <div class="form-field">
+
+                            <label>
+                                Tipo mantenimiento
+                            </label>
+
+                            <select formControlName="tipo_mantenimiento">
+
+                                <option *ngFor="let t of tiposMantenimiento" [value]="t">
+                                    {{ t }}
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- CONTROL -->
+                        <div class="form-field">
+
+                            <label>
+                                Tipo control
+                            </label>
+
+                            <select formControlName="tipo_control">
+
+                                <option value="KM">
+                                    Kilometraje
+                                </option>
+
+                                <option value="DIAS">
+                                    Tiempo
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- CONFIG -->
+                <div class="form-section">
+
+
+
+                    <div class="form-grid">
+
+
+                        <!-- OBLIGATORIO -->
+                        <div class="form-field">
+
+                            <label>
+                                Obligatorio
+                            </label>
+
+                            <select formControlName="obligatorio">
+
+                                <option [ngValue]="true">
+                                    Sí
+                                </option>
+
+                                <option [ngValue]="false">
+                                    No
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <!-- DESCRIPCION -->
+                <div class="form-section">
+
+                    <div class="form-section-title">
+
+                        <i class="fas fa-align-left"></i>
+
+                        Descripción
+
+                    </div>
+
+                    <textarea formControlName="descripcion" class="textarea" rows="5"
+                        placeholder="Descripción del mantenimiento..."></textarea>
+
+                </div>
+
+
+
+                <!-- ACTIONS -->
+                <div class="modal-actions" *ngIf="modalMode !== 'ver'">
+
+                    <button type="button" class="btn-cancel" (click)="cerrarModal()">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn-save" [disabled]="saving">
+
+                        <span *ngIf="!saving">
+                            Guardar
+                        </span>
+
+                        <span *ngIf="saving">
+                            Guardando...
+                        </span>
+
+                    </button>
+
+                </div>
+
+                <!-- VIEW -->
+                <div class="modal-actions" *ngIf="modalMode === 'ver'">
+
+                    <button type="button" class="btn-cancel" (click)="cerrarModal()">
+                        Cerrar
+                    </button>
+
+                    <button type="button" class="btn-primary" (click)="abrirEditar(itemSeleccionado)">
+                        Editar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ═════════════════════════════ -->
+    <!-- CONFIRM DELETE -->
+    <!-- ═════════════════════════════ -->
+
+    <div *ngIf="showConfirm" class="modal-backdrop">
+
+        <div class="confirm-modal">
+
+            <div class="confirm-icon">
+
+                <i class="fas fa-exclamation-triangle"></i>
+
+            </div>
+
+            <h4>
+
+                ¿Eliminar mantenimiento
+
+                <strong>
+                    {{ itemEliminar?.nombre }}
+                </strong>
+
+                ?
+
+            </h4>
+
+            <div class="confirm-actions">
+
+                <button class="btn-cancel" (click)="showConfirm=false">
+                    Cancelar
+                </button>
+
+                <button class="btn-danger" (click)="eliminar()">
+                    Sí, eliminar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

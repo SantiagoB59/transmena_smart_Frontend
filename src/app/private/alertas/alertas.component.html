@@ -1,0 +1,602 @@
+<div class="p-4 lg:p-6 bg-gray-100 min-h-screen">
+
+  <!-- HEADER -->
+  <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between mb-6 gap-4">
+
+    <div>
+
+      <h1 class="text-2xl lg:text-3xl font-black text-gray-800">
+        Centro de Alertas
+      </h1>
+
+      <p class="text-gray-500 mt-1 text-sm lg:text-base">
+        Monitoreo operativo en tiempo real
+      </p>
+
+    </div>
+
+    <!-- BOTONES -->
+    <div class="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
+
+      <button
+        (click)="ejecutarMotor()"
+        [disabled]="ejecutandoMotor"
+        class="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
+      >
+
+        <span *ngIf="!ejecutandoMotor">
+          Ejecutar motor
+        </span>
+
+        <span *ngIf="ejecutandoMotor">
+          Ejecutando...
+        </span>
+
+      </button>
+
+      <button
+        (click)="cargarTodo()"
+        class="bg-gray-800 hover:bg-black text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
+      >
+        Actualizar
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- STATS -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+
+    <!-- TOTAL -->
+    <div class="bg-white rounded-2xl shadow-lg p-5">
+
+      <p class="text-gray-500 text-sm">
+        Total alertas
+      </p>
+
+      <h2 class="text-3xl font-black text-gray-800 mt-2">
+        {{ estadisticas.total }}
+      </h2>
+
+    </div>
+
+    <!-- ACTIVAS -->
+    <div class="bg-white rounded-2xl shadow-lg p-5">
+
+      <p class="text-gray-500 text-sm">
+        Activas
+      </p>
+
+      <h2 class="text-3xl font-black text-red-600 mt-2">
+        {{ estadisticas.activas }}
+      </h2>
+
+    </div>
+
+    <!-- RESUELTAS -->
+    <div class="bg-white rounded-2xl shadow-lg p-5">
+
+      <p class="text-gray-500 text-sm">
+        Resueltas
+      </p>
+
+      <h2 class="text-3xl font-black text-green-600 mt-2">
+        {{ estadisticas.resueltas }}
+      </h2>
+
+    </div>
+
+    <!-- CRÍTICAS -->
+    <div class="bg-white rounded-2xl shadow-lg p-5">
+
+      <p class="text-gray-500 text-sm">
+        Críticas
+      </p>
+
+      <h2 class="text-3xl font-black text-yellow-600 mt-2">
+        {{ estadisticas.criticas }}
+      </h2>
+
+    </div>
+
+  </div>
+
+  <!-- FILTROS -->
+  <div class="bg-white rounded-2xl shadow-lg p-5 mb-6">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+
+      <!-- ESTADO -->
+      <select
+        [(ngModel)]="filtros.estado"
+        class="border rounded-xl px-4 py-3"
+      >
+
+        <option value="">
+          Todos los estados
+        </option>
+
+        <option value="ACTIVA">
+          Activas
+        </option>
+
+        <option value="RESUELTA">
+          Resueltas
+        </option>
+
+      </select>
+
+      <!-- PRIORIDAD -->
+      <select
+        [(ngModel)]="filtros.prioridad"
+        class="border rounded-xl px-4 py-3"
+      >
+
+        <option value="">
+          Todas las prioridades
+        </option>
+
+        <option value="CRITICA">
+          Crítica
+        </option>
+
+        <option value="ALTA">
+          Alta
+        </option>
+
+        <option value="MEDIA">
+          Media
+        </option>
+
+        <option value="BAJA">
+          Baja
+        </option>
+
+      </select>
+
+      <!-- TIPO -->
+      <select
+        [(ngModel)]="filtros.tipo"
+        class="border rounded-xl px-4 py-3"
+      >
+
+        <option value="">
+          Todos los tipos
+        </option>
+
+        <option value="DOCUMENTO">
+          Documentos
+        </option>
+
+        <option value="GPS">
+          GPS
+        </option>
+
+        <option value="MANTENIMIENTO">
+          Mantenimiento
+        </option>
+
+      </select>
+
+      <!-- FILTRAR -->
+      <button
+        (click)="filtrar()"
+        class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold px-5"
+      >
+        Filtrar
+      </button>
+
+      <!-- LIMPIAR -->
+      <button
+        (click)="limpiarFiltros()"
+        class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-semibold px-5"
+      >
+        Limpiar
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+
+    <div class="overflow-x-auto">
+
+      <table class="min-w-[1100px] w-full">
+
+        <!-- HEADER -->
+        <thead class="bg-gray-100 border-b">
+
+          <tr>
+
+            <th class="text-left px-4 lg:px-6 py-4 text-xs lg:text-sm font-bold text-gray-600">
+              Tipo
+            </th>
+
+            <th class="text-left px-4 lg:px-6 py-4 text-xs lg:text-sm font-bold text-gray-600">
+              Vehículo
+            </th>
+
+            <th class="text-left px-4 lg:px-6 py-4 text-xs lg:text-sm font-bold text-gray-600">
+              Mensaje
+            </th>
+
+            <th class="text-left px-4 lg:px-6 py-4 text-xs lg:text-sm font-bold text-gray-600">
+              Prioridad
+            </th>
+
+            <th class="text-left px-4 lg:px-6 py-4 text-xs lg:text-sm font-bold text-gray-600">
+              Estado
+            </th>
+
+            <th class="text-left px-4 lg:px-6 py-4 text-xs lg:text-sm font-bold text-gray-600">
+              Fecha
+            </th>
+
+            <th class="text-center px-4 lg:px-6 py-4 text-xs lg:text-sm font-bold text-gray-600">
+              Acciones
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <!-- BODY -->
+        <tbody>
+
+          <tr
+            *ngFor="let alerta of alertasPaginadas; trackBy: trackByAlerta"
+            class="border-b hover:bg-gray-50 transition"
+          >
+
+            <!-- TIPO -->
+            <td class="px-4 lg:px-6 py-5">
+
+              <div class="flex items-center gap-3">
+
+                <div class="text-xl lg:text-2xl">
+                  {{ getIconoAlerta(alerta.tipo) }}
+                </div>
+
+                <div>
+
+                  <p class="font-bold text-gray-800 text-sm lg:text-base">
+                    {{ alerta.tipo }}
+                  </p>
+
+                  <p class="text-xs lg:text-sm text-gray-500">
+                    {{ alerta.categoria }}
+                  </p>
+
+                </div>
+
+              </div>
+
+            </td>
+
+            <!-- VEHÍCULO -->
+            <td class="px-4 lg:px-6 py-5">
+
+              <div *ngIf="alerta.vehiculo">
+
+                <p class="font-black text-gray-800 text-sm lg:text-base">
+                  {{ alerta.vehiculo.placa }}
+                </p>
+
+                <p class="text-xs lg:text-sm text-gray-500">
+                  {{ alerta.vehiculo.marca }}
+                </p>
+
+              </div>
+
+              <span
+                *ngIf="!alerta.vehiculo"
+                class="text-gray-400 text-sm"
+              >
+                N/A
+              </span>
+
+            </td>
+
+            <!-- MENSAJE -->
+            <td class="px-4 lg:px-6 py-5">
+
+              <div class="max-w-xs lg:max-w-md">
+
+                <p class="text-gray-700 font-medium text-sm lg:text-base">
+                  {{ alerta.mensaje }}
+                </p>
+
+                <!-- FECHA VENCIMIENTO -->
+                <div
+                  *ngIf="alerta.metadata?.fecha_vencimiento"
+                  class="mt-2 text-xs lg:text-sm text-red-500"
+                >
+
+                  Vence:
+                  {{ alerta.metadata.fecha_vencimiento }}
+
+                </div>
+
+              </div>
+
+            </td>
+
+            <!-- PRIORIDAD -->
+            <td class="px-4 lg:px-6 py-5">
+
+              <span
+                class="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                [ngClass]="getClasePrioridad(alerta.prioridad)"
+              >
+                {{ alerta.prioridad }}
+              </span>
+
+            </td>
+
+            <!-- ESTADO -->
+            <td class="px-4 lg:px-6 py-5">
+
+              <span
+                class="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                [ngClass]="getClaseEstado(alerta.estado)"
+              >
+                {{ alerta.estado }}
+              </span>
+
+            </td>
+
+            <!-- FECHA -->
+            <td class="px-4 lg:px-6 py-5 text-xs lg:text-sm text-gray-500 whitespace-nowrap">
+
+              {{ alerta.created_at | date:'short' }}
+
+            </td>
+
+            <!-- ACCIONES -->
+            <td class="px-4 lg:px-6 py-5">
+
+              <div class="flex items-center justify-center gap-2">
+
+                <button
+                  *ngIf="alerta.estado === 'ACTIVA'"
+                  (click)="abrirResolver(alerta)"
+                  class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs lg:text-sm font-semibold transition"
+                >
+                  Resolver
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- PAGINADOR -->
+    <div
+      *ngIf="totalPaginas > 1"
+      class="flex flex-col lg:flex-row items-center justify-between gap-4 px-6 py-5 border-t bg-gray-50"
+    >
+
+      <!-- INFO -->
+      <div class="text-sm text-gray-500">
+
+        Mostrando
+
+        <span class="font-bold text-gray-700">
+          {{
+            (paginaActual - 1) * itemsPorPagina + 1
+          }}
+        </span>
+
+        -
+
+        <span class="font-bold text-gray-700">
+          {{ getFinPagina() }}
+        </span>
+
+        de
+
+        <span class="font-bold text-gray-700">
+          {{ alertas.length }}
+        </span>
+
+        alertas
+
+      </div>
+
+      <!-- BOTONES -->
+      <div class="flex items-center gap-2 flex-wrap justify-center">
+
+        <!-- ANTERIOR -->
+        <button
+          (click)="cambiarPagina(paginaActual - 1)"
+          [disabled]="paginaActual === 1"
+          class="px-4 py-2 rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
+        >
+          ←
+        </button>
+
+        <!-- PÁGINAS -->
+        <button
+          *ngFor="let pagina of paginas"
+          (click)="cambiarPagina(pagina)"
+          class="w-10 h-10 rounded-lg font-semibold transition"
+          [ngClass]="
+            pagina === paginaActual
+              ? 'bg-blue-600 text-white'
+              : 'bg-white border hover:bg-gray-100'
+          "
+        >
+          {{ pagina }}
+        </button>
+
+        <!-- SIGUIENTE -->
+        <button
+          (click)="cambiarPagina(paginaActual + 1)"
+          [disabled]="paginaActual === totalPaginas"
+          class="px-4 py-2 rounded-lg border bg-white hover:bg-gray-100 disabled:opacity-40"
+        >
+          →
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- LOADING -->
+  <div
+    *ngIf="loading"
+    class="bg-white rounded-2xl shadow-lg p-10 text-center mt-6"
+  >
+
+    <div class="animate-spin text-5xl mb-4">
+      ⚙️
+    </div>
+
+    <p class="text-gray-500 font-medium">
+      Cargando alertas...
+    </p>
+
+  </div>
+
+  <!-- VACÍO -->
+  <div
+    *ngIf="!loading && alertas.length === 0"
+    class="bg-white rounded-2xl shadow-lg p-10 text-center mt-6"
+  >
+
+    <div class="text-6xl mb-4">
+      🔕
+    </div>
+
+    <h2 class="text-2xl font-black text-gray-700">
+      No hay alertas
+    </h2>
+
+    <p class="text-gray-500 mt-2">
+      El sistema no encontró alertas activas
+    </p>
+
+  </div>
+
+</div>
+
+<!-- MODAL DOCUMENTO -->
+<div
+  *ngIf="modalDocumento"
+  class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+>
+
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
+
+    <!-- HEADER -->
+    <div class="flex items-center justify-between mb-6">
+
+      <div>
+
+        <h2 class="text-2xl font-black text-gray-800">
+          Actualizar documento
+        </h2>
+
+        <p class="text-gray-500 mt-1">
+
+          {{ alertaSeleccionada.categoria }}
+
+        </p>
+
+      </div>
+
+      <button
+        (click)="modalDocumento = false"
+        class="text-gray-400 hover:text-black text-2xl"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <!-- VEHÍCULO -->
+    <div class="bg-gray-100 rounded-xl p-4 mb-5">
+
+      <p class="font-bold text-gray-800">
+
+        Vehículo:
+        {{ alertaSeleccionada.vehiculo?.placa }}
+
+      </p>
+
+      <p class="text-gray-500 text-sm mt-1">
+
+        {{ alertaSeleccionada.vehiculo?.marca }}
+
+      </p>
+
+    </div>
+
+    <!-- FECHA -->
+    <div class="mb-5">
+
+      <label class="block mb-2 font-semibold text-gray-700">
+
+        Nueva fecha vencimiento
+
+      </label>
+
+      <input
+        type="date"
+        [(ngModel)]="nuevaFecha"
+        class="w-full border rounded-xl px-4 py-3"
+      />
+
+    </div>
+
+    <!-- ARCHIVO -->
+    <div class="mb-6">
+
+      <label class="block mb-2 font-semibold text-gray-700">
+
+        Subir documento
+
+      </label>
+
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        class="w-full border rounded-xl px-4 py-3"
+      />
+
+    </div>
+
+    <!-- BOTONES -->
+    <div class="flex justify-end gap-3">
+
+      <button
+        (click)="modalDocumento = false"
+        class="px-5 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 font-semibold"
+      >
+        Cancelar
+      </button>
+
+      <button
+        (click)="resolverDocumento()"
+        class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+      >
+        Guardar documento
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
