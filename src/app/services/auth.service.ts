@@ -16,7 +16,7 @@ export class AuthService {
 
   login(username: string, password: string) {
     return this.http.post<any>(
-      `${this.apiUrl}/api/auth/login`,
+      `${this.apiUrl}/auth/login`,
       { username, password }
     ).pipe(
       tap(res => {
