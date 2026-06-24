@@ -9,6 +9,8 @@ import {
 } from 'src/app/shared/models/vehiculo.model';
 import Swal from 'sweetalert2';
 
+import { environment } from 'src/environment/environment';
+
 type ModalMode = 'crear' | 'editar' | 'ver';
 
 @Component({
@@ -247,7 +249,7 @@ export class VehiculosComponent implements OnInit {
       // 🖼 IMAGEN
       // ==========================
       this.previewUrl = full.foto_url
-        ? 'http://localhost:5000' + full.foto_url
+        ? environment.apiUrl + full.foto_url
         : null;
 
       // ==========================
@@ -361,7 +363,7 @@ export class VehiculosComponent implements OnInit {
       // 🖼 IMAGEN
       // ==========================
       this.previewUrl = full.foto_url
-        ? 'http://localhost:5000' + full.foto_url
+        ? environment.apiUrl + full.foto_url
         : null;
 
       // ==========================

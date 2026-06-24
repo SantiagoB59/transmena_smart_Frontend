@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from 'src/environment/environment';
 // vehiculo-ubicacion.model.ts o dentro del componente
 export interface VehiculoUbicacion {
   gps_id: string;
@@ -21,7 +21,7 @@ export interface VehiculoUbicacion {
 })
 export class VehiculoTrackingService {
 
-  private API = 'http://localhost:5000'; // ⚠️ cambia si usas otra IP
+  private API = environment.apiUrl; // ⚠️ cambia si usas otra IP
 
   constructor(private http: HttpClient) { }
 

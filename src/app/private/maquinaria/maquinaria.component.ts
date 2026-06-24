@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MaquinariaService } from 'src/app/services/maquinaria.service';
 import Swal from 'sweetalert2';
 
+import { environment } from 'src/environment/environment';
 type ModalMode = 'crear' | 'editar' | 'ver';
 
 @Component({
@@ -153,7 +154,7 @@ export class MaquinariaComponent implements OnInit {
       });
 
       this.previewUrl = full.foto_url
-        ? 'http://localhost:5000' + full.foto_url
+        ? environment.apiUrl + full.foto_url
         : null;
 
       this.showModal = true;
@@ -172,7 +173,7 @@ export class MaquinariaComponent implements OnInit {
       this.form.disable();
 
       this.previewUrl = full.foto_url
-        ? 'http://localhost:5000' + full.foto_url
+        ? environment.apiUrl + full.foto_url
         : null;
 
       this.showModal = true;

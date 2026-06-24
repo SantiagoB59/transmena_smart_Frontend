@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-
+import { environment } from 'src/environment/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class PlanItemService {
 
   private api =
-    'http://localhost:5000/api/plan-items';
+    `${environment.apiUrl}/api/plan-items`;
 
   constructor(
     private http: HttpClient

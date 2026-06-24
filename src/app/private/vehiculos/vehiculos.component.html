@@ -97,7 +97,7 @@
 
                         <tr *ngFor="let v of vehiculos; trackBy: trackByPlaca" class="table-row">
                             <td class="foto-cell">
-                                <img *ngIf="v.foto_url" [src]="'http://localhost:5000' + v.foto_url"
+                                <img *ngIf="v.foto_url" [src]="'https://transmenasmart.com' + v.foto_url"
                                     class="vehiculo-img">
                                 <div *ngIf="!v.foto_url" class="no-img">
                                     <i class="fas fa-image"></i>
