@@ -109,10 +109,21 @@ td button:hover {
 /* =========================
    MOBILE
 ========================= */
+/* =========================
+   MOBILE
+========================= */
 @media (max-width: 768px) {
 
+  .content-view{
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
   .content-view > div {
-    padding: 1rem;
+    width: 100%;
+    max-width: none;
+    padding: 0.5rem;
   }
 
   /* HEADER */
@@ -163,7 +174,7 @@ td button:hover {
 @media (max-width: 480px) {
 
   .content-view > div {
-    padding: 0.75rem;
+    padding: 0.25rem;
   }
 
   header h2 {

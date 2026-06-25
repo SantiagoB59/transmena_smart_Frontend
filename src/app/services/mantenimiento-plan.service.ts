@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from 'src/environment/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class MantenimientoPlanService {
 
-  private api = 'http://127.0.0.1:5000/api';
+  private api = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
