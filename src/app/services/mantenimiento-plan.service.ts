@@ -75,7 +75,7 @@ export class MantenimientoPlanService {
   getPlanItems(): Observable<any> {
 
     return this.http.get(
-      `${this.api}/plan-items`
+      `${this.api}/api/plan-items`
     );
   }
 
