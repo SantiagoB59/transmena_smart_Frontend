@@ -18,14 +18,14 @@ export class MantenimientoPlanService {
   getPlanVehiculo(vehicleId: number): Observable<any> {
 
     return this.http.get(
-      `${this.api}/vehiculos/${vehicleId}/plan`
+      `${this.api}/api/vehiculos/${vehicleId}/plan`
     );
   }
 
   crearPlan(vehicleId: number, data: any): Observable<any> {
 
     return this.http.post(
-      `${this.api}/vehiculos/${vehicleId}/plan`,
+      `${this.api}/api/vehiculos/${vehicleId}/plan`,
       data
     );
   }
@@ -33,7 +33,7 @@ export class MantenimientoPlanService {
   completarPlan(id: number): Observable<any> {
 
     return this.http.put(
-      `${this.api}/plan/${id}/completar`,
+      `${this.api}/api/plan/${id}/completar`,
       {}
     );
   }
@@ -45,7 +45,7 @@ export class MantenimientoPlanService {
   getPlanMaquinaria(maquinariaId: number): Observable<any> {
 
     return this.http.get(
-      `${this.api}/maquinaria/${maquinariaId}/plan`
+      `${this.api}/api/maquinaria/${maquinariaId}/plan`
     );
   }
 
@@ -55,7 +55,7 @@ export class MantenimientoPlanService {
   ): Observable<any> {
 
     return this.http.post(
-      `${this.api}/maquinaria/${maquinariaId}/plan`,
+      `${this.api}/api/maquinaria/${maquinariaId}/plan`,
       data
     );
   }
@@ -63,7 +63,7 @@ export class MantenimientoPlanService {
   completarPlanMaquinaria(id: number): Observable<any> {
 
     return this.http.put(
-      `${this.api}/maquinaria/plan/${id}/completar`,
+      `${this.api}/api/maquinaria/plan/${id}/completar`,
       {}
     );
   }
@@ -86,7 +86,7 @@ export class MantenimientoPlanService {
   alertas(): Observable<any> {
 
     return this.http.get(
-      `${this.api}/mantenimientos/alertas`
+      `${this.api}/api/mantenimientos/alertas`
     );
   }
 
@@ -97,7 +97,7 @@ export class MantenimientoPlanService {
   alertasMaquinaria(): Observable<any> {
 
     return this.http.get(
-      `${this.api}/maquinaria/alertas`
+      `${this.api}/api/maquinaria/alertas`
     );
   }
 
@@ -108,7 +108,7 @@ export class MantenimientoPlanService {
   getVehiculos(): Observable<any> {
 
     return this.http.get(
-      `${this.api}/vehiculos`
+      `${this.api}/api/vehiculos`
     );
   }
 
@@ -119,7 +119,7 @@ export class MantenimientoPlanService {
   getMaquinaria(): Observable<any> {
 
     return this.http.get(
-      `${this.api}/maquinaria`
+      `${this.api}/api/maquinaria`
     );
   }
 }
