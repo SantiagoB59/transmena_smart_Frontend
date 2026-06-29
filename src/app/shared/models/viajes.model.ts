@@ -11,11 +11,15 @@ export interface Viaje {
   origen: string;
   destino: string;
 
-  km_salida: number;
-  km_llegada?: number;
+  // Kilometraje del remolque
+  km_inicio: number;
+  km_fin?: number;
   km_recorrido?: number;
 
   estado: 'PROGRAMADO' | 'EN_RUTA' | 'FINALIZADO';
 
+  observaciones?: string;
+
   created_at?: string;
+
 }

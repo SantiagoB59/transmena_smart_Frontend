@@ -20,7 +20,7 @@ export class ViajesComponent implements OnInit {
   viajes: Viaje[] = [];
   vehiculos: any[] = [];
   remolques: any[] = [];
-
+  remolqueSeleccionado: any = null;
   loading = false;
   showModal = false;
 
@@ -55,6 +55,7 @@ export class ViajesComponent implements OnInit {
   // =========================
   // FORM CREAR VIAJE
   // =========================
+
   crearFormulario() {
     this.form = this.fb.group({
       vehiculo_id: [0, Validators.required],
@@ -63,6 +64,10 @@ export class ViajesComponent implements OnInit {
       cc_conductor: ['', Validators.required],
       origen: ['', Validators.required],
       destino: ['', Validators.required],
+
+      // NUEVO
+      km_inicio: [null, [Validators.required, Validators.min(0)]],
+
       estado: ['PROGRAMADO']
     });
   }
@@ -85,6 +90,48 @@ export class ViajesComponent implements OnInit {
     });
   }
 
+  // =========================
+  // CAMBIO DE REMOLQUE
+  // =========================
+  onRemolqueChange(event: Event): void {
+
+    const id = Number((event.target as HTMLSelectElement).value);
+
+    // Si seleccionó "Sin remolque"
+    if (!id) {
+
+      this.remolqueSeleccionado = null;
+
+      this.form.patchValue({
+        remolque_id: null,
+        km_inicio: null
+      });
+
+      return;
+    }
+
+    const remolque = this.remolques.find(r => r.id === id);
+
+    if (!remolque) {
+
+      this.remolqueSeleccionado = null;
+
+      this.form.patchValue({
+        km_inicio: null
+      });
+
+      return;
+    }
+
+    // Guardar el remolque seleccionado
+    this.remolqueSeleccionado = remolque;
+
+    // Autocompletar el último kilometraje registrado
+    this.form.patchValue({
+      km_inicio: remolque.km_actual ?? 0
+    });
+
+  }
 
   cargarVehiculos() {
 
@@ -138,19 +185,33 @@ export class ViajesComponent implements OnInit {
   }
 
   cerrarModal() {
+
     this.showModal = false;
+
+    this.reset();
+
   }
 
   // =========================
   // CREAR VIAJE
   // =========================
-  crear() {
-    if (this.form.invalid) return;
 
-    this.viajesService.crear(this.form.value).subscribe(() => {
-      this.cargar();
-      this.cerrarModal();
-    });
+  crear() {
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.viajesService.crear(this.form.value)
+      .subscribe(() => {
+
+        this.cargar();
+
+        this.cerrarModal();
+
+      });
+
   }
 
   // =========================
@@ -177,6 +238,11 @@ export class ViajesComponent implements OnInit {
 
     if (!this.viajeSeleccionado) return;
 
+    if (!this.kmFin || this.kmFin <= 0) {
+      alert('Debe ingresar un kilometraje válido.');
+      return;
+    }
+
     const payload = {
       km_fin: this.kmFin,
       observaciones: this.observaciones
@@ -184,10 +250,15 @@ export class ViajesComponent implements OnInit {
 
     this.viajesService.finalizar(this.viajeSeleccionado, payload)
       .subscribe(() => {
+
         this.cargar();
+
         this.showFinalizarModal = false;
+
         this.viajeSeleccionado = null;
+
       });
+
   }
 
   // ABRIR MODAL ELIMINAR
@@ -242,18 +313,29 @@ export class ViajesComponent implements OnInit {
   // =========================
   // RESET FORM
   // =========================
-  reset() {
-    this.form.reset({
-      vehiculo_id: 0,
-      remolque_id: null,
-      conductor: '',
-      cc_conductor: '',
-      origen: '',
-      destino: '',
-      estado: 'PROGRAMADO'
-    });
-  }
 
+  reset() {
+
+  this.remolqueSeleccionado = null;
+
+  this.form.reset({
+
+    vehiculo_id: 0,
+    remolque_id: null,
+
+    conductor: '',
+    cc_conductor: '',
+
+    origen: '',
+    destino: '',
+
+    km_inicio: null,
+
+    estado: 'PROGRAMADO'
+
+  });
+
+}
   // =========================
   // UI
   // =========================
