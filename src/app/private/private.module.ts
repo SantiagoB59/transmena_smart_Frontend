@@ -22,6 +22,7 @@ import { PlanItemComponent } from './plan-item/plan-item.component';
 import { ViajesComponent } from './viajes/viajes.component';
 import { AlertasComponent } from './alertas/alertas.component';
 import { ReportesComponent } from './reportes/reportes.component';
+import { InspeccionMensualComponent } from './inspeccion-mensual/inspeccion-mensual.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ReportesComponent } from './reportes/reportes.component';
     PlanItemComponent,
     ViajesComponent,
     AlertasComponent,
-    ReportesComponent
+    ReportesComponent,
+    InspeccionMensualComponent
   ],
   imports: [
     CommonModule,

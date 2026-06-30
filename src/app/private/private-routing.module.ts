@@ -14,6 +14,7 @@ import { PlanItemComponent } from './plan-item/plan-item.component';
 import { ViajesComponent } from './viajes/viajes.component';
 import { AlertasComponent } from './alertas/alertas.component';
 import { ReportesComponent } from './reportes/reportes.component';
+import { InspeccionMensualComponent } from './inspeccion-mensual/inspeccion-mensual.component';
 
 const routes: Routes = [
   {
@@ -34,7 +35,8 @@ const routes: Routes = [
       { path: 'mantenimiento-plan/:tipo/:id', component: MantenimientoPlanComponent },
       { path: 'viajes', component: ViajesComponent },
       { path: 'alertas', component: AlertasComponent },
-      { path: 'reportes', component: ReportesComponent }
+      { path: 'reportes', component: ReportesComponent },
+      {path: 'inspeccion-mensual/:tipo/:id',component: InspeccionMensualComponent}
     ]
   }
 ];

@@ -176,6 +176,22 @@ export class FlotaComponent implements OnInit {
   }
 
   // =========================
+  // VER INSPECCIONES
+  // =========================
+  verInspecciones(
+    id: number,
+    tipo: 'vehiculo' | 'maquinaria'
+  ): void {
+
+    this.router.navigate([
+      '/dashboard/inspeccion-mensual',
+      tipo,
+      id
+    ]);
+
+  }
+
+  // =========================
   // BADGE ESTADO
   // =========================
   estadoClass(estado: string): string {

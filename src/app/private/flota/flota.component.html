@@ -25,22 +25,15 @@
 
           <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
 
-          <input
-            type="text"
-            [(ngModel)]="searchTerm"
-            (input)="aplicarFiltros()"
+          <input type="text" [(ngModel)]="searchTerm" (input)="aplicarFiltros()"
             placeholder="Buscar placa, código, marca..."
-            class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
+            class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500">
 
         </div>
 
         <!-- TIPO -->
-        <select
-          [(ngModel)]="filtroTipo"
-          (change)="aplicarFiltros()"
-          class="px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500"
-        >
+        <select [(ngModel)]="filtroTipo" (change)="aplicarFiltros()"
+          class="px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500">
 
           <option value="">
             Todos los equipos
@@ -57,11 +50,8 @@
         </select>
 
         <!-- ESTADO -->
-        <select
-          [(ngModel)]="filtroEstado"
-          (change)="aplicarFiltros()"
-          class="px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500"
-        >
+        <select [(ngModel)]="filtroEstado" (change)="aplicarFiltros()"
+          class="px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-red-500">
 
           <option value="">
             Todos los estados
@@ -90,10 +80,8 @@
         </select>
 
         <!-- LIMPIAR -->
-        <button
-          (click)="limpiarFiltros()"
-          class="bg-slate-100 hover:bg-slate-200 transition rounded-xl font-bold text-slate-700"
-        >
+        <button (click)="limpiarFiltros()"
+          class="bg-slate-100 hover:bg-slate-200 transition rounded-xl font-bold text-slate-700">
 
           <i class="fas fa-eraser mr-2"></i>
           Limpiar filtros
@@ -187,10 +175,7 @@
             </tr>
 
             <!-- DATA -->
-            <tr
-              *ngFor="let item of flotaFiltrada; trackBy: trackById"
-              class="hover:bg-slate-50 transition"
-            >
+            <tr *ngFor="let item of flotaFiltrada; trackBy: trackById" class="hover:bg-slate-50 transition">
 
               <!-- IDENTIFICADOR -->
               <td class="p-6">
@@ -226,10 +211,8 @@
               <!-- ESTADO -->
               <td class="p-6">
 
-                <span
-                  class="px-3 py-1 rounded-full text-[10px] font-black uppercase"
-                  [ngClass]="estadoClass(item.estado)"
-                >
+                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase"
+                  [ngClass]="estadoClass(item.estado)">
 
                   {{ item.estado }}
 
@@ -240,20 +223,27 @@
               <!-- ACCIÓN -->
               <td class="p-6 text-center">
 
-                <button
-                  type="button"
-                  (click)="verPlan(
-                    item.id,
-                    item.tipo_equipo === 'VEHICULO'
-                      ? 'vehiculo'
-                      : 'maquinaria'
-                  )"
-                  class="bg-red-600 hover:bg-red-700 transition text-white px-5 py-2 rounded-xl font-bold"
-                >
+                <div class="flex justify-center gap-2">
 
-                  Ver plan
+                  <button type="button" (click)="verPlan(
+      item.id,
+      item.tipo_equipo === 'VEHICULO'
+        ? 'vehiculo'
+        : 'maquinaria'
+    )" class="bg-red-600 hover:bg-red-700 transition text-white px-5 py-2 rounded-xl font-bold">
+                    Ver plan
+                  </button>
 
-                </button>
+                  <button type="button" (click)="verInspecciones(
+      item.id,
+      item.tipo_equipo === 'VEHICULO'
+        ? 'vehiculo'
+        : 'maquinaria'
+    )" class="bg-blue-600 hover:bg-blue-700 transition text-white px-5 py-2 rounded-xl font-bold">
+                    Inspecciones
+                  </button>
+
+                </div>
 
               </td>
 
