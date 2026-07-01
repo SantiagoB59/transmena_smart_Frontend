@@ -219,15 +219,20 @@ export class MantenimientosComponent implements OnInit {
   // =========================
   seleccionarVehiculo(v: any): void {
 
-    this.vehiculoSeleccionado = v;
-    this.nuevo.vehiculo_id = v.id;
-    this.busquedaVehiculo = v.placa;
+  this.vehiculoSeleccionado = v;
+  this.nuevo.vehiculo_id = v.id;
 
-    this.mantenimientoService.getPlanPorVehiculo(v.id).subscribe({
-      next: (res) => this.planItems = res || [],
-      error: (err) => console.error(err)
-    });
-  }
+  // Se llena automáticamente
+  this.nuevo.km = v.km_estimado;
+
+  this.busquedaVehiculo = v.placa;
+
+  this.mantenimientoService.getPlanPorVehiculo(v.id).subscribe({
+    next: (res) => this.planItems = res || [],
+    error: (err) => console.error(err)
+  });
+
+}
 
   limpiarVehiculo(): void {
 

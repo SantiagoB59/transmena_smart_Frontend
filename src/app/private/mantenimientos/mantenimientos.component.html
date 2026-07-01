@@ -33,11 +33,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
 
-      <input
-        type="number"
-        [(ngModel)]="vehiculo_id"
-        placeholder="ID Vehículo"
-        class="form-input">
+      <input type="number" [(ngModel)]="vehiculo_id" placeholder="ID Vehículo" class="form-input">
 
       <select [(ngModel)]="tipo" class="form-input">
 
@@ -128,9 +124,7 @@
                 {{ m.plan_item?.nombre }}
               </div>
 
-              <span
-                class="badge-operativo"
-                [ngClass]="getTipoClass(m.tipo)">
+              <span class="badge-operativo" [ngClass]="getTipoClass(m.tipo)">
 
                 {{ getTipoTexto(m.tipo) }}
 
@@ -156,10 +150,7 @@
             <!-- SOPORTE -->
             <td>
 
-              <a
-                *ngIf="m.soporte"
-                [href]="'https://transmenasmart.com/' + m.soporte"
-                target="_blank"
+              <a *ngIf="m.soporte" [href]="'https://transmenasmart.com/' + m.soporte" target="_blank"
                 class="text-blue-600 font-bold">
 
                 Ver archivo
@@ -221,10 +212,7 @@
 
         <label>Vehículo</label>
 
-        <input
-          [(ngModel)]="busquedaVehiculo"
-          placeholder="Buscar por placa..."
-          class="form-input">
+        <input [(ngModel)]="busquedaVehiculo" placeholder="Buscar por placa..." class="form-input">
 
         <small class="form-help">
           Selecciona el vehículo al que se le realizó el mantenimiento
@@ -232,9 +220,7 @@
 
         <div *ngIf="!vehiculoSeleccionado" class="border rounded-xl mt-2 max-h-40 overflow-y-auto">
 
-          <div
-            *ngFor="let v of vehiculosFiltrados"
-            (click)="seleccionarVehiculo(v)"
+          <div *ngFor="let v of vehiculosFiltrados" (click)="seleccionarVehiculo(v)"
             class="p-3 hover:bg-slate-100 cursor-pointer">
 
             {{ v.placa }} - {{ v.marca }} {{ v.modelo }}
@@ -243,9 +229,7 @@
 
         </div>
 
-        <div
-          *ngIf="vehiculoSeleccionado"
-          class="mt-3 p-3 rounded-xl bg-emerald-100 flex justify-between">
+        <div *ngIf="vehiculoSeleccionado" class="mt-3 p-3 rounded-xl bg-emerald-100 flex justify-between">
 
           <span>🚛 {{ vehiculoSeleccionado.placa }}</span>
 
@@ -260,10 +244,7 @@
 
         <label>Plan de mantenimiento</label>
 
-        <input
-          [(ngModel)]="busquedaPlan"
-          placeholder="Buscar mantenimiento del plan..."
-          class="form-input">
+        <input [(ngModel)]="busquedaPlan" placeholder="Buscar mantenimiento del plan..." class="form-input">
 
         <small class="form-help">
           Selecciona el mantenimiento programado (ej: cambio de aceite, frenos, etc.)
@@ -271,9 +252,7 @@
 
         <div *ngIf="!planSeleccionado" class="border rounded-xl mt-2 max-h-40 overflow-y-auto">
 
-          <div
-            *ngFor="let p of planFiltrados"
-            (click)="seleccionarPlan(p)"
+          <div *ngFor="let p of planFiltrados" (click)="seleccionarPlan(p)"
             class="p-3 hover:bg-slate-100 cursor-pointer">
 
             <div class="font-bold">
@@ -288,9 +267,7 @@
 
         </div>
 
-        <div
-          *ngIf="planSeleccionado"
-          class="mt-3 p-3 rounded-xl bg-blue-100 flex justify-between">
+        <div *ngIf="planSeleccionado" class="mt-3 p-3 rounded-xl bg-blue-100 flex justify-between">
 
           <span>
             🔧 {{ planSeleccionado.plan_item?.descripcion }}
@@ -323,7 +300,8 @@
         <input type="number" [(ngModel)]="nuevo.km" class="form-input">
 
         <small class="form-help">
-          Kilometraje del vehículo en el momento del mantenimiento
+          Se carga automáticamente desde el GPS. Si el tablero del vehículo muestra otro valor puedes corregirlo; el
+          sistema recalibrará el kilometraje.
         </small>
 
       </div>
@@ -398,10 +376,7 @@
 
         <label>Observaciones</label>
 
-        <textarea
-          [(ngModel)]="nuevo.observaciones"
-          rows="4"
-          class="form-input"
+        <textarea [(ngModel)]="nuevo.observaciones" rows="4" class="form-input"
           placeholder="Ej: se cambió aceite y filtro, se recomienda revisión en 5000 km"></textarea>
 
         <small class="form-help">
