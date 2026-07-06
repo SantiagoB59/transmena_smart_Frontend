@@ -15,6 +15,8 @@ import { ViajesComponent } from './viajes/viajes.component';
 import { AlertasComponent } from './alertas/alertas.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { InspeccionMensualComponent } from './inspeccion-mensual/inspeccion-mensual.component';
+import { VerificacionKmModalComponent } from './verificacion-km-modal/verificacion-km-modal.component';
+import { VerificacionKmComponent } from './verificacion-km/verificacion-km.component';
 
 const routes: Routes = [
   {
@@ -36,7 +38,8 @@ const routes: Routes = [
       { path: 'viajes', component: ViajesComponent },
       { path: 'alertas', component: AlertasComponent },
       { path: 'reportes', component: ReportesComponent },
-      {path: 'inspeccion-mensual/:tipo/:id',component: InspeccionMensualComponent}
+      {path: 'inspeccion-mensual/:tipo/:id',component: InspeccionMensualComponent},
+      { path: 'verificacion-km', component: VerificacionKmComponent }
     ]
   }
 ];

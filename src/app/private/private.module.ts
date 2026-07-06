@@ -23,6 +23,8 @@ import { ViajesComponent } from './viajes/viajes.component';
 import { AlertasComponent } from './alertas/alertas.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { InspeccionMensualComponent } from './inspeccion-mensual/inspeccion-mensual.component';
+import { VerificacionKmModalComponent } from './verificacion-km-modal/verificacion-km-modal.component';
+import { VerificacionKmComponent } from './verificacion-km/verificacion-km.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { InspeccionMensualComponent } from './inspeccion-mensual/inspeccion-mens
     ViajesComponent,
     AlertasComponent,
     ReportesComponent,
-    InspeccionMensualComponent
+    InspeccionMensualComponent,
+    VerificacionKmModalComponent,
+    VerificacionKmComponent
   ],
   imports: [
     CommonModule,

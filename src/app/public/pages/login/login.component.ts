@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { finalize } from 'rxjs/operators';
+import { VehiculoService } from 'src/app/services/vehiculo.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private vehiculoService: VehiculoService
   ) {
     this.loginForm = this.fb.group({
       username: [
@@ -70,6 +72,8 @@ export class LoginComponent {
           // 🔐 el token ya se guarda en el service
           if (res?.token) {
             this.router.navigate(['/dashboard']);
+            // 👇 luego validas verificación km
+            this.verificarKmPendientes();
           } else {
             this.isLoginFailed = true;
           }
@@ -79,4 +83,20 @@ export class LoginComponent {
         }
       });
   }
+
+  verificarKmPendientes() {
+  this.vehiculoService.getVehiculosVerificacionKm().subscribe({
+    next: (res: any[]) => {
+
+      if (res.length > 0) {
+        // SOLO ALERTA o bandera global
+        alert(`⚠ Hay ${res.length} vehículos pendientes de verificación de km`);
+      }
+
+    },
+    error: (err: any) => {
+      console.error(err);
+    }
+  });
+}
 }

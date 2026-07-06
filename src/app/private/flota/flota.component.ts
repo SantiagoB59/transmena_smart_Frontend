@@ -62,7 +62,7 @@ export class FlotaComponent implements OnInit {
 
               tipo_nombre: v.tipo_vehiculo,
 
-              valor_control: v.km_total ?? v.km_estimado ?? v.km_actual,
+              valor_control: v.km_estimado != null ? v.km_estimado : v.km_actual,
 
               unidad: 'KM'
             }));

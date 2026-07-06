@@ -13,7 +13,7 @@ import {
 import { AlertasService } from 'src/app/services/alertas.service';
 
 import { Alerta } from 'src/app/shared/models/alertas.model';
-
+import { VehiculoService } from 'src/app/services/vehiculo.service';
 import * as L from 'leaflet';
 
 @Component({
@@ -27,7 +27,8 @@ export class MapaComponent
   // =========================
   // VEHÍCULOS
   // =========================
-
+  mostrarModalKm = false;
+  totalKmPendientes = 0;
   vehiculos: VehiculoUbicacion[] = [];
 
   vehiculosFiltrados: VehiculoUbicacion[] = [];
@@ -63,7 +64,7 @@ export class MapaComponent
   constructor(
 
     private trackingService: VehiculoTrackingService,
-
+    private vehiculoService: VehiculoService,
     private alertasService: AlertasService
 
   ) { }
@@ -72,7 +73,8 @@ export class MapaComponent
   // INIT
   // =========================
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+   }
 
   // =========================
   // AFTER VIEW
@@ -86,6 +88,7 @@ export class MapaComponent
 
     this.cargarAlertas();
 
+    this.verificarKm();
     // =========================
     // REFRESH AUTOMÁTICO
     // =========================
@@ -95,6 +98,7 @@ export class MapaComponent
       this.cargarDatos();
 
       this.cargarAlertas();
+
 
     }, 10000);
 
@@ -216,6 +220,24 @@ export class MapaComponent
 
   }
 
+
+  verificarKm(): void {
+
+    this.vehiculoService.getVerificacionKmCount().subscribe({
+      next: (res: any) => {
+
+        if (res.total > 0) {
+          this.totalKmPendientes = res.total;
+          this.mostrarModalKm = true;
+        }
+
+      },
+      error: (err) => {
+        console.error('Error verificando km:', err);
+      }
+    });
+
+  }
   // =========================
   // CARGAR ALERTAS
   // =========================

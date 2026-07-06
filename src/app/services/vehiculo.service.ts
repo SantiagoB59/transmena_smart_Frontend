@@ -11,6 +11,10 @@ export interface VehiculoResponse {
   data: Vehiculo[];
 }
 
+export interface VerificacionKmResponse {
+  total: number;
+}
+
 @Injectable({ providedIn: 'root' })
 
 
@@ -159,4 +163,19 @@ export class VehiculoService {
   obtenerPorId(id: number): Observable<Vehiculo> {
     return this.http.get<Vehiculo>(`${this.base}/id/${id}`);
   }
+
+
+
+  getVerificacionKmCount(): Observable<VerificacionKmResponse> {
+  return this.http.get<VerificacionKmResponse>(
+    `${this.base}/verificacion-km/count`
+  );
+}
+getVehiculosVerificacionKm(): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.base}/verificacion-km`
+  );
+}
+
+
 }
