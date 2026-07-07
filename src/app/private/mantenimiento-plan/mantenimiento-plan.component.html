@@ -60,6 +60,7 @@
             <th>Tipo</th>
 
             <th>Control</th>
+            <th>Mantenimiento cada</th>
 
             <th>Actual</th>
 
@@ -84,6 +85,18 @@
             <td>{{ p.tipo_mantenimiento }}</td>
 
             <td>{{ p.tipo_control }}</td>
+
+            <td>
+
+              <ng-container *ngIf="p.tipo_control == 'KM'">
+                {{ p.frecuencia_valor | number }} km
+              </ng-container>
+
+              <ng-container *ngIf="p.tipo_control == 'DIAS'">
+                {{ p.frecuencia_valor }} días
+              </ng-container>
+
+            </td>
 
             <!-- ACTUAL -->
 

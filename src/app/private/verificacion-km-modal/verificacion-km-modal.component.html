@@ -32,6 +32,7 @@
 
     </div>
 
+    <!-- BODY -->
     <div class="km-body">
 
       <div class="alert-card">
@@ -55,47 +56,47 @@
 
       </div>
 
-    </div>
+      <!-- LISTA VEHÍCULOS -->
+      <div class="lista-vehiculos" *ngIf="vehiculos.length">
 
-    <div class="lista-vehiculos" *ngIf="vehiculos.length">
+        <h4>Vehículos pendientes</h4>
 
-      <h4>Vehículos pendientes</h4>
+        <div class="table-wrapper">
 
-      <div class="table-wrapper">
+          <table>
 
-        <table>
+            <thead>
 
-          <thead>
+              <tr>
+                <th>Placa</th>
+                <th>Km Sistema</th>
+              </tr>
 
-            <tr>
-              <th>Placa</th>
-              <th>Km Sistema</th>
-            </tr>
+            </thead>
 
-          </thead>
+            <tbody>
 
-          <tbody>
+              <tr *ngFor="let v of vehiculos">
 
-            <tr *ngFor="let v of vehiculos">
+                <td>
+                  <div class="placa-cell">
+                    <span class="placa">{{ v.placa }}</span>
+                  </div>
+                </td>
 
-              <td>
-                <div class="placa-cell">
-                  <span class="placa">{{ v.placa }}</span>
-                </div>
-              </td>
+                <td>
+                  <span class="badge badge-estimated">
+                    {{ v.km_estimado | number }}
+                  </span>
+                </td>
 
+              </tr>
 
-              <td>
-                <span class="badge badge-estimated">
-                  {{ v.km_estimado | number }}
-                </span>
-              </td>
+            </tbody>
 
-            </tr>
+          </table>
 
-          </tbody>
-
-        </table>
+        </div>
 
       </div>
 
@@ -104,13 +105,17 @@
     <!-- FOOTER -->
     <div class="km-footer">
 
-      <button class="btn-secondary" (click)="cerrarModal()">
+      <button
+        class="btn-secondary"
+        (click)="cerrarModal()">
 
         Más tarde
 
       </button>
 
-      <button class="btn-primary" (click)="irAVerificaciones()">
+      <button
+        class="btn-primary"
+        (click)="irAVerificaciones()">
 
         Ver vehículos
 
