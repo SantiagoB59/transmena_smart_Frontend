@@ -6,7 +6,8 @@ import { MaquinariaService } from 'src/app/services/maquinaria.service';
 
 @Component({
   selector: 'app-flota',
-  templateUrl: './flota.component.html'
+  templateUrl: './flota.component.html',
+  styleUrls: ['./flota.component.scss']
 })
 export class FlotaComponent implements OnInit {
 

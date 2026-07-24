@@ -17,6 +17,7 @@ import { ReportesComponent } from './reportes/reportes.component';
 import { InspeccionMensualComponent } from './inspeccion-mensual/inspeccion-mensual.component';
 import { VerificacionKmModalComponent } from './verificacion-km-modal/verificacion-km-modal.component';
 import { VerificacionKmComponent } from './verificacion-km/verificacion-km.component';
+import { MantenimientosMaquinariaComponent } from './mantenimientos-maquinaria/mantenimientos-maquinaria.component';
 
 const routes: Routes = [
   {
@@ -39,7 +40,8 @@ const routes: Routes = [
       { path: 'alertas', component: AlertasComponent },
       { path: 'reportes', component: ReportesComponent },
       {path: 'inspeccion-mensual/:tipo/:id',component: InspeccionMensualComponent},
-      { path: 'verificacion-km', component: VerificacionKmComponent }
+      { path: 'verificacion-km', component: VerificacionKmComponent },
+      { path: 'mantenimiento-maquinaria', component: MantenimientosMaquinariaComponent },
     ]
   }
 ];

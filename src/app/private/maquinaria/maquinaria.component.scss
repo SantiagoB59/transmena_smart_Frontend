@@ -207,124 +207,236 @@ $radius-sm: 0.75rem;
   @media (max-width: 600px) { width: 100%; }
   &:focus { border-color: $red; }
 }
+// ─────────────────────────────────────────────────────────────
+// TABLA CORPORATIVA TRANSMENA SMART
+// ─────────────────────────────────────────────────────────────
 
-// ── Tabla ────────────────────────────────────────────────────────────────
 .table-card {
   background: #fff;
-  border-radius: $radius;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-  border: 1px solid $border;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, .08);
   overflow: hidden;
-  flex: 1;  // ocupa el espacio restante
 }
+
 .table-wrapper {
-  overflow-x: auto;
   width: 100%;
+  overflow-x: auto;
 }
+
 table {
   width: 100%;
+  min-width: 950px;
   border-collapse: collapse;
-  text-align: left;
-  min-width: 700px; // scroll horizontal en móvil
 }
-thead tr {
-  background: $light;
-  border-bottom: 2px solid $border;
-  th {
-    padding: 1rem 1.25rem;
-    font-size: 0.625rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: $slate;
-    white-space: nowrap;
-  }
-}
-.table-row {
-  border-bottom: 1px solid $border;
-  transition: background 0.15s;
-  &:hover { background: #fafafa; }
-  td { padding: 1rem 1.25rem; vertical-align: middle; }
-}
-.placa     { font-size: 1rem; font-weight: 900; color: $dark; }
-.vin       { font-size: 0.7rem; color: $blue; font-weight: 700; margin-top: 2px; }
-.tipo      { font-size: 0.875rem; font-weight: 700; color: $mid; }
-.marca     { font-size: 0.7rem; text-transform: uppercase; color: $slate; margin-top: 2px; }
-.conductor { font-size: 0.875rem; color: $mid; }
-.km        { font-weight: 700; color: $mid; font-size: 0.875rem; }
-.text-muted { color: $slate; font-size: 0.75rem; font-style: italic; }
 
-.loading-row, .empty-row {
-  text-align: center;
-  padding: 3rem;
-  color: $slate;
-  font-size: 0.9rem;
-  i { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+/* ======================================================
+   CABECERA
+====================================================== */
+
+thead {
+  background: #111827;
 }
+
+thead th {
+  padding: 20px 24px;
+  color: #fff;
+  text-align: left;
+  font-size: .78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+/* ======================================================
+   FILAS
+====================================================== */
+
+tbody tr {
+  transition: .2s ease;
+  border-bottom: 1px solid #eef2f7;
+}
+
+tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+tbody tr:hover {
+  background: #f8fafc;
+}
+
+tbody td {
+  padding: 22px 24px;
+  vertical-align: middle;
+}
+
+/* ======================================================
+   INFORMACIÓN
+====================================================== */
+
+.placa {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.tipo {
+  font-size: .95rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.marca {
+  margin-top: 3px;
+  font-size: .8rem;
+  color: #64748b;
+}
+
+.vin {
+  margin-top: 4px;
+  font-size: .78rem;
+  color: #64748b;
+}
+
+.conductor {
+  font-size: .9rem;
+  color: #334155;
+}
+
+.km {
+  font-size: .95rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.text-muted {
+  font-size: .8rem;
+  color: #94a3b8;
+}
+
+/* ======================================================
+   BADGES
+====================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.badge-operativo {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-taller {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.badge-inactivo {
+  background: #e5e7eb;
+  color: #475569;
+}
+
+/* ======================================================
+   ACCIONES
+====================================================== */
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: .2s;
+}
+
+.action-btn i {
+  font-size: .9rem;
+}
+
+.action-btn--view {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.action-btn--view:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+.action-btn--edit {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.action-btn--edit:hover {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.action-btn--delete {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.action-btn--delete:hover {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* ======================================================
+   LOADING
+====================================================== */
+
+.loading-row,
+.empty-row {
+  text-align: center;
+  padding: 60px;
+  color: #64748b;
+  font-size: .95rem;
+}
+
+.loading-row i,
+.empty-row i {
+  display: block;
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
 .spinner {
   display: inline-block;
-  width: 1rem; height: 1rem;
-  border: 2px solid $border;
-  border-top-color: $red;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #dc2626;
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-// ── Badges estado ────────────────────────────────────────────────────────
-.badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.65rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  &-operativo { background: #d1fae5; color: $green; }
-  &-taller    { background: #ffedd5; color: $orange; }
-  &-inactivo  { background: #fee2e2; color: $red; }
+  animation: spin .8s linear infinite;
 }
 
-// ── GPS pill ─────────────────────────────────────────────────────────────
-.gps-pill {
-  background: #eff6ff;
-  color: $blue;
-  border-radius: 999px;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.65rem;
-  font-weight: 700;
-  i { margin-right: 4px; }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
-
-// ── Acciones ─────────────────────────────────────────────────────────────
-.actions { display: flex; gap: 0.25rem; justify-content: center; }
-.action-btn {
-  width: 2rem; height: 2rem;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: background 0.15s, color 0.15s;
-  display: flex; align-items: center; justify-content: center;
-  &--view   { background: #eff6ff; color: $blue;  &:hover { background: $blue;  color: #fff; } }
-  &--edit   { background: #f0fdf4; color: $green; &:hover { background: $green; color: #fff; } }
-  &--delete { background: #fef2f2; color: $red;   &:hover { background: $red;   color: #fff; } }
-}
-
-// ── Alert error ──────────────────────────────────────────────────────────
-.alert-error {
-  background: #fef2f2;
-  border: 2px solid #fecaca;
-  color: $red;
-  border-radius: $radius-sm;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  button { margin-left: auto; background: none; border: none; cursor: pointer; color: $red; }
-}
-
 // ══════════════════════════════════════════════════════════════════ MODAL
 .modal-backdrop {
   position: fixed;

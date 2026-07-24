@@ -42,6 +42,7 @@ interface PlanVehiculo {
   restante: number;
 
   estado: string;
+  horometro_actual?: number;
 }
 
 @Component({
@@ -62,6 +63,8 @@ export class MantenimientoPlanComponent implements OnInit {
   // DATA
   // =========================
   vehiculo: any = null;
+
+  maquinaria: any = null;
 
   planes: PlanVehiculo[] = [];
 
@@ -166,19 +169,23 @@ export class MantenimientoPlanComponent implements OnInit {
   // =====================================
   cargarMaquinaria(): void {
 
-    this.maquinariaService
-      .getById(this.entityId)
-      .subscribe({
+  this.maquinariaService
+    .getById(this.entityId)
+    .subscribe({
 
-        next: (res) => {
-          this.vehiculo = res;
-        },
+      next: (res) => {
 
-        error: (err) => {
-          console.error(err);
-        }
-      });
-  }
+        console.log("MAQUINARIA:", res);
+
+        this.maquinaria = res;
+
+      },
+
+      error: (err) => {
+        console.error(err);
+      }
+    });
+}
 
   // =====================================
   // PLANES VEHÍCULO

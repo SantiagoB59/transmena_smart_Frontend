@@ -23,7 +23,7 @@ export class MantenimientosComponent implements OnInit {
   // =========================
   // FILTROS
   // =========================
-  vehiculo_id?: number;
+  placa?: string ;
   tipo?: string;
   desde?: string;
   hasta?: string;
@@ -79,7 +79,7 @@ export class MantenimientosComponent implements OnInit {
     this.route.params.subscribe(params => {
 
       if (params['id']) {
-        this.vehiculo_id = +params['id'];
+        this.placa = params['id'];
       }
 
       this.cargarDatos();
@@ -94,7 +94,7 @@ export class MantenimientosComponent implements OnInit {
     this.loading = true;
 
     this.mantenimientoService.listar({
-      vehiculo_id: this.vehiculo_id,
+      placa: this.placa,
       tipo: this.tipo,
       desde: this.desde,
       hasta: this.hasta
@@ -118,7 +118,7 @@ export class MantenimientosComponent implements OnInit {
   }
 
   limpiar(): void {
-    this.vehiculo_id = undefined;
+    this.placa = "";
     this.tipo = undefined;
     this.desde = undefined;
     this.hasta = undefined;
@@ -130,20 +130,20 @@ export class MantenimientosComponent implements OnInit {
   // =========================
   getTipoClass(tipo: string): string {
     switch (tipo) {
-      case 'PR': return 'badge-operativo';
-      case 'CR': return 'badge-inactivo';
-      case 'I': return 'badge-info';
-      case 'C': return 'badge-taller';
+      case 'Preventivo': return 'badge-operativo';
+      case 'Correctivo': return 'badge-inactivo';
+      case 'Inspección': return 'badge-info';
+      case 'Cambio': return 'badge-taller';
       default: return 'badge-default';
     }
   }
 
   getTipoTexto(tipo: string): string {
     switch (tipo) {
-      case 'PR': return 'Preventivo';
-      case 'CR': return 'Correctivo';
-      case 'I': return 'Inspección';
-      case 'C': return 'Cambio';
+      case 'Preventivo': return 'Preventivo';
+      case 'Correctivo': return 'Correctivo';
+      case 'Inspección': return 'Inspección';
+      case 'Cambio': return 'Cambio';
       default: return tipo;
     }
   }

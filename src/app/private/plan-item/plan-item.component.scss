@@ -227,19 +227,7 @@ table {
   text-align: left;
   min-width: 700px; // scroll horizontal en móvil
 }
-thead tr {
-  background: $light;
-  border-bottom: 2px solid $border;
-  th {
-    padding: 1rem 1.25rem;
-    font-size: 0.625rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: $slate;
-    white-space: nowrap;
-  }
-}
+
 .table-row {
   border-bottom: 1px solid $border;
   transition: background 0.15s;

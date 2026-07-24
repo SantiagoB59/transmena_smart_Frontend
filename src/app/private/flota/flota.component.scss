@@ -147,6 +147,24 @@ td button:hover {
   }
 
   /* TABLA */
+
+  thead {
+  background: #111827;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+thead th {
+  padding: 18px 24px;
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  text-align: left;
+  white-space: nowrap;
+}
   table {
     min-width: 700px;
   }

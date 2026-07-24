@@ -25,6 +25,7 @@ import { ReportesComponent } from './reportes/reportes.component';
 import { InspeccionMensualComponent } from './inspeccion-mensual/inspeccion-mensual.component';
 import { VerificacionKmModalComponent } from './verificacion-km-modal/verificacion-km-modal.component';
 import { VerificacionKmComponent } from './verificacion-km/verificacion-km.component';
+import { MantenimientosMaquinariaComponent } from './mantenimientos-maquinaria/mantenimientos-maquinaria.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { VerificacionKmComponent } from './verificacion-km/verificacion-km.compo
     ReportesComponent,
     InspeccionMensualComponent,
     VerificacionKmModalComponent,
-    VerificacionKmComponent
+    VerificacionKmComponent,
+    MantenimientosMaquinariaComponent
   ],
   imports: [
     CommonModule,

@@ -6,7 +6,8 @@
         <div class="page-header">
             <div>
                 <h2 class="page-title">Vehículos automotores y no automotores</h2>
-                <p class="page-subtitle">Administración de cabezotes, Camionetas, Cama alta, Cama alta, tanques y otros</p>
+                <p class="page-subtitle">Administración de cabezotes, Camionetas, Cama alta, Cama alta, tanques y otros
+                </p>
             </div>
             <button class="btn-primary" (click)="abrirCrear()">
                 <i class="fas fa-plus"></i> Nuevo Vehículo
@@ -64,84 +65,252 @@
             <i class="fas fa-exclamation-triangle"></i> {{ error }}
             <button (click)="error=''"><i class="fas fa-times"></i></button>
         </div>
+        <!-- ========================================================= -->
+        <!-- TABLA VEHÍCULOS -->
+        <!-- ========================================================= -->
 
-        <!-- Tabla -->
         <div class="table-card">
+
+            <!-- HEADER TABLA -->
+
+            <div class="px-6 py-5 border-b bg-gradient-to-r from-red-50 to-white">
+
+                <div class="flex items-center justify-between flex-wrap gap-3">
+
+                    <div>
+
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                            Flota de vehículos
+                        </h2>
+
+                        <p class="text-sm text-gray-500 mt-1">
+                            Administración de la flota registrada en el sistema.
+                        </p>
+
+                    </div>
+
+                    <div class="bg-red-100 text-red-700 px-4 py-2 rounded-xl font-semibold text-sm">
+                        {{ vehiculos.length }} registros
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TABLA -->
+
             <div class="table-wrapper">
+
                 <table>
+
+                    <!-- CABECERA -->
+
                     <thead>
+
                         <tr>
-                            <th>Foto</th>
-                            <th>Placa / VIN</th>
-                            <th>Tipo / Marca</th>
+
+                            <th>Vehículo</th>
+
+                            <th>Información</th>
+
                             <th>Conductor</th>
+
                             <th>Kilometraje</th>
+
                             <th>Estado</th>
+
                             <th>GPS</th>
-                            <th class="text-center">Acciones</th>
+
+                            <th class="text-center">
+                                Acciones
+                            </th>
+
                         </tr>
+
                     </thead>
+
+                    <!-- CUERPO -->
+
                     <tbody>
 
+                        <!-- LOADING -->
+
                         <tr *ngIf="loading">
+
                             <td colspan="7" class="loading-row">
-                                <div class="spinner"></div> Cargando flota…
+
+                                <div class="spinner"></div>
+
+                                Cargando flota...
+
                             </td>
+
                         </tr>
 
-                        <tr *ngIf="!loading && vehiculos.length === 0">
+                        <!-- EMPTY -->
+
+                        <tr *ngIf="!loading && vehiculos.length==0">
+
                             <td colspan="7" class="empty-row">
-                                <i class="fas fa-truck-moving"></i><br>No hay vehículos registrados
+
+                                <h3 class="text-xl font-bold text-gray-700 mt-4">
+
+                                    No existen vehículos registrados
+
+                                </h3>
+
+                                <p class="text-gray-500 mt-2">
+
+                                    No hay vehículos registrados en el sistema.
+
+                                </p>
+
                             </td>
+
                         </tr>
 
-                        <tr *ngFor="let v of vehiculos; trackBy: trackByPlaca" class="table-row">
-                            <td class="foto-cell">
-                                <img *ngIf="v.foto_url" [src]="'https://transmenasmart.com' + v.foto_url"
-                                    class="vehiculo-img">
-                                <div *ngIf="!v.foto_url" class="no-img">
-                                    <i class="fas fa-image"></i>
+                        <!-- FILAS -->
+
+                        <tr *ngFor="let v of vehiculos; let i=index; trackBy: trackByPlaca" class="table-row" [ngClass]="{
+            'bg-white': i%2==0,
+            'bg-gray-50': i%2!=0
+          }">
+
+                            <!-- VEHÍCULO -->
+
+                            <td>
+
+                                <div class="flex items-center gap-3">
+
+                                    <img *ngIf="v.foto_url" [src]="'https://transmenasmart.com'+v.foto_url"
+                                        class="vehiculo-img">
+
+                                    <div *ngIf="!v.foto_url"
+                                        class="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center text-xl">
+
+                                        🚛
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="placa">
+
+                                            {{v.placa}}
+
+                                        </div>
+
+
+
+                                    </div>
+
                                 </div>
+
                             </td>
 
+                            <!-- INFORMACIÓN -->
+
                             <td>
-                                <div class="placa">{{ v.placa }}</div>
+
+
+                                <div class="text-muted">
+
+                                    {{v.marca}}
+
+                                </div>
+
                             </td>
 
+                            <!-- CONDUCTOR -->
+
                             <td>
-                                <div class="marca">{{ v.marca }}</div>
+
+                                {{v.conductor || 'Sin asignar'}}
+
                             </td>
 
-                            <td class="conductor">{{ v.conductor || '—' }}</td>
-                            <td class="km">{{ v.km_actual | number:'1.0-0' }} km</td>
-
-                            <span class="badge" [ngClass]="estadoClass(v.estado || 'OPERATIVO')">
-                                {{ v.estado || 'OPERATIVO' }}
-                            </span>
+                            <!-- KM -->
 
                             <td>
-                                <span *ngIf="v.gps_id" class="gps-pill">
-                                    <i class="fas fa-satellite-dish"></i> {{ v.gps_id }}
+
+                                <div class="font-semibold text-gray-800">
+
+                                    {{v.km_actual | number}}
+
+                                </div>
+
+                                <div class="text-xs text-gray-500">
+
+                                    Kilómetros
+
+                                </div>
+
+                            </td>
+
+                            <!-- ESTADO -->
+
+                            <td>
+
+                                <span class="badge" [ngClass]="estadoClass(v.estado || 'OPERATIVO')">
+
+                                    {{v.estado || 'OPERATIVO'}}
+
                                 </span>
-                                <span *ngIf="!v.gps_id" class="text-muted">Sin GPS</span>
+
                             </td>
+
+                            <!-- GPS -->
+
+                            <td>
+
+                                <span *ngIf="v.gps_id" class="gps-pill">
+
+                                    <i class="fas fa-satellite-dish"></i>
+
+                                    {{v.gps_id}}
+
+                                </span>
+
+                                <span *ngIf="!v.gps_id" class="text-muted">
+
+                                    Sin GPS
+
+                                </span>
+
+                            </td>
+
+                            <!-- ACCIONES -->
 
                             <td class="actions">
+
                                 <button class="action-btn action-btn--view" (click)="abrirVer(v)">
+
                                     <i class="fas fa-eye"></i>
+
                                 </button>
+
                                 <button class="action-btn action-btn--edit" (click)="abrirEditar(v)">
+
                                     <i class="fas fa-edit"></i>
+
                                 </button>
+
                                 <button class="action-btn action-btn--delete" (click)="confirmarEliminar(v.placa)">
+
                                     <i class="fas fa-trash-alt"></i>
+
                                 </button>
+
                             </td>
+
                         </tr>
 
                     </tbody>
+
                 </table>
+
             </div>
+
         </div>
     </section>
 

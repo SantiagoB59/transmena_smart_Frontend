@@ -74,7 +74,7 @@ export class MapaComponent
   // =========================
 
   ngOnInit(): void {
-   }
+  }
 
   // =========================
   // AFTER VIEW
@@ -145,6 +145,12 @@ export class MapaComponent
       'resize',
       this.onResizeMap
     );
+  }
+
+  contarEncendidos(): number {
+    return this.vehiculos.filter(
+      v => this.getEstado(v.ignition) === 'Encendido'
+    ).length;
   }
 
   // =========================

@@ -18,7 +18,7 @@ export class MantenimientoService {
   // LISTADO
   // ==========================
   listar(filters?: {
-    vehiculo_id?: number;
+    placa?: string;
     tipo?: string;
     desde?: string;
     hasta?: string;
@@ -26,9 +26,9 @@ export class MantenimientoService {
   }): Observable<Mantenimiento[]> {
 
     let params = new HttpParams();
-
-    if (filters?.vehiculo_id) {
-      params = params.set('vehiculo_id', filters.vehiculo_id);
+    
+    if (filters?.placa) {
+      params = params.set('placa', filters.placa);
     }
 
     if (filters?.tipo) {
@@ -79,4 +79,109 @@ export class MantenimientoService {
       `${this.base}/vehiculo-plan/${id}`
     );
   }
+
+  // ==========================
+// LISTADO MAQUINARIA
+// ==========================
+listarMaquinaria(filters?: {
+  maquinaria_id?: number;
+  tipo?: string;
+  desde?: string;
+  hasta?: string;
+  search?: string;
+}): Observable<any[]> {
+
+  let params = new HttpParams();
+
+  if (filters?.maquinaria_id) {
+    params = params.set(
+      'maquinaria_id',
+      filters.maquinaria_id
+    );
+  }
+
+  if (filters?.tipo) {
+    params = params.set(
+      'tipo',
+      filters.tipo
+    );
+  }
+
+  if (filters?.desde) {
+    params = params.set(
+      'desde',
+      filters.desde
+    );
+  }
+
+  if (filters?.hasta) {
+    params = params.set(
+      'hasta',
+      filters.hasta
+    );
+  }
+
+  if (filters?.search) {
+    params = params.set(
+      'search',
+      filters.search
+    );
+  }
+
+  return this.http.get<any[]>(
+    `${this.base}/maquinaria`,
+    { params }
+  );
+
+}
+
+// ==========================
+// DETALLE MAQUINARIA
+// ==========================
+porMaquinaria(id: number): Observable<any> {
+
+  return this.http.get<any>(
+    `${this.base}/maquinaria/${id}`
+  );
+
+}
+
+// ==========================
+// CREAR MANTENIMIENTO MAQUINARIA
+// ==========================
+crearMaquinaria(data: FormData): Observable<any> {
+
+  return this.http.post<any>(
+    `${this.base}/maquinaria`,
+    data
+  );
+
+}
+
+// ==========================
+// MAQUINARIAS SIMPLE
+// ==========================
+getMaquinarias(): Observable<any[]> {
+
+  return this.http.get<any[]>(
+    `${this.base}/maquinarias-simple`
+  );
+
+}
+
+// ==========================
+// PLAN POR MAQUINARIA
+// ==========================
+getPlanPorMaquinaria(id: number): Observable<any[]> {
+
+  return this.http.get<any[]>(
+    `${this.base}/maquinaria-plan/${id}`
+  );
+
+}
+
+
+
+
+
 }

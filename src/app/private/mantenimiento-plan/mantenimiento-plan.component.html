@@ -26,18 +26,60 @@
 
   </div>
 
-  <div class="bg-slate-100 p-4 rounded-xl mb-4" *ngIf="vehiculo">
+  <div class="bg-slate-100 p-4 rounded-xl mb-4" *ngIf="vehiculo || maquinaria">
     <div class="flex justify-between">
       <div>
-        <p class="text-sm text-slate-500">Vehículo</p>
-        <p class="font-bold text-lg">{{ vehiculo.placa }} - {{ vehiculo.marca }}</p>
+        <p class="text-sm text-slate-500">
+
+          {{ tipo === 'vehiculo' ? 'Vehículo' : 'Maquinaria' }}
+
+        </p>
+
+
+        <p class="font-bold text-lg" *ngIf="tipo === 'vehiculo'">
+
+          {{ vehiculo?.placa }} - {{ vehiculo?.marca }}
+
+        </p>
+
+
+        <p class="font-bold text-lg" *ngIf="tipo === 'maquinaria'">
+
+          {{ maquinaria?.codigo }} - {{ maquinaria?.marca }}
+
+        </p>
       </div>
 
       <div class="text-right">
-        <p class="text-sm text-slate-500">Kilometraje actual</p>
-        <p class="font-black text-xl text-red-600">
-          {{ vehiculo.km_estimado | number }} km
-        </p>
+
+        <ng-container *ngIf="tipo === 'vehiculo'">
+
+          <p class="text-sm text-slate-500">
+            Kilometraje actual
+          </p>
+
+          <p class="font-black text-xl text-red-600">
+            {{ vehiculo?.km_estimado | number }} km
+          </p>
+
+        </ng-container>
+
+
+        <ng-container *ngIf="tipo === 'maquinaria'">
+
+          <p class="text-sm text-slate-500">
+            Horómetro actual
+          </p>
+
+          <p class="font-black text-xl text-red-600">
+
+            {{ maquinaria?.horometro_actual | number }}
+            horas
+
+          </p>
+
+        </ng-container>
+
       </div>
     </div>
   </div>
@@ -105,6 +147,12 @@
               <ng-container *ngIf="p.tipo_control == 'KM'">
                 {{ p.km_total | number }} km
               </ng-container>
+
+
+              <ng-container *ngIf="p.tipo_control == 'HORAS'">
+                {{ p.horometro_actual | number }} horas
+              </ng-container>
+
 
               <ng-container *ngIf="p.tipo_control == 'DIAS'">
                 {{ p.ultima_fecha || '-' }}
@@ -342,16 +390,36 @@
 
             </div>
 
-            <div *ngIf="vehiculo">
+            <ng-container *ngIf="tipo === 'vehiculo'">
 
-              Kilometraje actual:
+              <div *ngIf="vehiculo">
 
-              <strong>
-                {{ vehiculo.km_actual | number }}
-                km
-              </strong>
+                Kilometraje actual:
 
-            </div>
+                <strong>
+                  {{ vehiculo.km_actual | number }}
+                  km
+                </strong>
+
+              </div>
+
+            </ng-container>
+
+
+            <ng-container *ngIf="tipo === 'maquinaria'">
+
+              <div *ngIf="maquinaria">
+
+                Horómetro actual:
+
+                <strong>
+                  {{ maquinaria.horometro_actual | number }}
+                  horas
+                </strong>
+
+              </div>
+
+            </ng-container>
 
             <div *ngIf="vehiculo">
 

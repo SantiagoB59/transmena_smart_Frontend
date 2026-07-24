@@ -2,7 +2,7 @@ import {
   Component,
   OnInit
 } from '@angular/core';
-
+import { MaquinariaService } from 'src/app/services/maquinaria.service';
 import {
   ReportesService
 } from 'src/app/services/reportes.service';
@@ -18,7 +18,7 @@ import {
 })
 
 export class ReportesComponent
-implements OnInit {
+  implements OnInit {
 
   // =====================================================
   // STATE
@@ -37,7 +37,7 @@ implements OnInit {
   mantenimientos: any[] = [];
 
   vehiculos: any[] = [];
-
+  maquinarias: any[] = [];
   semaforo: any = {
 
     criticas: 0,
@@ -59,12 +59,19 @@ implements OnInit {
 
     categoria: '',
 
+    tipo_activo: 'VEHICULO', // NUEVO
+
     vehiculo_id: '',
+
+    maquinaria_id: '',
 
     fecha_inicio: '',
 
     fecha_fin: ''
+
   };
+
+
 
   // =====================================================
   // CONSTRUCTOR
@@ -76,9 +83,10 @@ implements OnInit {
       ReportesService,
 
     private vehiculoService:
-      VehiculoService
+      VehiculoService,
+    private maquinariaService: MaquinariaService
 
-  ) {}
+  ) { }
 
   // =====================================================
   // INIT
@@ -87,7 +95,7 @@ implements OnInit {
   ngOnInit(): void {
 
     this.cargarVehiculos();
-
+    this.cargarMaquinarias();
     this.cargarTodo();
   }
 
@@ -97,12 +105,15 @@ implements OnInit {
 
   cargarTodo(): void {
 
-    this.cargarAlertas();
+  const filtros = this.obtenerFiltrosEnviar();
 
-    this.cargarMantenimientos();
+  this.cargarAlertas(filtros);
 
-    this.cargarSemaforo();
-  }
+  this.cargarMantenimientos(filtros);
+
+  this.cargarSemaforo();
+
+}
 
   // =====================================================
   // VEHÍCULOS
@@ -131,52 +142,86 @@ implements OnInit {
       });
   }
 
+  cargarMaquinarias(): void {
+
+    this.maquinariaService
+      .listar()
+      .subscribe({
+
+        next: (resp: any) => {
+
+          this.maquinarias = resp;
+
+        },
+
+        error: err => console.error(err)
+
+      });
+
+  }
+
+  cambiarTipoActivo(): void {
+
+    if (this.filtros.tipo_activo === 'VEHICULO') {
+
+      this.filtros.maquinaria_id = '';
+
+    } else {
+
+      this.filtros.vehiculo_id = '';
+
+    }
+
+  }
+
   // =====================================================
   // ALERTAS
   // =====================================================
 
-  cargarAlertas(): void {
+  cargarAlertas(filtros: any = this.filtros): void {
 
-  this.loading = true;
+    this.loading = true;
 
-  this.reportesService
-    .getAlertas(this.filtros)
-    .subscribe({
+    this.reportesService
+      .getAlertas(filtros)
+      .subscribe({
 
-      next: (resp: any) => {
+        next: (resp: any) => {
 
-        console.log('ALERTAS =>', resp);
+          console.log('ALERTAS =>', resp);
 
-        this.alertas = resp;
+          this.alertas = resp;
 
-        this.loading = false;
-      },
+          this.loading = false;
+        },
 
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-      }
-    });
-}
+        error: (err) => {
+
+          console.error(err);
+
+          this.loading = false;
+        }
+
+      });
+
+  }
 
   // =====================================================
   // MANTENIMIENTOS
   // =====================================================
 
-  cargarMantenimientos(): void {
+  cargarMantenimientos(filtros: any = this.filtros): void {
 
     this.reportesService
 
-      .getMantenimientos(
-        this.filtros
-      )
+      .getMantenimientos(filtros)
 
       .subscribe({
 
         next: (resp: any) => {
 
-          this.mantenimientos =
-            resp;
+          this.mantenimientos = resp;
+
         },
 
         error: (err) => {
@@ -185,8 +230,11 @@ implements OnInit {
             'Error mantenimientos:',
             err
           );
+
         }
+
       });
+
   }
 
   // =====================================================
@@ -220,13 +268,37 @@ implements OnInit {
   // FILTRAR
   // =====================================================
 
+
   aplicarFiltros(): void {
 
-    this.cargarAlertas();
+    const filtrosEnviar: any = {
+      ...this.filtros,
+      vehiculo_id: '',
+      maquinaria_id: ''
+    };
 
-    this.cargarMantenimientos();
+    if (this.filtros.vehiculo_id) {
+
+      if (this.filtros.vehiculo_id.startsWith('V-')) {
+
+        filtrosEnviar.tipo_activo = 'VEHICULO';
+        filtrosEnviar.vehiculo_id =
+          this.filtros.vehiculo_id.replace('V-', '');
+
+      } else if (this.filtros.vehiculo_id.startsWith('M-')) {
+
+        filtrosEnviar.tipo_activo = 'MAQUINARIA';
+        filtrosEnviar.maquinaria_id =
+          this.filtros.vehiculo_id.replace('M-', '');
+
+      }
+
+    }
+
+    this.cargarAlertas(filtrosEnviar);
+    this.cargarMantenimientos(filtrosEnviar);
+
   }
-
   // =====================================================
   // CAMBIAR TAB
   // =====================================================
@@ -285,160 +357,256 @@ implements OnInit {
     }
   }
 
-  // =====================================================
-  // EXPORTAR ALERTAS
-  // =====================================================
+// =====================================================
+// EXPORTAR ALERTAS
+// =====================================================
 
-  exportarExcelAlertas(): void {
+exportarExcelAlertas(): void {
+
+  const filtrosEnviar = this.obtenerFiltrosEnviar();
+
+  this.reportesService
+
+    .descargarExcelAlertas(
+      filtrosEnviar
+    )
+
+    .subscribe({
+
+      next: (blob: Blob) => {
+
+        const url =
+          window.URL
+            .createObjectURL(
+              blob
+            );
+
+        const a =
+          document
+            .createElement('a');
+
+        a.href = url;
+
+        a.download =
+          `REPORTE_ALERTAS_${Date.now()}.xlsx`;
+
+        a.click();
+
+        window.URL
+          .revokeObjectURL(
+            url
+          );
+
+      },
+
+      error: (err) => {
+
+        console.error(
+          'Error descargando Excel:',
+          err
+        );
+
+      }
+
+    });
+
+}
+// =====================================================
+// OBTENER ACTIVO SELECCIONADO
+// =====================================================
+
+
+// =====================================================
+// OBTENER FILTROS PARA ENVIAR AL BACKEND
+// =====================================================
+
+private obtenerFiltrosEnviar() {
+
+  const filtrosEnviar: any = {
+    ...this.filtros,
+    vehiculo_id: '',
+    maquinaria_id: ''
+  };
+
+  const activo = this.obtenerActivoSeleccionado();
+
+  if (activo) {
+
+    filtrosEnviar.tipo_activo = activo.tipo;
+
+    if (activo.tipo === 'VEHICULO') {
+
+      filtrosEnviar.vehiculo_id = activo.id;
+
+    } else {
+
+      filtrosEnviar.maquinaria_id = activo.id;
+
+    }
+
+  }
+
+  return filtrosEnviar;
+
+}
+
+private obtenerActivoSeleccionado() {
+
+  if (!this.filtros.vehiculo_id) {
+    return null;
+  }
+
+  if (this.filtros.vehiculo_id.startsWith('V-')) {
+
+    return {
+      tipo: 'VEHICULO',
+      id: Number(this.filtros.vehiculo_id.replace('V-', ''))
+    };
+
+  }
+
+  if (this.filtros.vehiculo_id.startsWith('M-')) {
+
+    return {
+      tipo: 'MAQUINARIA',
+      id: Number(this.filtros.vehiculo_id.replace('M-', ''))
+    };
+
+  }
+
+  return null;
+
+}
+
+
+  exportarExcelMantenimientos(): void {
+
+    if (!this.filtros.vehiculo_id) {
+
+      alert('Debes seleccionar un activo');
+
+      return;
+
+    }
+
+    // =========================================
+    // VEHÍCULO
+    // =========================================
+
+    if (this.filtros.vehiculo_id.startsWith('V-')) {
+
+      const vehiculoId = Number(
+        this.filtros.vehiculo_id.replace('V-', '')
+      );
+
+      this.reportesService
+
+        .descargarFormatoMantenimiento(
+          vehiculoId
+        )
+
+        .subscribe({
+
+          next: (blob: Blob) => {
+
+            const url =
+              window.URL.createObjectURL(blob);
+
+            const a =
+              document.createElement('a');
+
+            a.href = url;
+
+            a.download =
+              `HOJA_VIDA_${vehiculoId}.xlsx`;
+
+            a.click();
+
+            window.URL.revokeObjectURL(url);
+
+          },
+
+          error: (err) => {
+
+            console.error(
+              'Error descargando mantenimiento:',
+              err
+            );
+
+          }
+
+        });
+
+    }
+
+    // =========================================
+    // MAQUINARIA
+    // =========================================
+
+    else if (this.filtros.vehiculo_id.startsWith('M-')) {
+
+      alert(
+        'El formato de hoja de vida para maquinaria aún no está disponible.'
+      );
+
+    }
+
+  }
+
+  exportarExcelAlertasFormato(): void {
+
+  const activo = this.obtenerActivoSeleccionado();
+
+  if (!activo) {
+
+    alert('Debes seleccionar un activo');
+
+    return;
+
+  }
+
+  if (activo.tipo === 'VEHICULO') {
 
     this.reportesService
 
-      .descargarExcelAlertas(
-        this.filtros
-      )
+      .descargarFormatoAlertas(activo.id)
 
       .subscribe({
 
         next: (blob: Blob) => {
 
           const url =
-            window.URL
-              .createObjectURL(
-                blob
-              );
+            window.URL.createObjectURL(blob);
 
           const a =
-            document
-              .createElement('a');
+            document.createElement('a');
 
           a.href = url;
 
           a.download =
-            `REPORTE_ALERTAS_${Date.now()}.xlsx`;
+            `HOJA_ALERTAS_${activo.id}.xlsx`;
 
           a.click();
 
-          window.URL
-            .revokeObjectURL(
-              url
-            );
+          window.URL.revokeObjectURL(url);
+
         },
 
         error: (err) => {
 
-          console.error(
+          console.error(err);
 
-            'Error descargando Excel:',
-
-            err
-          );
         }
+
       });
-  }
 
-exportarExcelMantenimientos(): void {
-
-  // =========================================
-  // VALIDAR VEHÍCULO
-  // =========================================
-
-  if (!this.filtros.vehiculo_id) {
+  } else {
 
     alert(
-      'Debes seleccionar un vehículo'
+      'El formato de alertas para maquinaria aún no está disponible.'
     );
 
-    return;
   }
 
-  this.reportesService
-
-    .descargarFormatoMantenimiento(
-      Number(this.filtros.vehiculo_id)
-    )
-
-    .subscribe({
-
-      next: (blob: Blob) => {
-
-        const url =
-          window.URL.createObjectURL(
-            blob
-          );
-
-        const a =
-          document.createElement('a');
-
-        a.href = url;
-
-        a.download =
-          `HOJA_VIDA_${this.filtros.vehiculo_id}.xlsx`;
-
-        a.click();
-
-        window.URL.revokeObjectURL(
-          url
-        );
-      },
-
-      error: (err) => {
-
-        console.error(
-          'Error descargando mantenimiento:',
-          err
-        );
-      }
-    });
 }
-
-
-exportarExcelAlertasFormato(): void {
-
-  // =========================================
-  // VALIDAR VEHÍCULO
-  // =========================================
-
-  if (!this.filtros.vehiculo_id) {
-
-    alert('Debes seleccionar un vehículo');
-
-    return;
-  }
-
-  this.reportesService
-
-    .descargarFormatoAlertas(
-      Number(this.filtros.vehiculo_id)
-    )
-
-    .subscribe({
-
-      next: (blob: Blob) => {
-
-        const url =
-          window.URL.createObjectURL(blob);
-
-        const a =
-          document.createElement('a');
-
-        a.href = url;
-
-        a.download =
-          `HOJA_ALERTAS_${this.filtros.vehiculo_id}.xlsx`;
-
-        a.click();
-
-        window.URL.revokeObjectURL(url);
-      },
-
-      error: (err) => {
-
-        console.error(
-          'Error descargando alertas:',
-          err
-        );
-      }
-    });
-}
-
 }

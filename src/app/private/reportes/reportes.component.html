@@ -1,8 +1,4 @@
-<div class="p-4 lg:p-6 bg-gray-100 min-h-screen">
-
-  <!-- ================================================= -->
-  <!-- HEADER PREMIUM -->
-  <!-- ================================================= -->
+<div class="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-white p-6">
 
   <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between mb-6 gap-4">
 
@@ -20,18 +16,18 @@
 
     <div class="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
 
-      <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
+      <button class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
         (click)="exportarExcelAlertas()">
-        Exportar Alertas
+        Exportar Historial de Alertas
       </button>
 
       <button class="bg-gray-800 hover:bg-black text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
         (click)="exportarExcelMantenimientos()">
-        Exportar Mantenimientos
+        Exportar Mantenimientos realizados
       </button>
       <button class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-semibold shadow-lg transition"
         (click)="exportarExcelAlertasFormato()">
-        Formato Alertas
+        Alertas por vehiculo o maquinaria
       </button>
 
     </div>
@@ -73,213 +69,448 @@
     </div>
 
   </div>
-  <!-- ================================================= -->
+
+
+  <!-- ========================================================= -->
   <!-- FILTROS -->
-  <!-- ================================================= -->
+  <!-- ========================================================= -->
 
-  <div class="bg-white rounded-2xl shadow-lg p-5 mb-6">
+  <div class="bg-white rounded-3xl shadow-xl border border-gray-200 p-7 mb-8">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4">
+    <div class="flex items-center gap-3 mb-6">
 
-      <!-- ============================================= -->
+
+      <h2 class="text-xl font-bold text-gray-800">
+
+        Filtros de búsqueda
+
+      </h2>
+
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5">
+
       <!-- TIPO -->
-      <!-- ============================================= -->
 
       <div>
 
-        <label class="text-sm text-gray-600">
-          Tipo de reporte
+        <label class="text-sm font-semibold text-gray-600">
+
+          Tipo
+
         </label>
 
-        <select class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.tipo">
+        <select [(ngModel)]="filtros.tipo" class="w-full mt-2 rounded-xl border
+                    border-gray-300
+                    px-4 py-3
+                    focus:ring-2
+                    focus:ring-red-500">
 
-          <option value="diario">
-            Diario
-          </option>
-
-          <option value="semanal">
-            Semanal
-          </option>
-
-          <option value="mensual">
-            Mensual
-          </option>
-
-          <option value="rango">
-            Rango
-          </option>
+          <option value="diario">Diario</option>
+          <option value="semanal">Semanal</option>
+          <option value="mensual">Mensual</option>
+          <option value="rango">Rango</option>
 
         </select>
 
       </div>
 
-      <!-- ============================================= -->
       <!-- CATEGORÍA -->
-      <!-- ============================================= -->
 
       <div>
 
-        <label class="text-sm text-gray-600">
+        <label class="text-sm font-semibold text-gray-600">
+
           Categoría
+
         </label>
 
-        <select class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.categoria">
+        <select [(ngModel)]="filtros.categoria"
+          class="w-full mt-2 rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-red-500">
 
-          <option value="">
-            Todas
-          </option>
+          <option value="">Todas</option>
 
           <option value="DOCUMENTO">
+
             Documentos
+
           </option>
 
           <option value="GPS">
+
             GPS
+
           </option>
 
           <option value="MANTENIMIENTO">
+
             Mantenimiento
+
           </option>
 
         </select>
 
       </div>
 
-      <!-- ============================================= -->
-      <!-- VEHÍCULO -->
-      <!-- ============================================= -->
+      <!-- ACTIVO -->
 
       <div>
 
-        <label class="text-sm text-gray-600">
-          Vehículo
+        <label class="text-sm font-semibold text-gray-600">
+
+          Activo
+
         </label>
 
-        <select class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.vehiculo_id">
+        <select [(ngModel)]="filtros.vehiculo_id"
+          class="w-full mt-2 rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-red-500">
 
           <option value="">
+
             Todos
+
           </option>
 
-          <option *ngFor="let v of vehiculos" [value]="v.id">
-            {{ v.placa }}
-          </option>
+          <optgroup label="🚛 Vehículos">
+
+            <option *ngFor="let v of vehiculos" [ngValue]="'V-' + v.id">
+
+              {{ v.placa }}
+
+            </option>
+
+          </optgroup>
+
+          <optgroup label="🏗 Maquinaria">
+
+            <option *ngFor="let m of maquinarias" [ngValue]="'M-' + m.id">
+
+              {{ m.codigo }}
+
+            </option>
+
+          </optgroup>
 
         </select>
 
       </div>
 
-      <!-- ============================================= -->
-      <!-- FECHA INICIO -->
-      <!-- ============================================= -->
+      <!-- FECHAS -->
 
-      <div *ngIf="filtros.tipo === 'rango'">
+      <div *ngIf="filtros.tipo=='rango'">
 
-        <label class="text-sm text-gray-600">
-          Inicio
+        <label class="text-sm font-semibold text-gray-600">
+
+          Desde
+
         </label>
 
-        <input type="date" class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.fecha_inicio">
+        <input type="date" [(ngModel)]="filtros.fecha_inicio"
+          class="w-full mt-2 rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-red-500">
 
       </div>
 
-      <!-- ============================================= -->
-      <!-- FECHA FIN -->
-      <!-- ============================================= -->
+      <div *ngIf="filtros.tipo=='rango'">
 
-      <div *ngIf="filtros.tipo === 'rango'">
+        <label class="text-sm font-semibold text-gray-600">
 
-        <label class="text-sm text-gray-600">
-          Fin
+          Hasta
+
         </label>
 
-        <input type="date" class="w-full border rounded-xl px-4 py-3 mt-1" [(ngModel)]="filtros.fecha_fin">
+        <input type="date" [(ngModel)]="filtros.fecha_fin"
+          class="w-full mt-2 rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-red-500">
 
       </div>
 
-      <!-- ============================================= -->
-      <!-- BOTÓN -->
-      <!-- ============================================= -->
+    </div>
 
-      <button class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold px-5 py-3 self-end"
-        (click)="aplicarFiltros()">
+    <div class="flex justify-end mt-7">
+
+      <button (click)="aplicarFiltros()" class="bg-red-600 hover:bg-red-700
+                text-white
+                font-bold
+                px-8 py-3
+                rounded-2xl
+                shadow-lg
+                transition
+                hover:scale-105">
+
         Aplicar filtros
+
       </button>
 
     </div>
 
   </div>
-  <!-- ================================================= -->
-  <!-- TABS MODERNOS -->
-  <!-- ================================================= -->
 
-  <div class="flex gap-3 mb-6">
 
-    <button (click)="cambiarTab('alertas')" class="px-5 py-3 rounded-xl font-semibold transition" [ngClass]="tab === 'alertas'
-        ? 'bg-blue-600 text-white shadow'
-        : 'bg-white text-gray-700 shadow hover:bg-gray-100'">
-      Alertas
-    </button>
+  <!-- ========================================================= -->
+  <!-- TABS DASHBOARD -->
+  <!-- ========================================================= -->
 
-    <button (click)="cambiarTab('mantenimientos')" class="px-5 py-3 rounded-xl font-semibold transition" [ngClass]="tab === 'mantenimientos'
-        ? 'bg-blue-600 text-white shadow'
-        : 'bg-white text-gray-700 shadow hover:bg-gray-100'">
-      Mantenimientos
-    </button>
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+
+    <div class="flex gap-3">
+
+      <!-- ALERTAS -->
+
+      <button (click)="cambiarTab('alertas')" class="transition-all duration-300 px-7 py-3 rounded-2xl font-semibold"
+        [ngClass]="
+            tab=='alertas'
+            ?
+            'bg-red-600 text-white shadow-xl scale-105'
+            :
+            'bg-white border border-gray-200 text-gray-700 hover:bg-red-50 hover:border-red-300'
+            ">
+
+        Historial de Alertas
+
+      </button>
+
+      <!-- MANTENIMIENTOS -->
+
+      <button (click)="cambiarTab('mantenimientos')"
+        class="transition-all duration-300 px-7 py-3 rounded-2xl font-semibold" [ngClass]="
+            tab=='mantenimientos'
+            ?
+            'bg-red-600 text-white shadow-xl scale-105'
+            :
+            'bg-white border border-gray-200 text-gray-700 hover:bg-red-50 hover:border-red-300'
+            ">
+
+        🛠 Mantenimientos realizados
+
+      </button>
+
+    </div>
+
+    <!-- CONTADOR -->
+
+    <div class="text-sm text-gray-500 font-medium">
+
+      <span *ngIf="tab=='alertas'">
+
+        {{alertas.length}} registros encontrados
+
+      </span>
+
+      <span *ngIf="tab=='mantenimientos'">
+
+        {{mantenimientos.length}} mantenimientos registrados
+
+      </span>
+
+    </div>
 
   </div>
 
-  <!-- ================================================= -->
+
+
+  <!-- ========================================================= -->
   <!-- LOADING -->
-  <!-- ================================================= -->
+  <!-- ========================================================= -->
 
-  <div *ngIf="loading" class="bg-white rounded-2xl shadow-lg p-10 text-center">
-    Cargando información...
-  </div>
 
-  <!-- ================================================= -->
+
+
+
+  <!-- ========================================================= -->
   <!-- TABLA ALERTAS -->
-  <!-- ================================================= -->
+  <!-- ========================================================= -->
 
-  <div *ngIf="tab === 'alertas'" class="bg-white rounded-2xl shadow-lg overflow-hidden">
+  <div *ngIf="tab=='alertas'" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
 
     <div class="overflow-x-auto">
 
-      <table class="min-w-[900px] w-full">
+      <table class="min-w-full">
 
-        <thead class="bg-gray-100 border-b">
+        <!-- CABECERA -->
+
+        <thead class="bg-gray-900 text-white sticky top-0 z-10">
+
           <tr>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Vehículo</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Tipo</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Categoría</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Prioridad</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Estado</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Fecha</th>
+
+            <th class="px-6 py-5 text-left">
+
+              Activo
+
+            </th>
+
+            <th class="px-6 py-5 text-left">
+
+              Tipo
+
+            </th>
+
+            <th class="px-6 py-5 text-left">
+
+              Categoría
+
+            </th>
+
+            <th class="px-6 py-5 text-left">
+
+              Prioridad
+
+            </th>
+
+            <th class="px-6 py-5 text-left">
+
+              Estado
+
+            </th>
+
+            <th class="px-6 py-5 text-left">
+
+              Fecha
+
+            </th>
+
           </tr>
+
         </thead>
+
+        <!-- CUERPO -->
 
         <tbody>
 
-          <tr *ngFor="let item of alertas" class="border-b hover:bg-gray-50">
+          <tr *ngIf="loading">
 
-            <td class="px-6 py-4 font-semibold text-gray-800">{{ item.vehiculo }}</td>
-            <td class="px-6 py-4">{{ item.tipo }}</td>
-            <td class="px-6 py-4">{{ item.categoria }}</td>
+            <td colspan="8" class="loading-row">
 
-            <td class="px-6 py-4">
-              <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-100">
-                {{ item.prioridad }}
-              </span>
+              <div class="spinner"></div>
+
+              Cargando mantenimientos...
+            </td>
+          </tr>
+          <tr *ngFor="let item of alertas; let i=index" class="transition duration-300 border-b" [ngClass]="{
+
+                    'bg-white':i%2==0,
+
+                    'bg-gray-50':i%2!=0
+
+                    }">
+
+            <!-- ACTIVO -->
+
+            <td class="px-6 py-5">
+
+              <div class="flex items-center gap-3">
+
+                <div *ngIf="item.tipo_activo=='VEHICULO'"
+                  class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+
+                  🚛
+
+                </div>
+
+                <div *ngIf="item.tipo_activo=='MAQUINARIA'"
+                  class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+
+                  🏗
+
+                </div>
+
+                <div>
+
+                  <div class="font-bold text-gray-800">
+
+                    {{item.vehiculo}}
+
+                  </div>
+
+                  <div class="text-xs text-gray-500">
+
+                    {{item.tipo_activo}}
+
+                  </div>
+
+                </div>
+
+              </div>
+
             </td>
 
-            <td class="px-6 py-4">
-              <span class="px-3 py-1 rounded-full text-xs font-bold bg-gray-200">
-                {{ item.estado }}
-              </span>
+            <!-- TIPO -->
+
+            <td class="px-6 py-5">
+
+              {{item.tipo}}
+
             </td>
 
-            <td class="px-6 py-4 text-gray-500 text-sm">
-              {{ item.fecha | date:'short' }}
+            <!-- CATEGORIA -->
+
+            <td class="px-6 py-5">
+
+              {{item.categoria}}
+
+            </td>
+
+            <!-- PRIORIDAD -->
+
+            <td class="px-6 py-5">
+
+              <span class="px-4 py-1 rounded-full text-xs font-bold" [ngClass]="getClasePrioridad(item.prioridad)">
+
+                {{item.prioridad}}
+
+              </span>
+
+            </td>
+
+            <!-- ESTADO -->
+
+            <td class="px-6 py-5">
+
+              <span class="px-4 py-1 rounded-full text-xs font-bold" [ngClass]="{
+
+                            'bg-green-100 text-green-700':
+                            item.estado=='RESUELTA',
+
+                            'bg-red-100 text-red-700':
+                            item.estado=='ACTIVA',
+
+                            'bg-gray-200 text-gray-700':
+                            item.estado=='IGNORADA'
+
+                            }">
+
+                {{item.estado}}
+
+              </span>
+
+            </td>
+
+            <!-- FECHA -->
+
+            <td class="px-6 py-5 text-gray-500">
+
+              {{item.fecha | date:'dd/MM/yyyy HH:mm'}}
+
+            </td>
+
+          </tr>
+
+          <!-- SIN DATOS -->
+
+          <tr *ngIf="alertas.length==0">
+
+            <td colspan="6" class="text-center py-12">
+
+              <h2 class="text-xl font-bold mt-4">
+
+                No existen alertas
+
+              </h2>
+
+              <p class="text-gray-500">
+
+                No se encontraron registros con los filtros seleccionados.
+
+              </p>
+
             </td>
 
           </tr>
@@ -292,38 +523,206 @@
 
   </div>
 
-  <!-- ================================================= -->
+
+  <!-- ========================================================= -->
   <!-- TABLA MANTENIMIENTOS -->
-  <!-- ================================================= -->
+  <!-- ========================================================= -->
 
-  <div *ngIf="tab === 'mantenimientos'" class="bg-white rounded-2xl shadow-lg overflow-hidden mt-6">
+  <div *ngIf="tab=='mantenimientos'" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200 mt-6">
+
+    <!-- HEADER TABLA -->
+
+    <div class="px-6 py-5 border-b bg-gradient-to-r from-red-50 to-white">
+
+      <div class="flex items-center justify-between flex-wrap gap-3">
+
+        <div>
+
+          <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            🛠 Mantenimientos realizados
+          </h2>
+
+          <p class="text-sm text-gray-500 mt-1">
+            Historial consolidado de mantenimientos preventivos y correctivos.
+          </p>
+
+        </div>
+
+        <div class="bg-red-100 text-red-700 px-4 py-2 rounded-xl font-semibold text-sm">
+          {{ mantenimientos.length }} registros
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TABLA -->
 
     <div class="overflow-x-auto">
 
-      <table class="min-w-[900px] w-full">
+      <table class="min-w-full">
 
-        <thead class="bg-gray-100 border-b">
+        <!-- CABECERA -->
+
+        <thead class="bg-gray-900 text-white sticky top-0 z-10">
+
           <tr>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">ID</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Vehículo</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Tipo</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Fecha</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">KM</th>
-            <th class="px-6 py-4 text-left text-sm font-bold text-gray-600">Valor</th>
+
+            <th class="px-6 py-5 text-left font-semibold">
+              # ID
+            </th>
+
+            <th class="px-6 py-5 text-left font-semibold">
+              Activo
+            </th>
+
+            <th class="px-6 py-5 text-left font-semibold">
+              Tipo
+            </th>
+
+            <th class="px-6 py-5 text-left font-semibold">
+              Fecha
+            </th>
+
+            <th class="px-6 py-5 text-left font-semibold">
+              Horas / KM
+            </th>
+
+            <th class="px-6 py-5 text-left font-semibold">
+              Valor
+            </th>
+
           </tr>
+
         </thead>
+
+        <!-- CUERPO -->
 
         <tbody>
 
-          <tr *ngFor="let item of mantenimientos" class="border-b hover:bg-gray-50">
+          <tr *ngFor="let item of mantenimientos; let i=index"
+            class="transition duration-300 border-b border-gray-100 hover:bg-red-50" [ngClass]="{
+                    'bg-white':i%2==0,
+                    'bg-gray-50':i%2!=0
+                    }">
 
-            <td class="px-6 py-4">#{{ item.id }}</td>
-            <td class="px-6 py-4 font-semibold">{{ item.vehiculo }}</td>
-            <td class="px-6 py-4">{{ item.tipo }}</td>
-            <td class="px-6 py-4">{{ item.fecha }}</td>
-            <td class="px-6 py-4">{{ item.km }}</td>
-            <td class="px-6 py-4 font-semibold text-green-600">
-              {{ item.valor | currency }}
+            <!-- ID -->
+
+            <td class="px-6 py-5">
+
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-lg bg-gray-100 text-gray-700 font-semibold text-sm">
+                #{{item.id}}
+              </span>
+
+            </td>
+
+            <!-- ACTIVO -->
+
+            <td class="px-6 py-5">
+
+              <div class="flex items-center gap-3">
+
+                <!-- ICONO -->
+
+                <div *ngIf="item.tipo_activo=='VEHICULO'"
+                  class="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center text-xl">
+                  🚛
+                </div>
+
+                <div *ngIf="item.tipo_activo=='MAQUINARIA'"
+                  class="w-11 h-11 rounded-full bg-yellow-100 flex items-center justify-center text-xl">
+                  🏗
+                </div>
+
+                <!-- INFO -->
+
+                <div>
+
+                  <div class="font-bold text-gray-800">
+                    {{item.vehiculo}}
+                  </div>
+
+                  <div class="text-xs font-medium" [ngClass]="{
+                                    'text-blue-600': item.tipo_activo=='VEHICULO',
+                                    'text-yellow-600': item.tipo_activo=='MAQUINARIA'
+                                    }">
+
+                    {{item.tipo_activo}}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </td>
+
+            <!-- TIPO -->
+
+            <td class="px-6 py-5">
+
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+                {{item.tipo}}
+              </span>
+
+            </td>
+
+            <!-- FECHA -->
+
+            <td class="px-6 py-5 text-gray-700 font-medium">
+              {{item.fecha | date:'dd/MM/yyyy'}}
+            </td>
+
+            <!-- KM / HORAS -->
+
+            <td class="px-6 py-5">
+
+              <div class="font-semibold text-gray-800">
+
+                {{item.km | number}}
+
+                <span class="text-xs text-gray-500 ml-1">
+
+                  {{ item.tipo_activo=='MAQUINARIA' ? 'Horas' : 'KM' }}
+
+                </span>
+
+              </div>
+
+            </td>
+
+            <!-- VALOR -->
+
+            <td class="px-6 py-5">
+
+              <div class="font-bold text-green-600 text-lg">
+                {{item.valor | currency:'COP':'symbol':'1.0-0'}}
+              </div>
+
+            </td>
+
+          </tr>
+
+          <!-- SIN DATOS -->
+
+          <tr *ngIf="mantenimientos.length==0">
+
+            <td colspan="6" class="text-center py-14">
+
+              <div class="text-6xl">
+                🛠
+              </div>
+
+              <h3 class="text-xl font-bold text-gray-700 mt-4">
+                No existen mantenimientos registrados
+              </h3>
+
+              <p class="text-gray-500 mt-2">
+                No se encontraron resultados para los filtros seleccionados.
+              </p>
+
             </td>
 
           </tr>
@@ -336,4 +735,5 @@
 
   </div>
 
+  <!-- CIERRE CONTENEDOR PRINCIPAL -->
 </div>

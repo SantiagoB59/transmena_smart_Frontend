@@ -143,6 +143,12 @@ export class SidebarComponent {
           label: 'Mantenimientos realizados',
           icon: 'fas fa-tools',
           route: '/dashboard/mantenimientos'
+        },
+        {
+          key: 'mantenimiento-maquinaria',
+          label: 'Mantenimientos de Maquinaria',
+          icon: 'fas fa-tools',
+          route: '/dashboard/mantenimiento-maquinaria'
         }
       ]
     },
@@ -220,6 +226,8 @@ getClass(section: string) {
         return `${base} bg-cyan-50 text-cyan-700 ring-cyan-200`;
       case 'plan-items':
         return `${base} bg-yellow-50 text-yellow-700 ring-yellow-200`;
+      case 'mantenimiento-maquinaria':
+        return `${base} bg-cyan-50 text-cyan-700 ring-cyan-200`;
       
       default:
         return '';

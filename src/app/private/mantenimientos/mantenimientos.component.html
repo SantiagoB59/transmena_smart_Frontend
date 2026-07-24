@@ -33,15 +33,15 @@
 
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
 
-      <input type="number" [(ngModel)]="vehiculo_id" placeholder="ID Vehículo" class="form-input">
+      <input type="text" [(ngModel)]="placa" placeholder="Buscar por placa..." class="form-input">
 
       <select [(ngModel)]="tipo" class="form-input">
 
         <option value="">Todos</option>
-        <option value="PR">Preventivo</option>
-        <option value="CR">Correctivo</option>
-        <option value="I">Inspección</option>
-        <option value="C">Cambio</option>
+        <option value="Preventivo">Preventivo</option>
+        <option value="Correctivo">Correctivo</option>
+        <option value="Inspección">Inspección</option>
+        <option value="Cambio">Cambio</option>
 
       </select>
 
@@ -72,113 +72,142 @@
     Cargando mantenimientos...
   </div>
 
-  <!-- ========================= -->
-  <!-- TABLA -->
-  <!-- ========================= -->
-  <div class="table-card">
+<!-- ========================= -->
+<!-- TABLA -->
+<!-- ========================= -->
+<div class="table-card">
 
-    <div class="table-wrapper">
+  <div class="table-wrapper">
 
-      <table class="data-table">
+    <table class="data-table">
 
-        <thead>
+      <thead>
 
-          <tr>
-            <th>Vehículo</th>
-            <th>Fecha</th>
-            <th>Mantenimiento</th>
-            <th>KM</th>
-            <th>Proveedor</th>
-            <th>Costo</th>
-            <th>Soporte</th>
-          </tr>
+        <tr>
+          <th>Vehículo</th>
+          <th>Fecha</th>
+          <th>Mantenimiento</th>
+          <th>Tipo</th>
+          <th>KM</th>
+          <th>Proveedor</th>
+          <th>Costo</th>
+          <th>Soporte</th>
+        </tr>
 
-        </thead>
+      </thead>
 
-        <tbody>
+      <tbody>
 
-          <tr *ngFor="let m of mantenimientos">
+        <tr *ngFor="let m of mantenimientos" class="table-row">
 
-            <!-- VEHICULO -->
-            <td>
+          <!-- VEHÍCULO -->
+          <td>
 
-              <div class="font-bold">
-                {{ m.vehiculo?.placa || m.vehiculo_id }}
-              </div>
+            <div class="placa">
+              {{ m.vehiculo?.placa || m.vehiculo_id }}
+            </div>
 
-              <div class="text-sm text-slate-500">
-                {{ m.vehiculo?.marca }} {{ m.vehiculo?.modelo }}
-              </div>
+            <div class="vin">
+              {{ m.vehiculo?.marca }}
+              {{ m.vehiculo?.modelo }}
+            </div>
 
-            </td>
+          </td>
 
-            <!-- FECHA -->
-            <td>
-              {{ m.fecha }}
-            </td>
+          <!-- FECHA -->
+          <td class="conductor">
+            {{ m.fecha }}
+          </td>
 
-            <!-- PLAN -->
-            <td>
+          <!-- MANTENIMIENTO -->
+          <td>
 
-              <div class="font-bold">
-                {{ m.plan_item?.nombre }}
-              </div>
+            <div class="tipo">
+              {{ m.plan_item?.nombre }}
+            </div>
 
-              <span class="badge-operativo" [ngClass]="getTipoClass(m.tipo)">
+          </td>
 
-                {{ getTipoTexto(m.tipo) }}
+          <!-- TIPO -->
+          <td>
 
-              </span>
+            <span class="badge"
+                  [ngClass]="getTipoClass(m.tipo)">
 
-            </td>
+              {{ getTipoTexto(m.tipo) }}
 
-            <!-- KM -->
-            <td>
-              <strong>{{ m.km }} km</strong>
-            </td>
+            </span>
 
-            <!-- PROVEEDOR -->
-            <td>
-              {{ m.proveedor || '—' }}
-            </td>
+          </td>
 
-            <!-- COSTO -->
-            <td>
-              {{ m.costo | currency:'COP':'symbol':'1.0-0' }}
-            </td>
+          <!-- KM -->
+          <td class="km">
 
-            <!-- SOPORTE -->
-            <td>
+            {{ m.km | number:'1.0-0' }} km
 
-              <a *ngIf="m.soporte" [href]="'https://transmenasmart.com/' + m.soporte" target="_blank"
-                class="text-blue-600 font-bold">
+          </td>
 
-                Ver archivo
+          <!-- PROVEEDOR -->
+          <td class="conductor">
 
-              </a>
+            {{ m.proveedor || '—' }}
 
-              <span *ngIf="!m.soporte">—</span>
+          </td>
 
-            </td>
+          <!-- COSTO -->
+          <td class="km">
 
-          </tr>
+            {{ m.costo | currency:'COP':'symbol':'1.0-0' }}
 
-          <!-- EMPTY -->
-          <tr *ngIf="mantenimientos.length === 0">
+          </td>
 
-            <td colspan="7" class="empty-state">
-              No hay mantenimientos registrados
-            </td>
+          <!-- SOPORTE -->
+          <td>
 
-          </tr>
+            <a
+              *ngIf="m.soporte"
+              [href]="'https://transmenasmart.com/' + m.soporte"
+              target="_blank"
+              class="action-link">
 
-        </tbody>
+              <i class="fas fa-file-alt"></i>
+              Ver archivo
 
-      </table>
+            </a>
 
-    </div>
+            <span
+              *ngIf="!m.soporte"
+              class="text-muted">
+
+              Sin archivo
+
+            </span>
+
+          </td>
+
+        </tr>
+
+        <!-- EMPTY -->
+
+        <tr *ngIf="mantenimientos.length === 0">
+
+          <td colspan="8" class="empty-row">
+
+            <i class="fas fa-tools"></i><br>
+
+            No hay mantenimientos registrados
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
 
   </div>
+
+</div>
 
 </div>
 

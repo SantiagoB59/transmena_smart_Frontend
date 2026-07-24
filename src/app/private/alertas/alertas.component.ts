@@ -44,7 +44,6 @@ export class AlertasComponent implements OnInit {
   // FILTROS
   // =====================================================
   filtros = {
-    estado: '',
     prioridad: '',
     tipo: ''
   };
@@ -58,7 +57,7 @@ export class AlertasComponent implements OnInit {
   // CONSTRUCTOR
   // =====================================================
   constructor(
-    private alertasService: AlertasService, 
+    private alertasService: AlertasService,
     private router: Router
   ) { }
 
@@ -81,50 +80,90 @@ export class AlertasComponent implements OnInit {
   // CARGAR ALERTAS (Filtrado Local por Pestaña)
   // =====================================================
   cargarAlertas(): void {
-    this.loading = true;
 
-    this.alertasService
-      .listar(this.filtros)
-      .subscribe({
-        next: (resp) => {
-          // 1. Ordenar por prioridad globalmente
-          const alertasOrdenadas = resp.sort(
-            (a, b) => this.getPesoPrioridad(b.prioridad) - this.getPesoPrioridad(a.prioridad)
+  this.loading = true;
+
+  this.alertasService
+    .listar(this.filtros)
+    .subscribe({
+
+      next: (resp) => {
+
+        let alertas = [...resp];
+
+        // Filtrar según la pestaña
+        if (this.pestanaActiva === 'VERIFICAR') {
+
+          alertas = alertas.filter(a =>
+            a.estado === 'ACTIVA'
           );
 
-          // 2. Filtrar localmente según la pestaña seleccionada
-          if (this.pestanaActiva === 'VERIFICAR') {
-            this.alertas = alertasOrdenadas.filter(a => a.estado === 'ACTIVA');
-          } else {
-            this.alertas = alertasOrdenadas.filter(a => a.estado === 'RESUELTA' || a.estado === 'IGNORADA');
-          }
+        } else {
 
-          // Reiniciar página y actualizar vista paginada
-          this.paginaActual = 1;
-          this.actualizarPaginacion();
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error('Error cargando alertas:', err);
-          this.loading = false;
+          alertas = alertas.filter(a =>
+            a.estado === 'RESUELTA' ||
+            a.estado === 'IGNORADA'
+          );
+
         }
-      });
-  }
+
+        // Filtrar prioridad
+        if (this.filtros.prioridad) {
+
+          alertas = alertas.filter(a =>
+            a.prioridad === this.filtros.prioridad
+          );
+
+        }
+
+        // Filtrar tipo
+        if (this.filtros.tipo) {
+
+          alertas = alertas.filter(a =>
+            a.tipo === this.filtros.tipo
+          );
+
+        }
+
+        // Ordenar
+        alertas.sort(
+          (a, b) =>
+            this.getPesoPrioridad(b.prioridad) -
+            this.getPesoPrioridad(a.prioridad)
+        );
+
+        this.alertas = alertas;
+
+        this.paginaActual = 1;
+
+        this.actualizarPaginacion();
+
+        this.loading = false;
+
+      },
+
+      error: err => {
+
+        console.error(err);
+
+        this.loading = false;
+
+      }
+
+    });
+
+}
 
   // =====================================================
   // GESTIÓN DE PESTAÑAS
   // =====================================================
   cambiarPestana(pestana: 'VERIFICAR' | 'HISTORICO'): void {
-    this.pestanaActiva = pestana;
 
-    if (pestana === 'VERIFICAR') {
-      this.filtros.estado = 'ACTIVA';
-    } else {
-      this.filtros.estado = ''; 
-    }
+  this.pestanaActiva = pestana;
 
-    this.cargarAlertas();
-  }
+  this.cargarAlertas();
+
+}
 
   // =====================================================
   // CARGAR ESTADÍSTICAS
@@ -150,13 +189,15 @@ export class AlertasComponent implements OnInit {
   }
 
   limpiarFiltros(): void {
-    this.filtros = {
-      estado: this.pestanaActiva === 'VERIFICAR' ? 'ACTIVA' : '',
-      prioridad: '',
-      tipo: ''
-    };
-    this.cargarAlertas();
-  }
+
+  this.filtros = {
+    prioridad: '',
+    tipo: ''
+  };
+
+  this.cargarAlertas();
+
+}
 
   // =====================================================
   // ACCIONES (RESOLVER / IGNORAR)
@@ -244,6 +285,14 @@ export class AlertasComponent implements OnInit {
     return Math.min(this.paginaActual * this.itemsPorPagina, this.alertas.length);
   }
 
+
+  esMaquinaria(alerta: Alerta): boolean {
+    return !!alerta.maquinaria_id;
+  }
+
+  esVehiculo(alerta: Alerta): boolean {
+    return !!alerta.vehiculo_id;
+  }
   // =====================================================
   // ASIGNACIÓN DE PESOS Y CLASES (ESTILOS)
   // =====================================================
@@ -305,8 +354,27 @@ export class AlertasComponent implements OnInit {
     }
 
     if (alerta.tipo === 'MANTENIMIENTO') {
-      this.router.navigate(['/dashboard/mantenimientos']);
-      return;
+
+      if (alerta.vehiculo_id) {
+
+        this.router.navigate([
+          '/dashboard/mantenimientos'
+        ]);
+
+        return;
+
+      }
+
+      if (alerta.maquinaria_id) {
+
+        this.router.navigate([
+          '/dashboard/mantenimiento-maquinaria'
+        ]);
+
+        return;
+
+      }
+
     }
 
     this.resolver(alerta.id);
@@ -330,7 +398,23 @@ export class AlertasComponent implements OnInit {
     const formData = new FormData();
     formData.append('fecha_vencimiento', this.nuevaFecha);
     formData.append('archivo', this.archivoDocumento);
-    formData.append('vehiculo_id', this.alertaSeleccionada.vehiculo_id!.toString());
+    if (this.alertaSeleccionada.vehiculo_id) {
+
+      formData.append(
+        'vehiculo_id',
+        this.alertaSeleccionada.vehiculo_id.toString()
+      );
+
+    }
+
+    if (this.alertaSeleccionada.maquinaria_id) {
+
+      formData.append(
+        'maquinaria_id',
+        this.alertaSeleccionada.maquinaria_id.toString()
+      );
+
+    }
     formData.append('categoria', this.alertaSeleccionada.categoria);
 
     this.alertasService

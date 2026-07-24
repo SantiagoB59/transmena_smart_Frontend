@@ -54,4 +54,13 @@ export interface Alerta {
 
   viaje?: any;
 
+
+maquinaria_id?: number;
+
+maquinaria?: {
+    id: number;
+    codigo: string;
+    marca: string;
+}
+
 }

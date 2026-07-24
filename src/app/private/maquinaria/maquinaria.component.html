@@ -42,15 +42,10 @@
 
       <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text"
-          placeholder="Buscar código, marca…"
-          [(ngModel)]="searchTerm"
-          (input)="cargarDatos()">
+        <input type="text" placeholder="Buscar código, marca…" [(ngModel)]="searchTerm" (input)="cargarDatos()">
       </div>
 
-      <select [(ngModel)]="filtroEstado"
-        (change)="cargarDatos()"
-        class="filter-select">
+      <select [(ngModel)]="filtroEstado" (change)="cargarDatos()" class="filter-select">
 
         <option value="">Todos los estados</option>
         <option value="OPERATIVO">Operativo</option>
@@ -68,7 +63,7 @@
       </button>
     </div>
 
-    <!-- TABLA (MISMO VEHICULO STYLE) -->
+    <!-- TABLA -->
     <div class="table-card">
       <div class="table-wrapper">
 
@@ -77,8 +72,7 @@
           <thead>
             <tr>
               <th>Código</th>
-              <th>Tipo</th>
-              <th>Marca</th>
+              <th>Tipo / Marca</th>
               <th>Modelo</th>
               <th>Operador</th>
               <th>Horómetro</th>
@@ -90,52 +84,64 @@
           <tbody>
 
             <tr *ngIf="loading">
-              <td colspan="8" class="loading-row">
-                <div class="spinner"></div> Cargando maquinaria…
+              <td colspan="7" class="loading-row">
+                <div class="spinner"></div>
+                Cargando maquinaria...
               </td>
             </tr>
 
             <tr *ngIf="!loading && maquinaria.length === 0">
-              <td colspan="8" class="empty-row">
-                <i class="fas fa-tools"></i><br>No hay maquinaria registrada
+              <td colspan="7" class="empty-row">
+                <i class="fas fa-tools"></i><br>
+                No hay maquinaria registrada
               </td>
             </tr>
 
             <tr *ngFor="let m of maquinaria" class="table-row">
 
+              <!-- Código -->
               <td>
                 <div class="placa">{{ m.codigo }}</div>
               </td>
 
-              <td>{{ m.tipo }}</td>
-              <td>{{ m.marca }}</td>
-              <td>{{ m.modelo }}</td>
-              <td>{{ m.operador || '—' }}</td>
+              <!-- Tipo / Marca -->
+              <td>
+                <div class="tipo">{{ m.tipo }}</div>
+                <div class="marca">{{ m.marca }}</div>
+              </td>
 
+              <!-- Modelo -->
+              <td>{{ m.modelo }}</td>
+
+              <!-- Operador -->
+              <td class="conductor">
+                {{ m.operador || 'Sin operador asignado' }}
+              </td>
+
+              <!-- Horómetro -->
               <td class="km">
                 {{ m.horometro_actual | number:'1.0-0' }} h
               </td>
 
+              <!-- Estado -->
               <td>
                 <span class="badge" [ngClass]="estadoClass(m.estado)">
                   {{ m.estado }}
                 </span>
               </td>
 
+              <!-- Acciones -->
               <td class="actions">
 
-                <button class="action-btn action-btn--view"
-                  (click)="abrirVer(m)">
+                <button class="action-btn action-btn--view" (click)="abrirVer(m)" title="Ver">
                   <i class="fas fa-eye"></i>
                 </button>
 
-                <button class="action-btn action-btn--edit"
-                  (click)="abrirEditar(m)">
+                <button class="action-btn action-btn--edit" (click)="abrirEditar(m)" title="Editar">
                   <i class="fas fa-edit"></i>
                 </button>
 
-                <button class="action-btn action-btn--delete"
-                  (click)="confirmarEliminar(m.id)">
+                <button class="action-btn action-btn--delete" (click)="confirmarEliminar(m.id)" title="Eliminar">
                   <i class="fas fa-trash-alt"></i>
                 </button>
 
@@ -149,7 +155,6 @@
 
       </div>
     </div>
-
   </section>
 
 </div>
@@ -283,8 +288,7 @@
           Cerrar
         </button>
 
-        <button type="button" class="btn-primary"
-                (click)="abrirEditar(maquinariaSeleccionada!)">
+        <button type="button" class="btn-primary" (click)="abrirEditar(maquinariaSeleccionada!)">
           Editar
         </button>
 
