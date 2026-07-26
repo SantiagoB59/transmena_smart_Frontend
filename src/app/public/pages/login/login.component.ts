@@ -71,9 +71,9 @@ export class LoginComponent {
         next: (res) => {
           // 🔐 el token ya se guarda en el service
           if (res?.token) {
-            this.router.navigate(['/dashboard']);
-            // 👇 luego validas verificación km
-            this.verificarKmPendientes();
+            this.router.navigate(['/dashboard']).then(() => {
+              this.verificarKmPendientes();
+            });
           } else {
             this.isLoginFailed = true;
           }
@@ -85,18 +85,18 @@ export class LoginComponent {
   }
 
   verificarKmPendientes() {
-  this.vehiculoService.getVehiculosVerificacionKm().subscribe({
-    next: (res: any[]) => {
+    this.vehiculoService.getVehiculosVerificacionKm().subscribe({
+      next: (res: any[]) => {
 
-      if (res.length > 0) {
-        // SOLO ALERTA o bandera global
-        alert(`⚠ Hay ${res.length} vehículos pendientes de verificación de km`);
+        if (res.length > 0) {
+          // SOLO ALERTA o bandera global
+          alert(`⚠ Hay ${res.length} vehículos pendientes de verificación de km`);
+        }
+
+      },
+      error: (err: any) => {
+        console.error(err);
       }
-
-    },
-    error: (err: any) => {
-      console.error(err);
-    }
-  });
-}
+    });
+  }
 }
