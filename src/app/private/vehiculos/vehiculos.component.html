@@ -283,22 +283,23 @@
 
                             <td class="actions">
 
-                                <button class="action-btn action-btn--view" (click)="abrirVer(v)">
-
+                                <button class="action-btn action-btn--view" (click)="abrirVer(v)" title="Ver">
                                     <i class="fas fa-eye"></i>
-
                                 </button>
 
-                                <button class="action-btn action-btn--edit" (click)="abrirEditar(v)">
-
+                                <button class="action-btn action-btn--edit" (click)="abrirEditar(v)" title="Editar">
                                     <i class="fas fa-edit"></i>
-
                                 </button>
 
-                                <button class="action-btn action-btn--delete" (click)="confirmarEliminar(v.placa)">
+                                <!-- CAMBIAR ESTADO -->
+                                <button class="action-btn action-btn--state" (click)="abrirModalEstado(v)"
+                                    title="Cambiar estado">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </button>
 
+                                <button class="action-btn action-btn--delete" (click)="confirmarEliminar(v.placa)"
+                                    title="Eliminar">
                                     <i class="fas fa-trash-alt"></i>
-
                                 </button>
 
                             </td>
@@ -566,4 +567,225 @@
         </div>
     </div>
 
+    <!-- =========================================================
+     MODAL CAMBIAR ESTADO
+========================================================= -->
+
+    <div *ngIf="showEstadoModal" class="modal-backdrop" (click)="cerrarModalEstado()">
+
+        <div class="modal-panel estado-modal" (click)="$event.stopPropagation()">
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h3>
+                        CAMBIAR ESTADO
+                    </h3>
+
+                    <p>
+                        Vehículo {{ vehiculoEstadoSeleccionado?.placa }}
+                    </p>
+
+                </div>
+
+                <button type="button" class="modal-close" (click)="cerrarModalEstado()" [disabled]="cambiandoEstado">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+
+            </div>
+
+
+            <!-- BODY -->
+
+            <div class="modal-form">
+
+                <!-- VEHÍCULO -->
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+
+                        <i class="fas fa-truck"></i>
+
+                        Información del vehículo
+
+                    </div>
+
+
+                    <div class="estado-info">
+
+                        <div>
+
+                            <span class="estado-label">
+                                Placa
+                            </span>
+
+                            <strong>
+                                {{ vehiculoEstadoSeleccionado?.placa }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="estado-label">
+                                Estado actual
+                            </span>
+
+                            <span class="badge" [ngClass]="
+                                estadoClass(
+                                    vehiculoEstadoSeleccionado?.estado || 'OPERATIVO'
+                                )
+                            ">
+                                {{
+                                vehiculoEstadoSeleccionado?.estado ||
+                                'OPERATIVO'
+                                }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NUEVO ESTADO -->
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+
+                        <i class="fas fa-exchange-alt"></i>
+
+                        Nuevo estado
+
+                    </div>
+
+
+                    <div class="form-field">
+
+                        <label>
+                            Seleccionar estado
+                        </label>
+
+                        <select [(ngModel)]="nuevoEstado" [ngModelOptions]="{standalone: true}"
+                            [disabled]="cambiandoEstado">
+
+                            <option *ngFor="let estado of ESTADOS" [value]="estado">
+                                {{ estado }}
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MENSAJE INACTIVO -->
+
+                <div *ngIf="nuevoEstado === 'INACTIVO'" class="estado-warning">
+
+                    <i class="fas fa-exclamation-triangle"></i>
+
+                    <div>
+
+                        <strong>
+                            Vehículo inactivo
+                        </strong>
+
+                        <p>
+                            El vehículo dejará de considerarse
+                            operativo y sus alertas activas no
+                            se mostrarán.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MENSAJE OPERATIVO -->
+
+                <div *ngIf="nuevoEstado === 'OPERATIVO'" class="estado-success">
+
+                    <i class="fas fa-check-circle"></i>
+
+                    <div>
+
+                        <strong>
+                            Vehículo operativo
+                        </strong>
+
+                        <p>
+                            El vehículo volverá a considerarse
+                            operativo y sus alertas activas
+                            podrán mostrarse nuevamente.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MENSAJE TALLER -->
+
+                <div *ngIf="nuevoEstado === 'TALLER'" class="estado-taller">
+
+                    <i class="fas fa-tools"></i>
+
+                    <div>
+
+                        <strong>
+                            Vehículo en taller
+                        </strong>
+
+                        <p>
+                            El vehículo quedará marcado como
+                            en taller.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="modal-actions">
+
+                <button type="button" class="btn-cancel" (click)="cerrarModalEstado()" [disabled]="cambiandoEstado">
+                    Cancelar
+                </button>
+
+
+                <button type="button" class="btn-save" (click)="guardarEstado()" [disabled]="
+                    cambiandoEstado ||
+                    !vehiculoEstadoSeleccionado ||
+                    nuevoEstado === vehiculoEstadoSeleccionado.estado
+                ">
+
+                    <span *ngIf="!cambiandoEstado">
+                        <i class="fas fa-save"></i>
+                        Guardar estado
+                    </span>
+
+                    <span *ngIf="cambiandoEstado">
+                        Actualizando...
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 </div>

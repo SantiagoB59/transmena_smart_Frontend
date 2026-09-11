@@ -180,50 +180,72 @@
 
 <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 mb-8">
 
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
 
-    <select
-      [(ngModel)]="filtros.prioridad"
-      class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-red-500 focus:outline-none">
+  <!-- PLACA -->
+  <div class="relative">
 
-      <option value="">Todas las prioridades</option>
-      <option value="CRITICA">Crítica</option>
-      <option value="ALTA">Alta</option>
-      <option value="MEDIA">Media</option>
-      <option value="BAJA">Baja</option>
+    <input
+      type="text"
+      [(ngModel)]="filtros.placa"
+      placeholder="Buscar por placa..."
+      maxlength="10"
+      class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-10 uppercase focus:ring-2 focus:ring-red-500 focus:outline-none"
+      (keyup.enter)="filtrar()"
+    />
 
-    </select>
+    <i
+      class="fas fa-car absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+    </i>
 
-    <select
-      [(ngModel)]="filtros.tipo"
-      class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-red-500 focus:outline-none">
+  </div>
 
-      <option value="">Todos los tipos</option>
-      <option value="DOCUMENTO">Documentos</option>
-      <option value="GPS">GPS</option>
-      <option value="MANTENIMIENTO">Mantenimiento</option>
+  <!-- PRIORIDAD -->
+  <select
+    [(ngModel)]="filtros.prioridad"
+    class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-red-500 focus:outline-none">
 
-    </select>
+    <option value="">Todas las prioridades</option>
+    <option value="CRITICA">Crítica</option>
+    <option value="ALTA">Alta</option>
+    <option value="MEDIA">Media</option>
+    <option value="BAJA">Baja</option>
 
-    <button
-      (click)="filtrar()"
-      class="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold py-3 transition">
+  </select>
 
-      <i class="fas fa-filter mr-2"></i>
+  <!-- TIPO -->
+  <select
+    [(ngModel)]="filtros.tipo"
+    class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-red-500 focus:outline-none">
 
-      Filtrar
+    <option value="">Todos los tipos</option>
+    <option value="DOCUMENTO">Documentos</option>
+    <option value="GPS">GPS</option>
+    <option value="MANTENIMIENTO">Mantenimiento</option>
 
-    </button>
+  </select>
 
-    <button
-      (click)="limpiarFiltros()"
-      class="bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold py-3 transition">
+  <!-- FILTRAR -->
+  <button
+    (click)="filtrar()"
+    class="bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold py-3 transition">
 
-      <i class="fas fa-eraser mr-2"></i>
+    <i class="fas fa-filter mr-2"></i>
 
-      Limpiar
+    Filtrar
 
-    </button>
+  </button>
+
+  <!-- LIMPIAR -->
+  <button
+    (click)="limpiarFiltros()"
+    class="bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold py-3 transition">
+
+    <i class="fas fa-eraser mr-2"></i>
+
+    Limpiar
+
+  </button>
 
   </div>
 

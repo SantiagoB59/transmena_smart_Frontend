@@ -140,13 +140,13 @@ export class SidebarComponent {
         },
         {
           key: 'mantenimientos',
-          label: 'Mantenimientos realizados',
+          label: 'Mantenimientos realizados vehiculos',
           icon: 'fas fa-tools',
           route: '/dashboard/mantenimientos'
         },
         {
           key: 'mantenimiento-maquinaria',
-          label: 'Mantenimientos de Maquinaria',
+          label: 'Mantenimientos realizados de Maquinaria',
           icon: 'fas fa-tools',
           route: '/dashboard/mantenimiento-maquinaria'
         }

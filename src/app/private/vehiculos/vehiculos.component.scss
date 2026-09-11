@@ -754,3 +754,326 @@ tbody tr {
   margin-left: 4px;
   font-weight: bold;
 }
+
+
+// ═══════════════════════════════════════════════════════════════════════
+// MODAL CAMBIO DE ESTADO — TRANSMENA SMART
+// ═══════════════════════════════════════════════════════════════════════
+
+.estado-modal {
+  max-width: 560px;
+  width: 100%;
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+  }
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Información del vehículo
+// ───────────────────────────────────────────────────────────────────────
+
+.estado-info {
+  padding: 1.25rem;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.estado-info > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  background: #fff;
+  border: 2px solid $border;
+  border-radius: $radius-sm;
+  padding: 1rem;
+}
+
+.estado-label {
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $slate;
+}
+
+.estado-info strong {
+  font-size: 1rem;
+  font-weight: 900;
+  color: $dark;
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Select de estado
+// ───────────────────────────────────────────────────────────────────────
+
+.estado-modal {
+
+  .form-field {
+    padding: 1.25rem;
+  }
+
+  .form-field select {
+    width: 100%;
+    background: $light;
+    border: 2px solid $border;
+    border-radius: $radius-sm;
+    padding: 0.85rem 1rem;
+
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: $dark;
+
+    outline: none;
+    cursor: pointer;
+
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s,
+      background 0.2s;
+
+    &:focus {
+      border-color: $red;
+      box-shadow: 0 0 0 3px rgba(224, 32, 32, 0.08);
+      background: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Mensajes según estado
+// ───────────────────────────────────────────────────────────────────────
+
+.estado-warning,
+.estado-success,
+.estado-taller {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+
+  margin: 0 1.25rem 1.25rem;
+  padding: 1rem 1.1rem;
+
+  border-radius: $radius-sm;
+
+  animation: estadoMessageIn 0.2s ease;
+}
+
+@keyframes estadoMessageIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// INACTIVO
+// ───────────────────────────────────────────────────────────────────────
+
+.estado-warning {
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+  color: #dc2626;
+
+  i {
+    color: #dc2626;
+  }
+
+  strong {
+    color: #b91c1c;
+  }
+
+  p {
+    color: #7f1d1d;
+  }
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// OPERATIVO
+// ───────────────────────────────────────────────────────────────────────
+
+.estado-success {
+  background: #f0fdf4;
+  border: 2px solid #bbf7d0;
+  color: #16a34a;
+
+  i {
+    color: #16a34a;
+  }
+
+  strong {
+    color: #15803d;
+  }
+
+  p {
+    color: #166534;
+  }
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// TALLER
+// ───────────────────────────────────────────────────────────────────────
+
+.estado-taller {
+  background: #fffbeb;
+  border: 2px solid #fde68a;
+  color: #d97706;
+
+  i {
+    color: #d97706;
+  }
+
+  strong {
+    color: #b45309;
+  }
+
+  p {
+    color: #92400e;
+  }
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Iconos de mensajes
+// ───────────────────────────────────────────────────────────────────────
+
+.estado-warning i,
+.estado-success i,
+.estado-taller i {
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  font-size: 1rem;
+}
+
+.estado-warning i {
+  background: #fee2e2;
+}
+
+.estado-success i {
+  background: #dcfce7;
+}
+
+.estado-taller i {
+  background: #fef3c7;
+}
+
+.estado-warning strong,
+.estado-success strong,
+.estado-taller strong {
+  display: block;
+
+  font-size: 0.85rem;
+  font-weight: 900;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  margin-bottom: 0.3rem;
+}
+
+.estado-warning p,
+.estado-success p,
+.estado-taller p {
+  margin: 0;
+
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Botón cambiar estado
+// ───────────────────────────────────────────────────────────────────────
+
+.action-btn--state {
+  background: #dbeafe;
+  color: #2563eb;
+
+  &:hover {
+    background: #2563eb;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Estado actual dentro del modal
+// ───────────────────────────────────────────────────────────────────────
+
+.estado-info {
+
+  .badge {
+    width: fit-content;
+  }
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Responsive modal
+// ───────────────────────────────────────────────────────────────────────
+
+@media (max-width: 480px) {
+
+  .modal-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .estado-modal {
+    width: 100%;
+    border-radius: 1.5rem 1.5rem 0 0;
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .estado-modal .modal-header {
+    padding: 1.25rem;
+
+    h3 {
+      font-size: 1.15rem;
+    }
+  }
+
+  .estado-modal .modal-form {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .estado-info {
+    padding: 1rem;
+  }
+
+  .estado-warning,
+  .estado-success,
+  .estado-taller {
+    margin: 0 1rem 1rem;
+  }
+
+  .estado-modal .modal-actions {
+    padding: 1rem;
+  }
+}

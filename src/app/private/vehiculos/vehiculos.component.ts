@@ -51,6 +51,14 @@ export class VehiculosComponent implements OnInit {
 
   readonly ESTADOS: EstadoVehiculo[] = ['OPERATIVO', 'TALLER', 'INACTIVO'];
 
+  showEstadoModal = false;
+
+  vehiculoEstadoSeleccionado: Vehiculo | null = null;
+
+  nuevoEstado: EstadoVehiculo = 'OPERATIVO';
+
+  cambiandoEstado = false;
+
   constructor(
     private svc: VehiculoService,
     private fb: FormBuilder,
@@ -596,6 +604,131 @@ export class VehiculosComponent implements OnInit {
 
     const validator = control.validator?.({} as any);
     return validator?.['required'] === true;
+  }
+
+
+
+  abrirModalEstado(v: Vehiculo): void {
+
+    this.vehiculoEstadoSeleccionado = v;
+
+    this.nuevoEstado = v.estado || 'OPERATIVO';
+
+    this.showEstadoModal = true;
+  }
+
+  cerrarModalEstado(): void {
+
+    if (this.cambiandoEstado) {
+      return;
+    }
+
+    this.showEstadoModal = false;
+
+    this.vehiculoEstadoSeleccionado = null;
+  }
+
+  guardarEstado(): void {
+
+    const vehiculo = this.vehiculoEstadoSeleccionado;
+
+    if (!vehiculo) {
+      return;
+    }
+
+    if (vehiculo.estado === this.nuevoEstado) {
+
+      this.cerrarModalEstado();
+
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Cambiar estado?',
+      html: `
+      <p>
+        Vehículo:
+        <strong>${vehiculo.placa}</strong>
+      </p>
+
+      <p style="margin-top: 8px;">
+        Estado actual:
+        <strong>${vehiculo.estado}</strong>
+      </p>
+
+      <p style="margin-top: 8px;">
+        Nuevo estado:
+        <strong>${this.nuevoEstado}</strong>
+      </p>
+    `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cambiar',
+      cancelButtonText: 'Cancelar'
+    }).then(result => {
+
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      this.cambiandoEstado = true;
+
+      Swal.fire({
+        title: 'Actualizando estado...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      this.svc.actualizarEstado(
+        vehiculo.placa,
+        this.nuevoEstado
+      ).subscribe({
+
+        next: () => {
+
+          Swal.close();
+
+          this.cambiandoEstado = false;
+
+          this.showEstadoModal = false;
+
+          this.vehiculoEstadoSeleccionado = null;
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Estado actualizado',
+            text: `El vehículo ${vehiculo.placa} ahora está ${this.nuevoEstado}`,
+            timer: 2000,
+            showConfirmButton: false
+          });
+
+          this.cargarDatos();
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Error actualizando estado:',
+            err
+          );
+
+          Swal.close();
+
+          this.cambiandoEstado = false;
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo actualizar el estado del vehículo'
+          });
+        }
+
+      });
+
+    });
   }
 
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { FlotaStats, Vehiculo } from '../shared/models/vehiculo.model';
+import { FlotaStats, Vehiculo, EstadoVehiculo } from '../shared/models/vehiculo.model';
 import { environment } from 'src/environment/environment';
 import { Mantenimiento } from '../shared/models/mantenimiento.model';
 
@@ -174,6 +174,17 @@ export class VehiculoService {
 getVehiculosVerificacionKm(): Observable<any[]> {
   return this.http.get<any[]>(
     `${this.base}/verificacion-km`
+  );
+}
+
+
+actualizarEstado(
+  placa: string,
+  estado: EstadoVehiculo
+): Observable<any> {
+  return this.http.patch(
+    `${this.base}/${placa}/estado`,
+    { estado }
   );
 }
 

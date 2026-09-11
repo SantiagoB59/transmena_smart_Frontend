@@ -9,7 +9,7 @@ import { Alerta } from 'src/app/shared/models/alertas.model';
   styleUrls: ['./alertas.component.scss']
 })
 export class AlertasComponent implements OnInit {
-
+estadoVehiculo: string = '';
   // =====================================================
   // DATA
   // =====================================================
@@ -45,7 +45,11 @@ export class AlertasComponent implements OnInit {
   // =====================================================
   filtros = {
     prioridad: '',
-    tipo: ''
+    tipo: '',
+    placa: '',
+    codigo: '',
+    estado: ''
+
   };
 
   modalDocumento = false;
@@ -81,89 +85,125 @@ export class AlertasComponent implements OnInit {
   // =====================================================
   cargarAlertas(): void {
 
-  this.loading = true;
+    this.loading = true;
 
-  this.alertasService
-    .listar(this.filtros)
-    .subscribe({
+    this.alertasService
+      .listar(this.filtros)
+      .subscribe({
 
-      next: (resp) => {
+        next: (resp) => {
 
-        let alertas = [...resp];
+          let alertas = [...resp];
 
-        // Filtrar según la pestaña
-        if (this.pestanaActiva === 'VERIFICAR') {
+          // Filtrar según la pestaña
+          if (this.pestanaActiva === 'VERIFICAR') {
 
-          alertas = alertas.filter(a =>
-            a.estado === 'ACTIVA'
+            alertas = alertas.filter(a =>
+              a.estado === 'ACTIVA'
+            );
+
+          } else {
+
+            alertas = alertas.filter(a =>
+              a.estado === 'RESUELTA' ||
+              a.estado === 'IGNORADA'
+            );
+
+          }
+
+          // Filtrar prioridad
+          if (this.filtros.prioridad) {
+
+            alertas = alertas.filter(a =>
+              a.prioridad === this.filtros.prioridad
+            );
+
+          }
+
+          // Filtrar tipo
+          if (this.filtros.tipo) {
+
+            alertas = alertas.filter(a =>
+              a.tipo === this.filtros.tipo
+            );
+
+          }
+          // Filtrar por placa
+          if (this.filtros.placa?.trim()) {
+
+            const placaBuscada = this.filtros.placa
+              .trim()
+              .toUpperCase();
+
+            alertas = alertas.filter(a => {
+
+              const placa = a.vehiculo?.placa;
+
+              return placa
+                ?.toUpperCase()
+                .includes(placaBuscada);
+
+            });
+
+          }
+
+          // Filtrar por estado del vehículo
+          if (this.filtros.estado?.trim()) {
+
+            const estadoBuscado = this.filtros.estado
+              .trim()
+              .toUpperCase();
+
+            alertas = alertas.filter(a => {
+
+              const estadoVehiculo = a.vehiculo?.estado;
+
+              return estadoVehiculo
+                ?.toUpperCase()
+                .includes(estadoBuscado);
+
+            });
+          }
+
+          // Ordenar
+          alertas.sort(
+            (a, b) =>
+              this.getPesoPrioridad(b.prioridad) -
+              this.getPesoPrioridad(a.prioridad)
           );
 
-        } else {
+          this.alertas = alertas;
 
-          alertas = alertas.filter(a =>
-            a.estado === 'RESUELTA' ||
-            a.estado === 'IGNORADA'
-          );
+          this.paginaActual = 1;
+
+          this.actualizarPaginacion();
+
+          this.loading = false;
+
+        },
+
+        error: err => {
+
+          console.error(err);
+
+          this.loading = false;
 
         }
 
-        // Filtrar prioridad
-        if (this.filtros.prioridad) {
+      });
 
-          alertas = alertas.filter(a =>
-            a.prioridad === this.filtros.prioridad
-          );
-
-        }
-
-        // Filtrar tipo
-        if (this.filtros.tipo) {
-
-          alertas = alertas.filter(a =>
-            a.tipo === this.filtros.tipo
-          );
-
-        }
-
-        // Ordenar
-        alertas.sort(
-          (a, b) =>
-            this.getPesoPrioridad(b.prioridad) -
-            this.getPesoPrioridad(a.prioridad)
-        );
-
-        this.alertas = alertas;
-
-        this.paginaActual = 1;
-
-        this.actualizarPaginacion();
-
-        this.loading = false;
-
-      },
-
-      error: err => {
-
-        console.error(err);
-
-        this.loading = false;
-
-      }
-
-    });
-
-}
+  }
 
   // =====================================================
   // GESTIÓN DE PESTAÑAS
   // =====================================================
   cambiarPestana(pestana: 'VERIFICAR' | 'HISTORICO'): void {
 
-  this.pestanaActiva = pestana;
+    this.pestanaActiva = pestana;
 
-  this.cargarAlertas();
+    this.cargarAlertas();
 
-}
+  }
 
   // =====================================================
   // CARGAR ESTADÍSTICAS
@@ -190,14 +230,17 @@ export class AlertasComponent implements OnInit {
 
   limpiarFiltros(): void {
 
-  this.filtros = {
-    prioridad: '',
-    tipo: ''
-  };
+    this.filtros = {
+      prioridad: '',
+      tipo: '',
+      placa: '',
+      codigo: '',
+      estado: '',
+    };
 
-  this.cargarAlertas();
+    this.cargarAlertas();
 
-}
+  }
 
   // =====================================================
   // ACCIONES (RESOLVER / IGNORAR)
