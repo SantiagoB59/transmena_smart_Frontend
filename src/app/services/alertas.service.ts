@@ -247,13 +247,26 @@ export class AlertasService {
 
 
   resolverDocumento(
-  alertaId: number,
-  data: FormData
-) {
+    alertaId: number,
+    data: FormData
+  ) {
 
-  return this.http.post(
-    `${this.base}/${alertaId}/resolver-documento`,
-    data
-  );
-}
+    return this.http.post(
+      `${this.base}/${alertaId}/resolver-documento`,
+      data
+    );
+  }
+
+
+  resolverCampoDinamico(
+    alertaId: number,
+    formData: FormData
+  ) {
+
+    return this.http.post(
+      `${this.base}/${alertaId}/resolver-campo-dinamico`,
+      formData
+    );
+
+  }
 }

@@ -9,7 +9,7 @@ import { Alerta } from 'src/app/shared/models/alertas.model';
   styleUrls: ['./alertas.component.scss']
 })
 export class AlertasComponent implements OnInit {
-estadoVehiculo: string = '';
+  estadoVehiculo: string = '';
   // =====================================================
   // DATA
   // =====================================================
@@ -17,6 +17,18 @@ estadoVehiculo: string = '';
   alertasPaginadas: Alerta[] = [];
   loading = false;
   ejecutandoMotor = false;
+
+  // =====================================================
+  // CAMPO DINÁMICO
+  // =====================================================
+
+  modalCampoDinamico = false;
+
+  alertaCampoDinamicoSeleccionada!: Alerta;
+
+  nuevaFechaCampoDinamico = '';
+
+  guardandoCampoDinamico = false;
 
   // =====================================================
   // PESTAÑAS
@@ -390,11 +402,40 @@ estadoVehiculo: string = '';
   // FLUJO DE RESOLUCIÓN ESPECÍFICA
   // =====================================================
   abrirResolver(alerta: Alerta): void {
+
+    // =====================================================
+    // ALERTA DE DOCUMENTO
+    // =====================================================
+
     if (alerta.tipo === 'DOCUMENTO') {
+
       this.alertaSeleccionada = alerta;
-      this.modalDocumento = true;
+
+      // ===================================================
+      // CAMPO DINÁMICO
+      // ===================================================
+
+      if (alerta.origen === 'CAMPO_DINAMICO') {
+
+        this.abrirModalCampoDinamico(alerta);
+
+        return;
+      }
+
+
+      // ===================================================
+      // DOCUMENTO DE VEHÍCULO / MAQUINARIA
+      // ===================================================
+
+      this.abrirModalDocumentoVehiculo(alerta);
+
       return;
     }
+
+
+    // =====================================================
+    // MANTENIMIENTO
+    // =====================================================
 
     if (alerta.tipo === 'MANTENIMIENTO') {
 
@@ -405,8 +446,8 @@ estadoVehiculo: string = '';
         ]);
 
         return;
-
       }
+
 
       if (alerta.maquinaria_id) {
 
@@ -415,13 +456,158 @@ estadoVehiculo: string = '';
         ]);
 
         return;
-
       }
-
     }
+
+
+    // =====================================================
+    // ALERTA NORMAL
+    // =====================================================
 
     this.resolver(alerta.id);
   }
+
+
+
+  abrirModalDocumentoVehiculo(alerta: Alerta): void {
+
+    this.alertaSeleccionada = alerta;
+
+    this.nuevaFecha = '';
+
+    this.archivoDocumento = undefined as any;
+
+    this.modalDocumento = true;
+  }
+
+
+  // =====================================================
+  // ABRIR MODAL CAMPO DINÁMICO
+  // =====================================================
+
+  abrirModalCampoDinamico(alerta: Alerta): void {
+
+    this.alertaCampoDinamicoSeleccionada = alerta;
+
+    this.nuevaFechaCampoDinamico =
+      alerta.metadata?.fecha_vencimiento || '';
+
+    this.modalCampoDinamico = true;
+  }
+
+
+  // =====================================================
+  // RESOLVER CAMPO DINÁMICO
+  // =====================================================
+
+  resolverCampoDinamico(): void {
+
+    if (!this.alertaCampoDinamicoSeleccionada) {
+      return;
+    }
+
+    if (!this.nuevaFechaCampoDinamico) {
+
+      alert(
+        'Debes seleccionar la nueva fecha de vencimiento.'
+      );
+
+      return;
+    }
+
+    const vehiculoId =
+      this.alertaCampoDinamicoSeleccionada.vehiculo_id;
+
+    const campoId =
+      this.alertaCampoDinamicoSeleccionada.metadata?.campo_id;
+
+    if (!vehiculoId) {
+
+      alert(
+        'No se encontró el vehículo asociado a la alerta.'
+      );
+
+      return;
+    }
+
+    if (!campoId) {
+
+      alert(
+        'No se encontró el campo dinámico asociado a la alerta.'
+      );
+
+      return;
+    }
+
+    const formData = new FormData();
+
+    // =====================================================
+    // VEHÍCULO
+    // =====================================================
+
+    formData.append(
+      'vehiculo_id',
+      vehiculoId.toString()
+    );
+
+    // =====================================================
+    // CAMPO DINÁMICO
+    // =====================================================
+
+    formData.append(
+      'campo_id',
+      campoId.toString()
+    );
+
+    // =====================================================
+    // NUEVA FECHA
+    // =====================================================
+
+    formData.append(
+      'fecha_vencimiento',
+      this.nuevaFechaCampoDinamico
+    );
+
+    this.guardandoCampoDinamico = true;
+
+    this.alertasService
+      .resolverCampoDinamico(
+        this.alertaCampoDinamicoSeleccionada.id,
+        formData
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.guardandoCampoDinamico = false;
+
+          this.modalCampoDinamico = false;
+
+          this.cargarTodo();
+
+          alert(
+            'Fecha actualizada y alerta resuelta correctamente.'
+          );
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Error resolviendo campo dinámico:',
+            err
+          );
+
+          this.guardandoCampoDinamico = false;
+
+          alert(
+            err?.error?.message ||
+            'No fue posible actualizar la fecha.'
+          );
+        }
+
+      });
+  }
+
 
   onFileSelected(event: any): void {
     this.archivoDocumento = event.target.files[0];

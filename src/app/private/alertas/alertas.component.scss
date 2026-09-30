@@ -275,3 +275,427 @@ thead th.text-center {
   }
 
 }
+
+
+/* =========================================================
+   MODAL CAMPO DINÁMICO
+   ========================================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(5, 15, 30, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  animation: modalOverlayIn 0.2s ease;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.modal-card {
+  width: 100%;
+  max-width: 520px;
+
+  background: #ffffff;
+  border: 1px solid rgba(18, 42, 72, 0.12);
+  border-radius: 18px;
+
+  box-shadow:
+    0 25px 70px rgba(3, 15, 30, 0.35),
+    0 8px 25px rgba(3, 15, 30, 0.15);
+
+  overflow: hidden;
+
+  animation: modalCardIn 0.25s ease;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 24px 26px 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #071a30 0%,
+      #0b2745 100%
+    );
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-header h2 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.modal-header p {
+  margin: 6px 0 0;
+
+  color: rgba(255, 255, 255, 0.68);
+
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   CLOSE
+   ========================================================= */
+
+.modal-close {
+  flex-shrink: 0;
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.07);
+
+  color: rgba(255, 255, 255, 0.8);
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.modal-close:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+
+  transform: rotate(3deg);
+}
+
+.modal-close:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   INFORMACIÓN DEL VEHÍCULO
+   ========================================================= */
+
+.document-info {
+  margin: 22px 26px 18px;
+  padding: 15px 17px;
+
+  border: 1px solid #dce4ec;
+  border-left: 4px solid #c49a32;
+
+  border-radius: 10px;
+
+  background: #f6f8fb;
+}
+
+.document-info p {
+  margin: 0;
+
+  color: #172b42;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.document-info p strong {
+  color: #0b2745;
+}
+
+.document-info span {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #6b7a8c;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   CAMPOS
+   ========================================================= */
+
+.modal-field {
+  margin: 0 26px 17px;
+}
+
+.modal-field label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #20344d;
+
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.modal-field input {
+  width: 100%;
+  height: 44px;
+
+  box-sizing: border-box;
+
+  padding: 0 13px;
+
+  border: 1px solid #d5dee8;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  color: #172b42;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.modal-field input:focus {
+  border-color: #c49a32;
+
+  box-shadow:
+    0 0 0 3px rgba(196, 154, 50, 0.12);
+}
+
+
+/* =========================================================
+   INPUTS DESHABILITADOS
+   ========================================================= */
+
+.modal-field input:disabled {
+  background: #f1f4f7;
+  border-color: #e0e5eb;
+
+  color: #687789;
+
+  cursor: not-allowed;
+}
+
+.modal-field input[type="date"]:not(:disabled) {
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 11px;
+
+  margin-top: 25px;
+  padding: 18px 26px 22px;
+
+  border-top: 1px solid #e8edf2;
+
+  background: #fbfcfd;
+}
+
+
+/* =========================================================
+   BOTONES
+   ========================================================= */
+
+.modal-btn {
+  min-height: 42px;
+
+  padding: 0 17px;
+
+  border-radius: 9px;
+
+  border: none;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.modal-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   CANCELAR
+   ========================================================= */
+
+.modal-btn-cancel {
+  background: #eef2f6;
+
+  color: #34485e;
+
+  border: 1px solid #d8e0e8;
+}
+
+.modal-btn-cancel:hover:not(:disabled) {
+  background: #e4e9ef;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   GUARDAR
+   ========================================================= */
+
+.modal-btn-save {
+  background: linear-gradient(
+    135deg,
+    #b88b24 0%,
+    #d0a63a 100%
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 5px 14px rgba(184, 139, 36, 0.25);
+}
+
+.modal-btn-save:hover:not(:disabled) {
+  background: linear-gradient(
+    135deg,
+    #a97d1d 0%,
+    #c49a32 100%
+  );
+
+  box-shadow:
+    0 7px 18px rgba(184, 139, 36, 0.32);
+
+  transform: translateY(-1px);
+}
+
+.modal-btn-save:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   ANIMACIONES
+   ========================================================= */
+
+@keyframes modalOverlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .modal-overlay {
+    padding: 15px;
+    align-items: center;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    border-radius: 15px;
+  }
+
+  .modal-header {
+    padding: 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 19px;
+  }
+
+  .document-info {
+    margin: 18px 20px 16px;
+  }
+
+  .modal-field {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    padding: 16px 20px 20px;
+  }
+
+  .modal-btn {
+    width: 100%;
+  }
+}
