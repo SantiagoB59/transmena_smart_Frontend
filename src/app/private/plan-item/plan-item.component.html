@@ -46,7 +46,7 @@
                 </option>
 
                 <option *ngFor="let s of sistemas" [value]="s.nombre">
-                      {{ s.nombre }}
+                    {{ s.nombre }}
                 </option>
 
             </select>
@@ -83,208 +83,205 @@
             </button>
 
         </div>
-<!-- ========================================================= -->
-<!-- TABLA MANTENIMIENTOS -->
-<!-- ========================================================= -->
+        <!-- ========================================================= -->
+        <!-- TABLA MANTENIMIENTOS -->
+        <!-- ========================================================= -->
 
-<div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
 
-    <!-- HEADER -->
+            <!-- HEADER -->
 
-    <div class="px-6 py-5 border-b bg-gradient-to-r from-red-50 to-white">
+            <div class="px-6 py-5 border-b bg-gradient-to-r from-red-50 to-white">
 
-        <div class="flex items-center justify-between flex-wrap gap-3">
+                <div class="flex items-center justify-between flex-wrap gap-3">
 
-            <div>
+                    <div>
 
-                <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
 
-                    <i class="fas fa-tools text-red-600"></i>
+                            <i class="fas fa-tools text-red-600"></i>
 
-                    Catálogo de mantenimientos
+                            Catálogo de mantenimientos
 
-                </h2>
+                        </h2>
 
-                <p class="text-sm text-gray-500 mt-1">
+                        <p class="text-sm text-gray-500 mt-1">
 
-                    Administración de los mantenimientos preventivos, correctivos y programados del sistema.
-
-                </p>
-
-            </div>
-
-            <div class="bg-red-100 text-red-700 px-4 py-2 rounded-xl font-semibold text-sm">
-
-                {{ filteredItems.length }} registros
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- TABLA -->
-
-    <div class="overflow-x-auto">
-
-        <table class="min-w-full">
-
-            <!-- CABECERA -->
-
-            <thead class="bg-gray-900 text-white sticky top-0 z-10">
-
-                <tr>
-
-                    <th class="px-6 py-5 text-left">
-                        Sistema
-                    </th>
-
-                    <th class="px-6 py-5 text-left">
-                        Mantenimiento
-                    </th>
-
-                    <th class="px-6 py-5 text-left">
-                        Tipo
-                    </th>
-
-                    <th class="px-6 py-5 text-left">
-                        Control
-                    </th>
-
-                    <th class="px-6 py-5 text-center">
-                        Acciones
-                    </th>
-
-                </tr>
-
-            </thead>
-
-            <!-- CUERPO -->
-
-            <tbody>
-
-                <!-- LOADING -->
-
-                <tr *ngIf="loading">
-
-                    <td colspan="5" class="loading-row">
-
-                        <div class="spinner"></div>
-
-                        Cargando mantenimientos...
-
-                    </td>
-
-                </tr>
-
-                <!-- VACÍO -->
-
-                <tr *ngIf="!loading && filteredItems.length===0">
-
-                    <td colspan="5" class="text-center py-14">
-
-                        <div class="text-6xl">
-
-                            🛠
-
-                        </div>
-
-                        <h3 class="text-xl font-bold text-gray-700 mt-4">
-
-                            No existen mantenimientos registrados
-
-                        </h3>
-
-                        <p class="text-gray-500 mt-2">
-
-                            No hay información para mostrar.
+                            Administración de los mantenimientos preventivos, correctivos y programados del sistema.
 
                         </p>
 
-                    </td>
+                    </div>
 
-                </tr>
+                    <div class="bg-red-100 text-red-700 px-4 py-2 rounded-xl font-semibold text-sm">
 
-                <!-- ITEMS -->
+                        {{ filteredItems.length }} registros
 
-                <tr
-                    *ngFor="let item of filteredItems; let i=index; trackBy: trackById"
-                    class="transition duration-300 border-b border-gray-100 hover:bg-red-50"
-                    [ngClass]="{
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- TABLA -->
+
+            <div class="overflow-x-auto">
+
+                <table class="min-w-full">
+
+                    <!-- CABECERA -->
+
+                    <thead class="bg-gray-900 text-white sticky top-0 z-10">
+
+                        <tr>
+
+                            <th class="px-6 py-5 text-left">
+                                Sistema
+                            </th>
+
+                            <th class="px-6 py-5 text-left">
+                                Mantenimiento
+                            </th>
+
+                            <th class="px-6 py-5 text-left">
+                                Tipo
+                            </th>
+
+                            <th class="px-6 py-5 text-left">
+                                Control
+                            </th>
+
+                            <th class="px-6 py-5 text-center">
+                                Acciones
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <!-- CUERPO -->
+
+                    <tbody>
+
+                        <!-- LOADING -->
+
+                        <tr *ngIf="loading">
+
+                            <td colspan="5" class="loading-row">
+
+                                <div class="spinner"></div>
+
+                                Cargando mantenimientos...
+
+                            </td>
+
+                        </tr>
+
+                        <!-- VACÍO -->
+
+                        <tr *ngIf="!loading && filteredItems.length===0">
+
+                            <td colspan="5" class="text-center py-14">
+
+                                <div class="text-6xl">
+
+                                    🛠
+
+                                </div>
+
+                                <h3 class="text-xl font-bold text-gray-700 mt-4">
+
+                                    No existen mantenimientos registrados
+
+                                </h3>
+
+                                <p class="text-gray-500 mt-2">
+
+                                    No hay información para mostrar.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        <!-- ITEMS -->
+
+                        <tr *ngFor="let item of filteredItems; let i=index; trackBy: trackById"
+                            class="transition duration-300 border-b border-gray-100 hover:bg-red-50" [ngClass]="{
                         'bg-white':i%2==0,
                         'bg-gray-50':i%2!=0
                     }">
 
-                    <!-- SISTEMA -->
+                            <!-- SISTEMA -->
 
-                    <td class="px-6 py-5">
+                            <td class="px-6 py-5">
 
-                        <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-3">
 
-                            <div class="w-11 h-11 rounded-full bg-red-100 flex items-center justify-center">
+                                    <div class="w-11 h-11 rounded-full bg-red-100 flex items-center justify-center">
 
-                                <i class="fas fa-cogs text-red-600"></i>
+                                        <i class="fas fa-cogs text-red-600"></i>
 
-                            </div>
+                                    </div>
 
-                            <div>
+                                    <div>
+
+                                        <div class="font-bold text-gray-800">
+
+                                            {{ item.sistema }}
+
+                                        </div>
+
+                                        <div class="text-xs text-gray-500">
+
+                                            Sistema
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <!-- MANTENIMIENTO -->
+
+                            <td class="px-6 py-5">
 
                                 <div class="font-bold text-gray-800">
 
-                                    {{ item.sistema }}
+                                    {{ item.nombre }}
 
                                 </div>
 
-                                <div class="text-xs text-gray-500">
+                                <div class="text-sm text-gray-500 mt-1">
 
-                                    Sistema
+                                    {{ item.descripcion || 'Sin descripción' }}
 
                                 </div>
 
-                            </div>
+                            </td>
 
-                        </div>
+                            <!-- TIPO -->
 
-                    </td>
+                            <td class="px-6 py-5">
 
-                    <!-- MANTENIMIENTO -->
+                                <span
+                                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
 
-                    <td class="px-6 py-5">
+                                    {{ item.tipo_mantenimiento }}
 
-                        <div class="font-bold text-gray-800">
+                                </span>
 
-                            {{ item.nombre }}
+                            </td>
 
-                        </div>
+                            <!-- CONTROL -->
 
-                        <div class="text-sm text-gray-500 mt-1">
+                            <td class="px-6 py-5">
 
-                            {{ item.descripcion || 'Sin descripción' }}
-
-                        </div>
-
-                    </td>
-
-                    <!-- TIPO -->
-
-                    <td class="px-6 py-5">
-
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
-
-                            {{ item.tipo_mantenimiento }}
-
-                        </span>
-
-                    </td>
-
-                    <!-- CONTROL -->
-
-                    <td class="px-6 py-5">
-
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold"
-                            [ngClass]="{
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold"
+                                    [ngClass]="{
 
                                 'bg-blue-100 text-blue-700 border border-blue-200':
                                 item.tipo_control=='KM',
@@ -300,268 +297,280 @@
 
                             }">
 
-                            {{ item.tipo_control }}
+                                    {{ item.tipo_control }}
 
-                        </span>
+                                </span>
 
-                    </td>
+                            </td>
 
-                    <!-- ACCIONES -->
+                            <!-- ACCIONES -->
 
-                    <td class="px-6 py-5">
+                            <td class="px-6 py-5">
 
-                        <div class="flex justify-center gap-2">
+                                <div class="flex justify-center gap-2">
 
-                            <button
-                                class="w-10 h-10 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 transition"
-                                (click)="abrirVer(item)">
+                                    <button
+                                        class="w-10 h-10 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 transition"
+                                        (click)="abrirVer(item)">
 
-                                <i class="fas fa-eye"></i>
+                                        <i class="fas fa-eye"></i>
 
-                            </button>
+                                    </button>
 
-                            <button
-                                class="w-10 h-10 rounded-xl bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition"
-                                (click)="abrirEditar(item)">
+                                    <button
+                                        class="w-10 h-10 rounded-xl bg-yellow-100 hover:bg-yellow-200 text-yellow-700 transition"
+                                        (click)="abrirEditar(item)">
 
-                                <i class="fas fa-edit"></i>
+                                        <i class="fas fa-edit"></i>
 
-                            </button>
+                                    </button>
 
-                            <button
-                                class="w-10 h-10 rounded-xl bg-red-100 hover:bg-red-200 text-red-700 transition"
-                                (click)="confirmarEliminar(item)">
+                                    <button
+                                        class="w-10 h-10 rounded-xl bg-red-100 hover:bg-red-200 text-red-700 transition"
+                                        (click)="confirmarEliminar(item)">
 
-                                <i class="fas fa-trash-alt"></i>
+                                        <i class="fas fa-trash-alt"></i>
 
-                            </button>
+                                    </button>
 
-                        </div>
+                                </div>
 
-                    </td>
+                            </td>
 
-                </tr>
+                        </tr>
 
-            </tbody>
+                    </tbody>
 
-        </table>
+                </table>
 
-    </div>
+            </div>
 
-</div>
+        </div>
     </section>
 
-    <!-- ═════════════════════════════ -->
-    <!-- MODAL -->
-    <!-- ═════════════════════════════ -->
+
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- MODAL: CREAR / EDITAR / VER MANTENIMIENTO -->
+    <!-- ═══════════════════════════════════════════════ -->
 
     <div *ngIf="showModal" class="modal-backdrop" (click)="cerrarModal()">
-
         <div class="modal-panel" (click)="$event.stopPropagation()">
 
             <!-- HEADER -->
             <div class="modal-header">
-
                 <div>
-
-                    <h3>
-                        {{ titulo }}
-                    </h3>
-
-                    <p>
-                        Gestión de mantenimiento
-                    </p>
-
+                    <h3>{{ titulo }}</h3>
+                    <p>Gestión de mantenimiento</p>
                 </div>
 
-                <button class="modal-close" (click)="cerrarModal()">
-
+                <button type="button" class="modal-close" aria-label="Cerrar modal" (click)="cerrarModal()">
                     <i class="fas fa-times-circle"></i>
-
                 </button>
-
             </div>
 
-            <!-- FORM -->
+            <!-- FORMULARIO -->
             <form [formGroup]="form" (ngSubmit)="guardar()" class="modal-form">
 
-                <!-- GENERAL -->
+                <!-- INFORMACIÓN GENERAL -->
                 <div class="form-section">
-
                     <div class="form-section-title">
-
                         <i class="fas fa-tools"></i>
-
                         Información general
-
                     </div>
 
                     <div class="form-grid">
 
-                        <!-- SISTEMA -->
                         <div class="form-field">
-
-                            <label>
-                                Sistema *
-                            </label>
+                            <label>Sistema *</label>
 
                             <select formControlName="sistema">
-
-                                <option value="">
-                                    Seleccione sistema
-                                </option>
+                                <option value="">Seleccione sistema</option>
 
                                 <option *ngFor="let s of sistemas" [value]="s.nombre">
                                     {{ s.nombre }}
                                 </option>
-
                             </select>
-
                         </div>
 
-                        <!-- NOMBRE -->
                         <div class="form-field">
+                            <label>Nombre del mantenimiento *</label>
 
-                            <label>
-                                Nombre *
-                            </label>
-
-                            <input formControlName="nombre" placeholder="Ej: Cambio de aceite">
-
+                            <input formControlName="nombre" maxlength="150" placeholder="Ej: Cambio de aceite" />
                         </div>
 
-                        <!-- TIPO -->
                         <div class="form-field">
-
-                            <label>
-                                Tipo mantenimiento
-                            </label>
+                            <label>Tipo de mantenimiento *</label>
 
                             <select formControlName="tipo_mantenimiento">
-
                                 <option *ngFor="let t of tiposMantenimiento" [value]="t">
                                     {{ t }}
                                 </option>
-
                             </select>
-
                         </div>
 
-                        <!-- CONTROL -->
                         <div class="form-field">
-
-                            <label>
-                                Tipo control
-                            </label>
+                            <label>Tipo de control *</label>
 
                             <select formControlName="tipo_control">
-
-                                <option value="KM">
-                                    Kilometraje
-                                </option>
-
-                                <option value="DIAS">
-                                    Tiempo
-                                </option>
-
+                                <option value="KM">Kilometraje</option>
+                                <option value="DIAS">Tiempo (días)</option>
+                                <option value="HORAS">Horómetro (horas)</option>
+                                <option value="OCASIONAL">Ocasional</option>
                             </select>
-
                         </div>
 
-                    </div>
-
-                </div>
-
-                <!-- CONFIG -->
-                <div class="form-section">
-
-
-
-                    <div class="form-grid">
-
-
-                        <!-- OBLIGATORIO -->
                         <div class="form-field">
-
-                            <label>
-                                Obligatorio
-                            </label>
+                            <label>¿Es obligatorio?</label>
 
                             <select formControlName="obligatorio">
-
-                                <option [ngValue]="true">
-                                    Sí
-                                </option>
-
-                                <option [ngValue]="false">
-                                    No
-                                </option>
-
+                                <option [ngValue]="true">Sí</option>
+                                <option [ngValue]="false">No</option>
                             </select>
-
                         </div>
 
-
                     </div>
-
                 </div>
 
-                <!-- DESCRIPCION -->
-                <div class="form-section">
-
+                <!-- ARTÍCULOS REQUERIDOS -->
+                <div class="form-section articulos-section" formArrayName="articulos">
                     <div class="form-section-title">
-
-                        <i class="fas fa-align-left"></i>
-
-                        Descripción
-
+                        <i class="fas fa-boxes-stacked"></i>
+                        Artículos requeridos
                     </div>
 
-                    <textarea formControlName="descripcion" class="textarea" rows="5"
-                        placeholder="Descripción del mantenimiento..."></textarea>
+                    <p class="articulos-description">
+                        Define los artículos que debe contener este mantenimiento
+                        y la cantidad mínima requerida.
+                    </p>
 
+                    <!-- LISTA DE ARTÍCULOS -->
+                    <div *ngFor="let articulo of articulos.controls; let i = index" [formGroupName]="i"
+                        class="articulo-card">
+                        <div class="articulo-header">
+                            <div class="articulo-heading">
+                                <span class="articulo-number">
+                                    {{ i + 1 }}
+                                </span>
+
+                                <strong>Artículo {{ i + 1 }}</strong>
+                            </div>
+
+                            <button *ngIf="modalMode !== 'ver'" type="button" class="articulo-remove"
+                                (click)="eliminarArticulo(i)">
+                                <i class="fas fa-trash"></i>
+                                Quitar
+                            </button>
+                        </div>
+
+                        <div class="form-grid articulo-fields">
+
+                            <!-- NOMBRE -->
+                            <div class="form-field">
+                                <label>Nombre del artículo *</label>
+
+                                <input formControlName="nombre" maxlength="150" placeholder="Ej: Gasas estériles" />
+
+                                <small class="articulo-error" *ngIf="
+                  articulo.get('nombre')?.touched &&
+                  articulo.get('nombre')?.invalid
+                ">
+                                    Escribe un nombre válido de máximo 150 caracteres.
+                                </small>
+                            </div>
+
+                            <!-- CANTIDAD -->
+                            <div class="form-field">
+                                <label>Cantidad mínima *</label>
+
+                                <input formControlName="cantidad" type="number" min="1" step="1" placeholder="Ej: 10" />
+
+                                <small class="articulo-error" *ngIf="
+                  articulo.get('cantidad')?.touched &&
+                  articulo.get('cantidad')?.invalid
+                ">
+                                    Ingresa una cantidad entera mayor que cero.
+                                </small>
+                            </div>
+
+                            <!-- FECHA DE VENCIMIENTO -->
+                            <div class="form-field">
+                                <label>Fecha de vencimiento</label>
+
+                                <input type="date" formControlName="fecha_vencimiento" />
+
+                                <small class="text-gray-500">
+                                    Opcional. Registra la fecha de vencimiento del artículo.
+                                </small>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- ESTADO VACÍO -->
+                    <div *ngIf="articulos.length === 0" class="articulo-empty">
+                        <i class="fas fa-box-open"></i>
+
+                        <strong>No hay artículos configurados</strong>
+
+                        <span>
+                            Puedes agregar los elementos y las cantidades mínimas
+                            que requiere este mantenimiento.
+                        </span>
+                    </div>
+
+                    <!-- AGREGAR ARTÍCULO -->
+                    <div *ngIf="modalMode !== 'ver'" class="articulo-add-container">
+                        <button type="button" class="btn-secondary articulo-add" (click)="agregarArticulo()">
+                            <i class="fas fa-plus"></i>
+                            Agregar artículo
+                        </button>
+                    </div>
                 </div>
 
+                <!-- DESCRIPCIÓN -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-align-left"></i>
+                        Descripción
+                    </div>
 
+                    <div class="descripcion-container">
+                        <textarea formControlName="descripcion" class="textarea" rows="4" maxlength="2000"
+                            placeholder="Describe el alcance o las actividades del mantenimiento..."></textarea>
+                    </div>
+                </div>
 
-                <!-- ACTIONS -->
+                <!-- ACCIONES: CREAR / EDITAR -->
                 <div class="modal-actions" *ngIf="modalMode !== 'ver'">
-
                     <button type="button" class="btn-cancel" (click)="cerrarModal()">
                         Cancelar
                     </button>
 
                     <button type="submit" class="btn-save" [disabled]="saving">
+                        <i class="fas" [ngClass]="saving ? 'fa-spinner fa-spin' : 'fa-save'"></i>
 
-                        <span *ngIf="!saving">
-                            Guardar
+                        <span>
+                            {{ saving ? 'Guardando...' : 'Guardar mantenimiento' }}
                         </span>
-
-                        <span *ngIf="saving">
-                            Guardando...
-                        </span>
-
                     </button>
-
                 </div>
 
-                <!-- VIEW -->
+                <!-- ACCIONES: CONSULTAR -->
                 <div class="modal-actions" *ngIf="modalMode === 'ver'">
-
                     <button type="button" class="btn-cancel" (click)="cerrarModal()">
                         Cerrar
                     </button>
 
                     <button type="button" class="btn-primary" (click)="abrirEditar(itemSeleccionado)">
-                        Editar
+                        <i class="fas fa-pen"></i>
+                        Editar mantenimiento
                     </button>
-
                 </div>
 
             </form>
-
         </div>
-
     </div>
 
     <!-- ═════════════════════════════ -->

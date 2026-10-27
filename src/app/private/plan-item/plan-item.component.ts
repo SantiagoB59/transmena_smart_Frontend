@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  Validators
+} from '@angular/forms';
 import { PlanItemService } from 'src/app/services/plan-item.service';
 import { SistemasService } from 'src/app/services/sistemas.service';
 @Component({
@@ -63,19 +68,14 @@ export class PlanItemComponent implements OnInit {
   // FORM (PLAN BASE)
   // =========================
   initForm(): void {
-
     this.form = this.fb.group({
-
       sistema: ['', Validators.required],
       nombre: ['', Validators.required],
       descripcion: [''],
-
       tipo_mantenimiento: ['PREVENTIVO', Validators.required],
-
       tipo_control: ['KM', Validators.required],
-
       obligatorio: [true],
-
+      articulos: this.fb.array([])
     });
   }
 
@@ -132,57 +132,60 @@ export class PlanItemComponent implements OnInit {
   // MODAL
   // =========================
   abrirCrear(): void {
-
     this.modalMode = 'crear';
     this.titulo = 'Nuevo mantenimiento';
-
     this.itemSeleccionado = null;
 
+    this.form.enable();
+
     this.form.reset({
+      sistema: '',
+      nombre: '',
+      descripcion: '',
       tipo_mantenimiento: 'PREVENTIVO',
       tipo_control: 'KM',
-      obligatorio: true,
-      activo: true
+      obligatorio: true
     });
 
+    this.limpiarArticulos();
     this.showModal = true;
   }
 
   abrirEditar(item: any): void {
-
     this.modalMode = 'editar';
     this.titulo = 'Editar mantenimiento';
-
     this.itemSeleccionado = item;
 
+    this.form.enable();
+    this.limpiarArticulos();
+
     this.form.patchValue(item);
+    this.cargarArticulos(item.articulos || []);
 
     this.showModal = true;
   }
 
   abrirVer(item: any): void {
-
     this.modalMode = 'ver';
     this.titulo = 'Detalle mantenimiento';
-
     this.itemSeleccionado = item;
 
+    this.form.enable();
+    this.limpiarArticulos();
+
     this.form.patchValue(item);
+    this.cargarArticulos(item.articulos || []);
 
     this.form.disable();
-
     this.showModal = true;
   }
 
   cerrarModal(): void {
-
     this.showModal = false;
-
     this.form.enable();
-
     this.form.reset();
+    this.limpiarArticulos();
   }
-
   // =========================
   // SAVE
   // =========================
@@ -293,5 +296,58 @@ export class PlanItemComponent implements OnInit {
 
       });
 
+  }
+
+  // =========================
+  // ARTÍCULOS DEL MANTENIMIENTO
+  // =========================
+
+  get articulos(): FormArray {
+    return this.form.get('articulos') as FormArray;
+  }
+
+
+  agregarArticulo(articulo?: any): void {
+    this.articulos.push(
+      this.fb.group({
+        nombre: [
+          articulo?.nombre || '',
+          [
+            Validators.required,
+            Validators.maxLength(150)
+          ]
+        ],
+        cantidad: [
+          articulo?.cantidad ?? 1,
+          [
+            Validators.required,
+            Validators.min(1),
+            Validators.pattern(/^[1-9]\d*$/)
+          ]
+        ],
+        fecha_vencimiento: [
+          articulo?.fecha_vencimiento || ''
+        ]
+      })
+    );
+  }
+
+
+  eliminarArticulo(index: number): void {
+    this.articulos.removeAt(index);
+  }
+
+  private limpiarArticulos(): void {
+    while (this.articulos.length > 0) {
+      this.articulos.removeAt(0);
+    }
+  }
+
+  private cargarArticulos(articulos: any[] = []): void {
+    this.limpiarArticulos();
+
+    articulos.forEach(articulo => {
+      this.agregarArticulo(articulo);
+    });
   }
 }
