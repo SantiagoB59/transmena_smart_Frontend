@@ -310,6 +310,7 @@ export class PlanItemComponent implements OnInit {
   agregarArticulo(articulo?: any): void {
     this.articulos.push(
       this.fb.group({
+        id: [articulo?.id ?? null],
         nombre: [
           articulo?.nombre || '',
           [
@@ -324,9 +325,6 @@ export class PlanItemComponent implements OnInit {
             Validators.min(1),
             Validators.pattern(/^[1-9]\d*$/)
           ]
-        ],
-        fecha_vencimiento: [
-          articulo?.fecha_vencimiento || ''
         ]
       })
     );

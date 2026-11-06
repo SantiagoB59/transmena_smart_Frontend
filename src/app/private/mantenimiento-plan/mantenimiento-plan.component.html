@@ -97,9 +97,8 @@
 
             <th>Nombre</th>
 
-            <th>Sistema</th>
 
-            <th>Tipo</th>
+            <th>Tipo de mantenimiento</th>
 
             <th>Control</th>
             <th>Mantenimiento cada</th>
@@ -112,6 +111,8 @@
 
             <th>Estado</th>
 
+            <th>Inventario</th>
+
           </tr>
 
         </thead>
@@ -121,8 +122,6 @@
           <tr *ngFor="let p of planes">
 
             <td>{{ p.nombre }}</td>
-
-            <td>{{ p.sistema }}</td>
 
             <td>{{ p.tipo_mantenimiento }}</td>
 
@@ -201,6 +200,25 @@
             </td>
 
             <!-- ACCIONES -->
+
+            <td>
+
+              <button
+                *ngIf="puedeAdministrarArticulos(p)"
+                type="button"
+                class="btn-inventario"
+                (click)="abrirInventario(p)">
+
+                <i class="fas fa-boxes-stacked"></i>
+                
+
+              </button>
+
+              <span *ngIf="!puedeAdministrarArticulos(p)" class="text-slate-400">
+                -
+              </span>
+
+            </td>
 
           </tr>
 
@@ -507,6 +525,284 @@
 
       <button (click)="guardar()" class="btn-primary">
         Guardar mantenimiento
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ========================= -->
+<!-- MODAL INVENTARIO DE ARTÍCULOS -->
+<!-- ========================= -->
+
+<div *ngIf="showInventarioModal" class="modal-backdrop inventario-backdrop" (click)="cerrarInventario()">
+
+  <div class="modal-box inventario-modal" (click)="$event.stopPropagation()">
+
+    <!-- HEADER -->
+    <div class="modal-header">
+
+      <div>
+        <h2 class="modal-title">
+          <i class="fas fa-boxes-stacked"></i>
+          Inventario del vehículo
+        </h2>
+
+        <p class="inventario-subtitle" *ngIf="inventario">
+          {{ inventario.plan_item?.nombre }}
+          <span *ngIf="inventario.vehiculo">
+            · {{ inventario.vehiculo.placa }}
+          </span>
+        </p>
+      </div>
+
+      <button class="modal-close" (click)="cerrarInventario()">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body inventario-body">
+
+      <!-- LOADING -->
+      <div *ngIf="inventarioLoading" class="inventario-loading">
+        <div class="spinner"></div>
+        Cargando inventario...
+      </div>
+
+      <!-- ERROR -->
+      <div *ngIf="inventarioError" class="inventario-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ inventarioError }}
+      </div>
+
+      <ng-container *ngIf="!inventarioLoading && inventario">
+
+        <!-- RESUMEN -->
+        <div class="inventario-resumen">
+
+          <div class="resumen-item">
+            <span class="resumen-valor">{{ inventario.resumen?.total_articulos || 0 }}</span>
+            <span class="resumen-label">Artículos</span>
+          </div>
+
+          <div class="resumen-item vigente">
+            <span class="resumen-valor">{{ inventario.resumen?.vigentes || 0 }}</span>
+            <span class="resumen-label">Vigentes</span>
+          </div>
+
+          <div class="resumen-item proximo">
+            <span class="resumen-valor">{{ inventario.resumen?.proximos || 0 }}</span>
+            <span class="resumen-label">Próximos</span>
+          </div>
+
+          <div class="resumen-item vencido">
+            <span class="resumen-valor">{{ inventario.resumen?.vencidos || 0 }}</span>
+            <span class="resumen-label">Vencidos</span>
+          </div>
+
+          <div class="resumen-item sin-registro">
+            <span class="resumen-valor">{{ inventario.resumen?.sin_registro || 0 }}</span>
+            <span class="resumen-label">Sin registrar</span>
+          </div>
+
+        </div>
+
+        <!-- ARTÍCULOS -->
+        <div *ngFor="let articulo of inventario.articulos" class="inventario-articulo"
+          [class.articulo-insuficiente]="!articulo.inventario_suficiente">
+
+          <div class="inventario-articulo-header">
+
+            <div class="inventario-articulo-info">
+
+              <strong>{{ articulo.nombre }}</strong>
+
+              <div class="inventario-metricas">
+
+                <span>
+                  Mínimo:
+                  <strong>{{ articulo.cantidad_minima }}</strong>
+                </span>
+
+                <span>
+                  Disponible:
+                  <strong>{{ articulo.cantidad_total }}</strong>
+                </span>
+
+                <span [ngClass]="estadoArticuloClass(articulo.estado)">
+                  {{ estadoArticuloLabel(articulo.estado) }}
+                </span>
+
+              </div>
+
+            </div>
+
+            <button type="button" class="btn-lote" (click)="abrirNuevoLote(articulo)">
+              <i class="fas fa-plus"></i>
+              Agregar lote
+            </button>
+
+          </div>
+
+          <div *ngIf="!articulo.inventario_suficiente" class="inventario-advertencia">
+            <i class="fas fa-triangle-exclamation"></i>
+            Inventario insuficiente: hay {{ articulo.cantidad_total }} de
+            {{ articulo.cantidad_minima }} unidades mínimas.
+          </div>
+
+          <!-- LOTES -->
+          <div class="lotes-tabla-wrapper" *ngIf="articulo.lotes.length > 0; else sinLotes">
+
+            <table class="lotes-tabla">
+
+              <thead>
+                <tr>
+                  <th>Lote</th>
+                  <th>Cantidad</th>
+                  <th>Vencimiento</th>
+                  <th>Estado</th>
+                  <th class="text-right">Acciones</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let lote of articulo.lotes; let i = index">
+
+                  <td>#{{ i + 1 }}</td>
+
+                  <td>{{ lote.cantidad }}</td>
+
+                  <td>{{ formatearFecha(lote.fecha_vencimiento) }}</td>
+
+                  <td>
+                    <span [ngClass]="estadoArticuloClass(lote.estado)">
+                      {{ estadoArticuloLabel(lote.estado) }}
+                    </span>
+
+                    <small *ngIf="lote.dias_restantes !== null && lote.dias_restantes !== undefined"
+                      class="dias-restantes">
+                      ({{ lote.dias_restantes }} días)
+                    </small>
+                  </td>
+
+                  <td class="text-right">
+
+                    <button type="button" class="btn-lote-accion editar" title="Editar lote"
+                      (click)="abrirEditarLote(articulo, lote)">
+                      <i class="fas fa-pen"></i>
+                    </button>
+
+                    <button type="button" class="btn-lote-accion eliminar" title="Eliminar lote"
+                      (click)="eliminarLote(articulo, lote)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+          <ng-template #sinLotes>
+            <div class="sin-lotes">
+              <i class="fas fa-box-open"></i>
+              No hay lotes registrados para este artículo.
+            </div>
+          </ng-template>
+
+        </div>
+
+        <div *ngIf="inventario.articulos?.length === 0" class="sin-lotes">
+          <i class="fas fa-box-open"></i>
+          Este mantenimiento no tiene artículos configurados en el catálogo.
+        </div>
+
+      </ng-container>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="modal-footer">
+      <button (click)="cerrarInventario()" class="btn-secondary">
+        Cerrar
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ========================= -->
+<!-- MODAL LOTE -->
+<!-- ========================= -->
+
+<div *ngIf="showLoteModal" class="modal-backdrop lote-backdrop" (click)="cerrarLoteModal()">
+
+  <div class="modal-box lote-modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+
+      <h2 class="modal-title">
+        <i class="fas fa-box"></i>
+        {{ loteEditando ? 'Editar lote' : 'Nuevo lote' }}
+      </h2>
+
+      <button class="modal-close" (click)="cerrarLoteModal()">
+        <i class="fas fa-times"></i>
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="bg-slate-100 rounded-xl p-4 mb-4" *ngIf="loteArticulo">
+        <p class="font-bold text-slate-800">
+          {{ loteArticulo.nombre }}
+        </p>
+        <p class="text-sm text-slate-500">
+          Cantidad mínima requerida: {{ loteArticulo.cantidad_minima }}
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label>Cantidad *</label>
+        <input [(ngModel)]="loteCantidad" type="number" min="1" step="1" class="form-input"
+          placeholder="Ej: 10" />
+      </div>
+
+      <div class="form-group">
+        <label>Fecha de vencimiento</label>
+        <input [(ngModel)]="loteFecha" type="date" class="form-input" />
+        <small class="form-help">
+          Opcional. Puedes dejar la fecha vacía si el artículo no vence.
+        </small>
+      </div>
+
+      <div *ngIf="loteError" class="inventario-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ loteError }}
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button (click)="cerrarLoteModal()" class="btn-secondary">
+        Cancelar
+      </button>
+
+      <button (click)="guardarLote()" class="btn-primary" [disabled]="savingLote">
+        <i class="fas" [ngClass]="savingLote ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+        {{ savingLote ? 'Guardando...' : 'Guardar lote' }}
       </button>
 
     </div>

@@ -116,23 +116,41 @@ $radius-sm: 0.75rem;
 }
 
 .table-wrapper {
-  overflow-x: auto;
+  width: 100%;
+  overflow: visible;
 }
 
 .data-table {
   width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
+  font-size: 0.82rem;
+
+  .col-nombre      { width: 18%; }
+  .col-sistema     { width: 10%; }
+  .col-tipo        { width: 9%; }
+  .col-control     { width: 7%; }
+  .col-frecuencia  { width: 10%; }
+  .col-actual      { width: 10%; }
+  .col-programado  { width: 10%; }
+  .col-restante    { width: 8%; }
+  .col-estado      { width: 8%; }
+  .col-inventario  { width: 10%; }
 }
 
 .data-table thead th {
-  padding: 1.5rem 1.75rem;
-  font-size: 0.75rem;
+  padding: 1rem 0.65rem;
+  font-size: 0.68rem;
+  line-height: 1.35;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.06em;
   color: $slate;
   font-weight: 900;
+  text-align: left;
   background: linear-gradient(90deg, $light 0%, white 100%);
   border-bottom: 3px solid $border;
+  overflow-wrap: anywhere;
 }
 
 .data-table tbody tr {
@@ -145,9 +163,22 @@ $radius-sm: 0.75rem;
 }
 
 .data-table td {
-  padding: 1.5rem 1.75rem;
+  padding: 1rem 0.65rem;
   vertical-align: middle;
   border-bottom: 1px solid #f3f4f6;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.cell-value {
+  display: block;
+  min-width: 0;
+}
+
+.cell-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 
 // BADGES
@@ -405,6 +436,337 @@ $radius-sm: 0.75rem;
     transform: scale(1) translateY(0);
   }
 
+}
+
+// =========================
+// INVENTARIO DE ARTÍCULOS
+// =========================
+
+.btn-inventario {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid #fecaca;
+  border-radius: $radius-sm;
+  background: #fef2f2;
+  color: $red;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $red;
+    color: white;
+    transform: translateY(-1px);
+  }
+}
+
+.inventario-backdrop {
+  z-index: 10000;
+}
+
+.lote-backdrop {
+  z-index: 10050;
+}
+
+.inventario-modal {
+  max-width: 1050px;
+}
+
+.lote-modal {
+  max-width: 520px;
+}
+
+.inventario-subtitle {
+  margin: 0.4rem 0 0;
+  color: $slate;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.inventario-body {
+  background: #f8fafc;
+}
+
+.inventario-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  color: $slate;
+  font-weight: 700;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #fecaca;
+  border-top-color: $red;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.inventario-error {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: $radius-sm;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: $red;
+  font-weight: 700;
+}
+
+.inventario-resumen {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.resumen-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0.5rem;
+  border-radius: $radius-sm;
+  background: white;
+  border: 1px solid $border;
+
+  .resumen-valor {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: $dark;
+  }
+
+  .resumen-label {
+    margin-top: 0.15rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $slate;
+  }
+
+  &.vigente .resumen-valor { color: $green; }
+  &.proximo .resumen-valor { color: $orange; }
+  &.vencido .resumen-valor { color: $red; }
+  &.sin-registro .resumen-valor { color: #64748b; }
+}
+
+.inventario-articulo {
+  background: white;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+
+  &.articulo-insuficiente {
+    border-color: #fecaca;
+    box-shadow: inset 4px 0 0 $red;
+  }
+}
+
+.inventario-articulo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.inventario-articulo-info {
+  min-width: 220px;
+
+  > strong {
+    display: block;
+    color: $dark;
+    font-size: 1.05rem;
+    font-weight: 900;
+    margin-bottom: 0.55rem;
+  }
+}
+
+.inventario-metricas {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: $slate;
+  font-size: 0.85rem;
+
+  strong {
+    color: $mid;
+  }
+}
+
+.btn-lote {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: $radius-sm;
+  background: #eff6ff;
+  color: $blue;
+  font-weight: 800;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: $blue;
+    color: white;
+  }
+}
+
+.inventario-advertencia {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.6rem;
+  background: #fef2f2;
+  color: $red;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.lotes-tabla-wrapper {
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+.lotes-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+
+  th {
+    text-align: left;
+    padding: 0.65rem 0.75rem;
+    color: $slate;
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid $border;
+    background: #f8fafc;
+  }
+
+  td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: $mid;
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.text-right {
+  text-align: right;
+}
+
+.estado-articulo {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &.vigente {
+    background: #d1fae5;
+    color: $green;
+  }
+
+  &.proximo {
+    background: #ffedd5;
+    color: $orange;
+  }
+
+  &.vencido {
+    background: #fee2e2;
+    color: $red;
+  }
+
+  &.sin-fecha {
+    background: #e2e8f0;
+    color: #475569;
+  }
+
+  &.sin-registro {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+}
+
+.dias-restantes {
+  display: block;
+  margin-top: 0.15rem;
+  color: $slate;
+  font-size: 0.7rem;
+}
+
+.btn-lote-accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.editar {
+    background: #fef9c3;
+    color: #a16207;
+
+    &:hover {
+      background: #eab308;
+      color: white;
+    }
+  }
+
+  &.eliminar {
+    background: #fee2e2;
+    color: $red;
+
+    &:hover {
+      background: $red;
+      color: white;
+    }
+  }
+}
+
+.sin-lotes {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: $radius-sm;
+  background: #f8fafc;
+  border: 1px dashed $border;
+  color: $slate;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 // =========================

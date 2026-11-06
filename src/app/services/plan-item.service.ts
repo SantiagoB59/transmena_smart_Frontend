@@ -10,7 +10,6 @@ export interface PlanItemArticulo {
   plan_item_id?: number;
   nombre: string;
   cantidad: number;
-  fecha_vencimiento: string | null;
 }
 
 export interface PlanItem {

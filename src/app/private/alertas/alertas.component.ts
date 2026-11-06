@@ -390,6 +390,7 @@ export class AlertasComponent implements OnInit {
       case 'DOCUMENTO': return '📄';
       case 'GPS': return '📍';
       case 'MANTENIMIENTO': return '🔧';
+      case 'VENCIMIENTO': return '📦';
       default: return '🚨';
     }
   }
@@ -457,6 +458,22 @@ export class AlertasComponent implements OnInit {
 
         return;
       }
+    }
+
+
+    // =====================================================
+    // ARTÍCULO DE INVENTARIO POR VENCER
+    // =====================================================
+
+    if (alerta.tipo === 'VENCIMIENTO' && alerta.vehiculo_id) {
+
+      this.router.navigate([
+        '/dashboard/mantenimiento-plan',
+        'vehiculo',
+        alerta.vehiculo_id
+      ]);
+
+      return;
     }
 
 

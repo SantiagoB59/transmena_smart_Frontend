@@ -80,6 +80,76 @@ export class MantenimientoPlanService {
   }
 
   // =========================================
+  // 📦 INVENTARIO DE ARTÍCULOS POR VEHÍCULO
+  // =========================================
+
+  getInventarioPlan(
+    vehicleId: number,
+    vehiculoPlanItemId: number
+  ): Observable<any> {
+
+    return this.http.get(
+      `${this.api}/api/vehiculos/${vehicleId}/plan/${vehiculoPlanItemId}/articulos`
+    );
+  }
+
+  getInventarioVehiculo(vehicleId: number): Observable<any> {
+
+    return this.http.get(
+      `${this.api}/api/vehiculos/${vehicleId}/inventario`
+    );
+  }
+
+  registrarInventarioInicial(
+    vehicleId: number,
+    vehiculoPlanItemId: number,
+    articulos: any[]
+  ): Observable<any> {
+
+    return this.http.post(
+      `${this.api}/api/vehiculos/${vehicleId}/plan/${vehiculoPlanItemId}/articulos`,
+      { articulos }
+    );
+  }
+
+  agregarLote(
+    vehicleId: number,
+    vehiculoPlanItemId: number,
+    planItemDetalleId: number,
+    data: any
+  ): Observable<any> {
+
+    return this.http.post(
+      `${this.api}/api/vehiculos/${vehicleId}/plan/${vehiculoPlanItemId}/articulos/${planItemDetalleId}/lotes`,
+      data
+    );
+  }
+
+  actualizarLote(
+    vehicleId: number,
+    vehiculoPlanItemId: number,
+    loteId: number,
+    data: any
+  ): Observable<any> {
+
+    return this.http.put(
+      `${this.api}/api/vehiculos/${vehicleId}/plan/${vehiculoPlanItemId}/lotes/${loteId}`,
+      data
+    );
+  }
+
+  eliminarLote(
+    vehicleId: number,
+    vehiculoPlanItemId: number,
+    loteId: number
+  ): Observable<any> {
+
+    return this.http.delete(
+      `${this.api}/api/vehiculos/${vehicleId}/plan/${vehiculoPlanItemId}/lotes/${loteId}`
+    );
+  }
+
+  // =========================================
   // 🚨 ALERTAS VEHÍCULOS
   // =========================================
 

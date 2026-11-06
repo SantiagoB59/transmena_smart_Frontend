@@ -43,6 +43,10 @@ interface PlanVehiculo {
 
   estado: string;
   horometro_actual?: number;
+
+  tiene_articulos?: boolean;
+
+  inventario?: any[];
 }
 
 @Component({
@@ -87,6 +91,36 @@ export class MantenimientoPlanComponent implements OnInit {
   alerta_valor = 0;
 
   notas = '';
+
+  // =========================
+  // INVENTARIO DE ARTÍCULOS
+  // =========================
+  showInventarioModal = false;
+
+  inventarioLoading = false;
+
+  inventarioError = '';
+
+  inventario: any = null;
+
+  planInventarioSeleccionado: PlanVehiculo | null = null;
+
+  // =========================
+  // LOTE
+  // =========================
+  showLoteModal = false;
+
+  savingLote = false;
+
+  loteError = '';
+
+  loteEditando: any = null;
+
+  loteArticulo: any = null;
+
+  loteCantidad = 1;
+
+  loteFecha = '';
 
   constructor(
     private service: MantenimientoPlanService,
@@ -407,6 +441,292 @@ export class MantenimientoPlanComponent implements OnInit {
           }
         });
     }
+  }
+
+  // =====================================
+  // INVENTARIO DE ARTÍCULOS
+  // =====================================
+  puedeAdministrarArticulos(plan: PlanVehiculo): boolean {
+
+    if (this.tipo !== 'vehiculo') {
+      return false;
+    }
+
+    return !!(
+      plan?.tiene_articulos ||
+      plan?.plan_item?.articulos?.length
+    );
+  }
+
+  abrirInventario(plan: PlanVehiculo): void {
+
+    this.planInventarioSeleccionado = plan;
+
+    this.inventario = null;
+
+    this.inventarioError = '';
+
+    this.showInventarioModal = true;
+
+    this.cargarInventario();
+  }
+
+  cerrarInventario(): void {
+
+    this.showInventarioModal = false;
+
+    this.planInventarioSeleccionado = null;
+
+    this.inventario = null;
+
+    this.inventarioError = '';
+
+    this.cerrarLoteModal();
+  }
+
+  cargarInventario(): void {
+
+    if (!this.planInventarioSeleccionado) {
+      return;
+    }
+
+    this.inventarioLoading = true;
+
+    this.service
+      .getInventarioPlan(
+        this.entityId,
+        this.planInventarioSeleccionado.id
+      )
+      .subscribe({
+
+        next: (res) => {
+
+          this.inventario = res;
+
+          this.inventarioLoading = false;
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+          this.inventarioError =
+            err?.error?.error ||
+            'No fue posible cargar el inventario del vehículo.';
+
+          this.inventarioLoading = false;
+        }
+      });
+  }
+
+  // =====================================
+  // LOTES
+  // =====================================
+  abrirNuevoLote(articulo: any): void {
+
+    this.loteEditando = null;
+
+    this.loteArticulo = articulo;
+
+    this.loteCantidad =
+      articulo?.cantidad_minima || 1;
+
+    this.loteFecha = '';
+
+    this.loteError = '';
+
+    this.showLoteModal = true;
+  }
+
+  abrirEditarLote(articulo: any, lote: any): void {
+
+    this.loteEditando = lote;
+
+    this.loteArticulo = articulo;
+
+    this.loteCantidad = lote.cantidad;
+
+    this.loteFecha = lote.fecha_vencimiento || '';
+
+    this.loteError = '';
+
+    this.showLoteModal = true;
+  }
+
+  cerrarLoteModal(): void {
+
+    this.showLoteModal = false;
+
+    this.loteEditando = null;
+
+    this.loteArticulo = null;
+
+    this.loteError = '';
+
+    this.savingLote = false;
+  }
+
+  guardarLote(): void {
+
+    if (!this.planInventarioSeleccionado || !this.loteArticulo) {
+      return;
+    }
+
+    const cantidad = Number(this.loteCantidad);
+
+    if (!Number.isInteger(cantidad) || cantidad < 1) {
+
+      this.loteError =
+        'La cantidad debe ser un entero mayor que cero.';
+
+      return;
+    }
+
+    this.savingLote = true;
+
+    this.loteError = '';
+
+    const data = {
+      cantidad,
+      fecha_vencimiento: this.loteFecha || null
+    };
+
+    const peticion = this.loteEditando
+      ? this.service.actualizarLote(
+          this.entityId,
+          this.planInventarioSeleccionado.id,
+          this.loteEditando.id,
+          data
+        )
+      : this.service.agregarLote(
+          this.entityId,
+          this.planInventarioSeleccionado.id,
+          this.loteArticulo.plan_item_detalle_id,
+          data
+        );
+
+    peticion.subscribe({
+
+      next: () => {
+
+        this.savingLote = false;
+
+        this.cerrarLoteModal();
+
+        this.cargarInventario();
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+        this.loteError =
+          err?.error?.error ||
+          'No fue posible guardar el lote.';
+
+        this.savingLote = false;
+      }
+    });
+  }
+
+  eliminarLote(articulo: any, lote: any): void {
+
+    if (!this.planInventarioSeleccionado) {
+      return;
+    }
+
+    const confirmar = confirm(
+      `¿Eliminar el lote de "${articulo.nombre}" con cantidad ${lote.cantidad}?`
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    this.service
+      .eliminarLote(
+        this.entityId,
+        this.planInventarioSeleccionado.id,
+        lote.id
+      )
+      .subscribe({
+
+        next: () => {
+          this.cargarInventario();
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+          this.inventarioError =
+            err?.error?.error ||
+            'No fue posible eliminar el lote.';
+        }
+      });
+  }
+
+  // =====================================
+  // ESTADOS DE ARTÍCULOS
+  // =====================================
+  estadoArticuloClass(estado: string): string {
+
+    switch (estado) {
+
+      case 'VIGENTE':
+        return 'estado-articulo vigente';
+
+      case 'PROXIMO':
+        return 'estado-articulo proximo';
+
+      case 'VENCIDO':
+        return 'estado-articulo vencido';
+
+      case 'SIN_FECHA':
+        return 'estado-articulo sin-fecha';
+
+      default:
+        return 'estado-articulo sin-registro';
+    }
+  }
+
+  estadoArticuloLabel(estado: string): string {
+
+    switch (estado) {
+
+      case 'VIGENTE':
+        return 'Vigente';
+
+      case 'PROXIMO':
+        return 'Próximo a vencer';
+
+      case 'VENCIDO':
+        return 'Vencido';
+
+      case 'SIN_FECHA':
+        return 'Sin vencimiento';
+
+      case 'SIN_REGISTRO':
+        return 'Sin registrar';
+
+      default:
+        return estado || 'Sin estado';
+    }
+  }
+
+  formatearFecha(fecha: string | null): string {
+
+    if (!fecha) {
+      return 'Sin vencimiento';
+    }
+
+    const partes = fecha.split('-');
+
+    if (partes.length !== 3) {
+      return fecha;
+    }
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
   }
 
   // =====================================
