@@ -30,6 +30,17 @@ export class MantenimientoPlanService {
     );
   }
 
+  registrarCorrectivoVehiculo(
+    vehicleId: number,
+    data: any
+  ): Observable<any> {
+
+    return this.http.post(
+      `${this.api}/api/vehiculos/${vehicleId}/plan/correctivo`,
+      data
+    );
+  }
+
   completarPlan(id: number): Observable<any> {
 
     return this.http.put(

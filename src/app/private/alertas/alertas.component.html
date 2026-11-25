@@ -180,7 +180,7 @@
 
 <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 mb-8">
 
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-8 gap-4">
 
   <!-- PLACA -->
   <div class="relative">
@@ -225,6 +225,42 @@
     <option value="VENCIMIENTO">Artículos por vencer</option>
 
   </select>
+
+  <!-- MES -->
+  <div class="relative">
+
+    <input
+      type="month"
+      [(ngModel)]="filtros.mes"
+      (change)="limpiarRangoFechas()"
+      class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-red-500 focus:outline-none"
+    />
+
+  </div>
+
+  <!-- DESDE -->
+  <div class="relative">
+
+    <input
+      type="date"
+      [(ngModel)]="filtros.fecha_desde"
+      (change)="limpiarMes()"
+      class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-red-500 focus:outline-none"
+    />
+
+  </div>
+
+  <!-- HASTA -->
+  <div class="relative">
+
+    <input
+      type="date"
+      [(ngModel)]="filtros.fecha_hasta"
+      (change)="limpiarMes()"
+      class="w-full rounded-xl border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-red-500 focus:outline-none"
+    />
+
+  </div>
 
   <!-- FILTRAR -->
   <button

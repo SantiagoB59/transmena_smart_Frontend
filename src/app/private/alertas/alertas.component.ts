@@ -60,7 +60,10 @@ export class AlertasComponent implements OnInit {
     tipo: '',
     placa: '',
     codigo: '',
-    estado: ''
+    estado: '',
+    mes: '',
+    fecha_desde: '',
+    fecha_hasta: ''
 
   };
 
@@ -222,7 +225,11 @@ export class AlertasComponent implements OnInit {
   // =====================================================
   cargarEstadisticas(): void {
     this.alertasService
-      .obtenerEstadisticas()
+      .obtenerEstadisticas({
+        mes: this.filtros.mes,
+        fecha_desde: this.filtros.fecha_desde,
+        fecha_hasta: this.filtros.fecha_hasta
+      })
       .subscribe({
         next: (resp) => {
           this.estadisticas = resp;
@@ -237,7 +244,16 @@ export class AlertasComponent implements OnInit {
   // FILTRAR Y LIMPIAR
   // =====================================================
   filtrar(): void {
-    this.cargarAlertas();
+    this.cargarTodo();
+  }
+
+  limpiarRangoFechas(): void {
+    this.filtros.fecha_desde = '';
+    this.filtros.fecha_hasta = '';
+  }
+
+  limpiarMes(): void {
+    this.filtros.mes = '';
   }
 
   limpiarFiltros(): void {
@@ -248,6 +264,9 @@ export class AlertasComponent implements OnInit {
       placa: '',
       codigo: '',
       estado: '',
+      mes: '',
+      fecha_desde: '',
+      fecha_hasta: '',
     };
 
     this.cargarAlertas();

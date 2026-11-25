@@ -279,6 +279,17 @@ export class MantenimientosComponent implements OnInit {
   // =========================
   guardar(): void {
 
+    if (
+      this.vehiculoSeleccionado
+      && (
+        (this.vehiculoSeleccionado.estado || '').toString().toUpperCase()
+          === 'INACTIVO'
+        || this.vehiculoSeleccionado.activo === false
+      )
+    ) {
+      return alert('Vehículo inactivo: no se pueden registrar mantenimientos');
+    }
+
     if (!this.nuevo.vehiculo_id) return alert('Seleccione vehículo');
     if (!this.nuevo.vehiculo_plan_item_id) return alert('Seleccione mantenimiento');
     if (!this.nuevo.fecha) return alert('Seleccione fecha');

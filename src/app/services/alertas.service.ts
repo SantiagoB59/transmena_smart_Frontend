@@ -49,6 +49,14 @@ export class AlertasService {
 
     vehiculo_id?: number;
 
+    fecha_desde?: string;
+
+    fecha_hasta?: string;
+
+    mes?: string;
+
+    anio?: string | number;
+
   }): Observable<Alerta[]> {
 
     let params = new HttpParams();
@@ -93,6 +101,32 @@ export class AlertasService {
       );
     }
 
+    if (filters?.mes) {
+
+      const [anio, mes] = filters.mes.split('-');
+
+      params = params.set('anio', anio);
+      params = params.set('mes', mes);
+
+    } else {
+
+      if (filters?.fecha_desde) {
+
+        params = params.set(
+          'fecha_desde',
+          filters.fecha_desde
+        );
+      }
+
+      if (filters?.fecha_hasta) {
+
+        params = params.set(
+          'fecha_hasta',
+          filters.fecha_hasta
+        );
+      }
+    }
+
     return this.http.get<Alerta[]>(
       `${this.base}/`,
       { params }
@@ -117,11 +151,35 @@ export class AlertasService {
   // 📊 ESTADÍSTICAS
   // ─────────────────────────────────────────────
 
-  obtenerEstadisticas():
-    Observable<EstadisticasAlertas> {
+  obtenerEstadisticas(filters?: {
+    fecha_desde?: string;
+    fecha_hasta?: string;
+    mes?: string;
+  }): Observable<EstadisticasAlertas> {
+
+    let params = new HttpParams();
+
+    if (filters?.mes) {
+
+      const [anio, mes] = filters.mes.split('-');
+
+      params = params.set('anio', anio);
+      params = params.set('mes', mes);
+
+    } else {
+
+      if (filters?.fecha_desde) {
+        params = params.set('fecha_desde', filters.fecha_desde);
+      }
+
+      if (filters?.fecha_hasta) {
+        params = params.set('fecha_hasta', filters.fecha_hasta);
+      }
+    }
 
     return this.http.get<EstadisticasAlertas>(
-      `${this.base}/estadisticas`
+      `${this.base}/estadisticas`,
+      { params }
     );
   }
 

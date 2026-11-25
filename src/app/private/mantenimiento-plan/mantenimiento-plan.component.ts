@@ -92,6 +92,11 @@ export class MantenimientoPlanComponent implements OnInit {
 
   notas = '';
 
+  // Correctivo = arreglo de una sola vez
+  esCorrectivo = false;
+
+  km_realizado = 0;
+
   // =========================
   // INVENTARIO DE ARTÍCULOS
   // =========================
@@ -281,7 +286,27 @@ export class MantenimientoPlanComponent implements OnInit {
   // MODAL
   // =====================================
   abrirModal(): void {
+
+    if (this.tipo === 'vehiculo' && this.vehiculoBloqueado()) {
+      alert('Vehículo inactivo: no se pueden crear planes ni alertas');
+      return;
+    }
+
+    this.resetForm();
     this.showModal = true;
+  }
+
+  // =====================================
+  // VEHÍCULO BLOQUEADO
+  // =====================================
+  vehiculoBloqueado(): boolean {
+    if (!this.vehiculo) {
+      return false;
+    }
+    return (
+      (this.vehiculo.estado || '').toString().toUpperCase() === 'INACTIVO'
+      || this.vehiculo.activo === false
+    );
   }
 
   cerrarModal(): void {
@@ -304,6 +329,10 @@ export class MantenimientoPlanComponent implements OnInit {
 
     this.alerta_valor = 0;
 
+    this.esCorrectivo = false;
+
+    this.km_realizado = 0;
+
     this.notas = '';
   }
 
@@ -316,17 +345,41 @@ export class MantenimientoPlanComponent implements OnInit {
       p => p.id == this.plan_item_id
     );
 
-    if (plan) {
-
-      this.tipo_control =
-        plan.tipo_control || 'KM';
-
-      this.frecuencia_valor =
-        plan.frecuencia_valor || 0;
-
-      this.alerta_valor =
-        plan.alerta_valor || 0;
+    if (!plan) {
+      return;
     }
+
+    // En vehículo, el correctivo no se programa: se registra una sola vez.
+    this.esCorrectivo =
+      this.tipo === 'vehiculo'
+      && this.esTipoCorrectivo(plan.tipo_mantenimiento);
+
+    if (this.esCorrectivo) {
+
+      this.tipo_control = 'KM';
+      this.frecuencia_valor = 0;
+      this.alerta_valor = 0;
+      this.km_realizado =
+        (this.vehiculo && this.vehiculo.km_actual) || 0;
+      return;
+    }
+
+    this.tipo_control =
+      plan.tipo_control || 'KM';
+
+    this.frecuencia_valor =
+      plan.frecuencia_valor || 0;
+
+    this.alerta_valor =
+      plan.alerta_valor || 0;
+  }
+
+  // =====================================
+  // CORRECTIVO
+  // =====================================
+  esTipoCorrectivo(valor: any): boolean {
+    const tipo = (valor || '').toString().trim().toUpperCase();
+    return ['CORRECTIVO', 'COR', 'CO'].includes(tipo);
   }
 
   // =====================================
@@ -334,10 +387,50 @@ export class MantenimientoPlanComponent implements OnInit {
   // =====================================
   guardar(): void {
 
+    if (this.tipo === 'vehiculo' && this.vehiculoBloqueado()) {
+      alert('Vehículo inactivo: no se pueden crear planes ni alertas');
+      return;
+    }
+
     // =========================
     // VEHÍCULO
     // =========================
     if (this.tipo === 'vehiculo') {
+
+      if (this.esCorrectivo) {
+
+        if (!this.plan_item_id) {
+          alert('Seleccione el correctivo');
+          return;
+        }
+
+        if (!this.km_realizado) {
+          alert('Ingrese el kilometraje cuando se realizó el correctivo');
+          return;
+        }
+
+        this.service
+          .registrarCorrectivoVehiculo(this.entityId, {
+            plan_item_id: this.plan_item_id,
+            km_realizado: this.km_realizado,
+            observaciones: this.notas
+          })
+          .subscribe({
+
+            next: () => {
+
+              this.cerrarModal();
+
+              this.cargarPlanesVehiculo();
+            },
+
+            error: (err) => {
+              console.error(err);
+            }
+          });
+
+        return;
+      }
 
       const data = {
 

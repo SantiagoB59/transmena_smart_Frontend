@@ -129,11 +129,15 @@
 
             <td>
 
-              <ng-container *ngIf="p.tipo_control == 'KM'">
+              <span *ngIf="esTipoCorrectivo(p.tipo_mantenimiento)">
+                Una sola vez
+              </span>
+
+              <ng-container *ngIf="!esTipoCorrectivo(p.tipo_mantenimiento) && p.tipo_control == 'KM'">
                 {{ p.frecuencia_valor | number }} km
               </ng-container>
 
-              <ng-container *ngIf="p.tipo_control == 'DIAS'">
+              <ng-container *ngIf="!esTipoCorrectivo(p.tipo_mantenimiento) && p.tipo_control == 'DIAS'">
                 {{ p.frecuencia_valor }} días
               </ng-container>
 
@@ -163,11 +167,15 @@
 
             <td>
 
-              <ng-container *ngIf="p.tipo_control == 'KM'">
+              <span *ngIf="esTipoCorrectivo(p.tipo_mantenimiento)">
+                —
+              </span>
+
+              <ng-container *ngIf="!esTipoCorrectivo(p.tipo_mantenimiento) && p.tipo_control == 'KM'">
                 {{ p.programado | number }} km
               </ng-container>
 
-              <ng-container *ngIf="p.tipo_control == 'DIAS'">
+              <ng-container *ngIf="!esTipoCorrectivo(p.tipo_mantenimiento) && p.tipo_control == 'DIAS'">
                 {{ p.programado }}
               </ng-container>
 
@@ -176,14 +184,18 @@
             <!-- RESTANTE -->
 
             <td [class.km-critico]="
-          p.estado != 'ACTIVO'
+          !esTipoCorrectivo(p.tipo_mantenimiento) && p.estado != 'ACTIVO'
         ">
 
-              <ng-container *ngIf="p.tipo_control == 'KM'">
+              <span *ngIf="esTipoCorrectivo(p.tipo_mantenimiento)">
+                —
+              </span>
+
+              <ng-container *ngIf="!esTipoCorrectivo(p.tipo_mantenimiento) && p.tipo_control == 'KM'">
                 {{ p.restante | number }} km
               </ng-container>
 
-              <ng-container *ngIf="p.tipo_control == 'DIAS'">
+              <ng-container *ngIf="!esTipoCorrectivo(p.tipo_mantenimiento) && p.tipo_control == 'DIAS'">
                 {{ p.restante }} días
               </ng-container>
 
@@ -194,7 +206,7 @@
             <td>
 
               <span [ngClass]="estadoClass(p.estado)">
-                {{ p.estado }}
+                {{ esTipoCorrectivo(p.tipo_mantenimiento) ? 'REGISTRADO' : p.estado }}
               </span>
 
             </td>
@@ -258,7 +270,7 @@
 
       <h2 class="modal-title">
         <i class="fas fa-tools"></i>
-        Programar mantenimiento
+        {{ esCorrectivo ? 'Registrar correctivo' : 'Programar mantenimiento' }}
       </h2>
 
       <button class="modal-close" (click)="cerrarModal()">
@@ -289,6 +301,23 @@
         </small>
 
       </div>
+
+      <!-- CORRECTIVO: KM CUANDO SE REALIZÓ -->
+      <div class="form-group" *ngIf="esCorrectivo">
+
+        <label>
+          Kilometraje cuando se realizó
+        </label>
+
+        <input [(ngModel)]="km_realizado" type="number" class="form-input" placeholder="Ej: 84500">
+
+        <small class="form-help">
+          KM del vehículo al momento del arreglo. El correctivo se registra una sola vez: no genera alertas ni próxima programación.
+        </small>
+
+      </div>
+
+      <ng-container *ngIf="!esCorrectivo">
 
       <!-- TIPO CONTROL -->
       <div class="form-group">
@@ -502,6 +531,8 @@
 
       </div>
 
+      </ng-container>
+
       <!-- OBSERVACIONES -->
       <div class="form-group mt-4">
 
@@ -524,7 +555,7 @@
       </button>
 
       <button (click)="guardar()" class="btn-primary">
-        Guardar mantenimiento
+        {{ esCorrectivo ? 'Registrar correctivo' : 'Guardar mantenimiento' }}
       </button>
 
     </div>

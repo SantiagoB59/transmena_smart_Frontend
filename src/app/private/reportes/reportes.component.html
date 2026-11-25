@@ -1207,9 +1207,140 @@
 
           <br>
 
-          Mantenimientos preventivos ejecutados /
+          Alertas preventivas del período atendidas con mantenimiento
+          completado / alertas preventivas reportadas × 100.
+          Pendientes = reportados − ejecutados
 
-          alertas preventivas reportadas × 100
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- DESPLEGABLE: PENDIENTES PREVENTIVOS -->
+        <!-- ===================================================== -->
+
+        <div class="mt-5 border-t border-gray-100 pt-4">
+
+          <button
+            type="button"
+            (click)="togglePendientes('preventivo')"
+            class="w-full flex items-center justify-between gap-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold px-4 py-3 rounded-xl transition">
+
+            <span>
+              Ver registros preventivos
+              ({{ pendientesDetalle.preventivo.length }} pendientes)
+            </span>
+
+            <span class="text-lg">
+              {{ pendientesDesplegables.preventivo ? '▲' : '▼' }}
+            </span>
+
+          </button>
+
+
+          <div
+            *ngIf="pendientesDesplegables.preventivo"
+            class="mt-3 space-y-3 max-h-96 overflow-y-auto">
+
+
+            <div
+              *ngFor="let grupo of gruposRegistros.preventivo">
+
+
+              <div
+                class="flex items-center justify-between px-2 py-1 bg-gray-50 rounded-lg">
+
+                <span
+                  class="text-xs font-bold text-gray-600 uppercase tracking-wide">
+
+                  {{ grupo.etiqueta }}
+
+                </span>
+
+                <span class="text-xs font-bold text-gray-500">
+
+                  {{ grupo.registros.length }}
+
+                </span>
+
+              </div>
+
+
+              <p
+                *ngIf="grupo.registros.length === 0"
+                class="text-xs text-gray-500 text-center py-3">
+
+                Sin registros.
+
+              </p>
+
+
+              <div
+                *ngFor="let p of grupo.registros"
+                class="border border-gray-200 rounded-xl p-3 bg-white text-left mt-2">
+
+                <div class="flex items-start justify-between gap-2">
+
+                  <div>
+
+                    <p class="text-sm font-bold text-gray-800">
+
+                      {{ p.activo || 'Activo sin identificar' }}
+                      ·
+                      {{ p.mantenimiento || 'Mantenimiento' }}
+
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+
+                      {{ p.sistema || 'Sin sistema' }}
+                      ·
+                      {{ p.fecha | date:'dd/MM/yyyy' }}
+                      ·
+                      {{ p.origen }}
+                      ·
+                      {{ p.estado }}
+
+                    </p>
+
+                  </div>
+
+
+                  <span
+                    class="px-2 py-0.5 rounded-full text-xs font-bold"
+                    [ngClass]="{
+                      'bg-red-100 text-red-700':
+                        p.categoria === 'VENCIDO',
+                      'bg-yellow-100 text-yellow-700':
+                        p.categoria !== 'VENCIDO'
+                    }">
+
+                    {{ p.categoria || p.tipo }}
+
+                  </span>
+
+                </div>
+
+
+                <p class="text-xs text-gray-600 mt-2 font-semibold">
+
+                  {{ p.detalle_control }}
+
+                </p>
+
+
+                <p
+                  *ngIf="p.descripcion"
+                  class="text-xs text-gray-500 mt-1">
+
+                  {{ p.descripcion }}
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
 
@@ -1413,9 +1544,140 @@
 
           <br>
 
-          Mantenimientos correctivos cerrados /
+          Alertas correctivas del período cerradas con mantenimiento
+          completado / alertas correctivas reportadas × 100.
+          Pendientes = reportados − cerrados
 
-          alertas correctivas reportadas × 100
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- DESPLEGABLE: PENDIENTES CORRECTIVOS -->
+        <!-- ===================================================== -->
+
+        <div class="mt-5 border-t border-gray-100 pt-4">
+
+          <button
+            type="button"
+            (click)="togglePendientes('correctivo')"
+            class="w-full flex items-center justify-between gap-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold px-4 py-3 rounded-xl transition">
+
+            <span>
+              Ver registros correctivos
+              ({{ pendientesDetalle.correctivo.length }} pendientes)
+            </span>
+
+            <span class="text-lg">
+              {{ pendientesDesplegables.correctivo ? '▲' : '▼' }}
+            </span>
+
+          </button>
+
+
+          <div
+            *ngIf="pendientesDesplegables.correctivo"
+            class="mt-3 space-y-3 max-h-96 overflow-y-auto">
+
+
+            <div
+              *ngFor="let grupo of gruposRegistros.correctivo">
+
+
+              <div
+                class="flex items-center justify-between px-2 py-1 bg-gray-50 rounded-lg">
+
+                <span
+                  class="text-xs font-bold text-gray-600 uppercase tracking-wide">
+
+                  {{ grupo.etiqueta }}
+
+                </span>
+
+                <span class="text-xs font-bold text-gray-500">
+
+                  {{ grupo.registros.length }}
+
+                </span>
+
+              </div>
+
+
+              <p
+                *ngIf="grupo.registros.length === 0"
+                class="text-xs text-gray-500 text-center py-3">
+
+                Sin registros.
+
+              </p>
+
+
+              <div
+                *ngFor="let p of grupo.registros"
+                class="border border-gray-200 rounded-xl p-3 bg-white text-left mt-2">
+
+                <div class="flex items-start justify-between gap-2">
+
+                  <div>
+
+                    <p class="text-sm font-bold text-gray-800">
+
+                      {{ p.activo || 'Activo sin identificar' }}
+                      ·
+                      {{ p.mantenimiento || 'Mantenimiento' }}
+
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+
+                      {{ p.sistema || 'Sin sistema' }}
+                      ·
+                      {{ p.fecha | date:'dd/MM/yyyy' }}
+                      ·
+                      {{ p.origen }}
+                      ·
+                      {{ p.estado }}
+
+                    </p>
+
+                  </div>
+
+
+                  <span
+                    class="px-2 py-0.5 rounded-full text-xs font-bold"
+                    [ngClass]="{
+                      'bg-red-100 text-red-700':
+                        p.categoria === 'VENCIDO',
+                      'bg-yellow-100 text-yellow-700':
+                        p.categoria !== 'VENCIDO'
+                    }">
+
+                    {{ p.categoria || p.tipo }}
+
+                  </span>
+
+                </div>
+
+
+                <p class="text-xs text-gray-600 mt-2 font-semibold">
+
+                  {{ p.detalle_control }}
+
+                </p>
+
+
+                <p
+                  *ngIf="p.descripcion"
+                  class="text-xs text-gray-500 mt-1">
+
+                  {{ p.descripcion }}
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
 
@@ -1576,9 +1838,140 @@
 
           <br>
 
-          Inspecciones ejecutadas /
+          Alertas de inspección del período atendidas con mantenimiento
+          completado / inspecciones reportadas × 100.
+          Pendientes = reportadas − ejecutadas
 
-          alertas de inspección reportadas × 100
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- DESPLEGABLE: INSPECIONES PENDIENTES -->
+        <!-- ===================================================== -->
+
+        <div class="mt-5 border-t border-gray-100 pt-4">
+
+          <button
+            type="button"
+            (click)="togglePendientes('inspecciones')"
+            class="w-full flex items-center justify-between gap-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold px-4 py-3 rounded-xl transition">
+
+            <span>
+              Ver registros de inspecciones
+              ({{ pendientesDetalle.inspecciones.length }} pendientes)
+            </span>
+
+            <span class="text-lg">
+              {{ pendientesDesplegables.inspecciones ? '▲' : '▼' }}
+            </span>
+
+          </button>
+
+
+          <div
+            *ngIf="pendientesDesplegables.inspecciones"
+            class="mt-3 space-y-3 max-h-96 overflow-y-auto">
+
+
+            <div
+              *ngFor="let grupo of gruposRegistros.inspecciones">
+
+
+              <div
+                class="flex items-center justify-between px-2 py-1 bg-gray-50 rounded-lg">
+
+                <span
+                  class="text-xs font-bold text-gray-600 uppercase tracking-wide">
+
+                  {{ grupo.etiqueta }}
+
+                </span>
+
+                <span class="text-xs font-bold text-gray-500">
+
+                  {{ grupo.registros.length }}
+
+                </span>
+
+              </div>
+
+
+              <p
+                *ngIf="grupo.registros.length === 0"
+                class="text-xs text-gray-500 text-center py-3">
+
+                Sin registros.
+
+              </p>
+
+
+              <div
+                *ngFor="let p of grupo.registros"
+                class="border border-gray-200 rounded-xl p-3 bg-white text-left mt-2">
+
+                <div class="flex items-start justify-between gap-2">
+
+                  <div>
+
+                    <p class="text-sm font-bold text-gray-800">
+
+                      {{ p.activo || 'Activo sin identificar' }}
+                      ·
+                      {{ p.mantenimiento || 'Inspección' }}
+
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+
+                      {{ p.sistema || 'Sin sistema' }}
+                      ·
+                      {{ p.fecha | date:'dd/MM/yyyy' }}
+                      ·
+                      {{ p.origen }}
+                      ·
+                      {{ p.estado }}
+
+                    </p>
+
+                  </div>
+
+
+                  <span
+                    class="px-2 py-0.5 rounded-full text-xs font-bold"
+                    [ngClass]="{
+                      'bg-red-100 text-red-700':
+                        p.categoria === 'VENCIDO',
+                      'bg-yellow-100 text-yellow-700':
+                        p.categoria !== 'VENCIDO'
+                    }">
+
+                    {{ p.categoria || p.tipo }}
+
+                  </span>
+
+                </div>
+
+
+                <p class="text-xs text-gray-600 mt-2 font-semibold">
+
+                  {{ p.detalle_control }}
+
+                </p>
+
+
+                <p
+                  *ngIf="p.descripcion"
+                  class="text-xs text-gray-500 mt-1">
+
+                  {{ p.descripcion }}
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
 

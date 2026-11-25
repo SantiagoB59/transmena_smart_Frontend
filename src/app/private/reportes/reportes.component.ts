@@ -117,6 +117,101 @@ export class ReportesComponent implements OnInit {
   };
 
   // =====================================================
+  // DESPLEGABLES DE PENDIENTES HSEQ
+  // =====================================================
+
+  pendientesDesplegables = {
+
+    preventivo: false,
+
+    correctivo: false,
+
+    inspecciones: false
+
+  };
+
+  pendientesDetalle = {
+
+    preventivo: [] as any[],
+
+    correctivo: [] as any[],
+
+    inspecciones: [] as any[]
+
+  };
+
+  togglePendientes(
+    tipo: 'preventivo' | 'correctivo' | 'inspecciones'
+  ): void {
+
+    this.pendientesDesplegables[tipo] =
+      !this.pendientesDesplegables[tipo];
+
+  }
+
+  // =====================================================
+  // REGISTROS POR TIPO DE MANTENIMIENTO
+  // (MISMA FUENTE QUE EL EXCEL)
+  // =====================================================
+
+  registrosPorTipo: any = {
+
+    preventivo: {
+      reportados: [] as any[],
+      ejecutados: [] as any[],
+      pendientes: [] as any[]
+    },
+
+    correctivo: {
+      reportados: [] as any[],
+      ejecutados: [] as any[],
+      pendientes: [] as any[]
+    },
+
+    inspecciones: {
+      reportados: [] as any[],
+      ejecutados: [] as any[],
+      pendientes: [] as any[]
+    }
+
+  };
+
+  gruposRegistros: any = {
+
+    preventivo: [] as any[],
+    correctivo: [] as any[],
+    inspecciones: [] as any[]
+
+  };
+
+  private construirGruposRegistros(
+    tipo: 'preventivo' | 'correctivo' | 'inspecciones'
+  ): any[] {
+
+    const datos = this.registrosPorTipo[tipo];
+
+    return [
+
+      {
+        etiqueta: 'Reportados',
+        registros: datos?.reportados ?? []
+      },
+
+      {
+        etiqueta: 'Ejecutados',
+        registros: datos?.ejecutados ?? []
+      },
+
+      {
+        etiqueta: 'Pendientes',
+        registros: datos?.pendientes ?? []
+      }
+
+    ];
+
+  }
+
+  // =====================================================
   // FILTROS
   // =====================================================
 
@@ -784,6 +879,85 @@ export class ReportesComponent implements OnInit {
         };
 
 
+        // =================================================
+        // DETALLE DE PENDIENTES POR TIPO (DESPLEGABLES)
+        // =================================================
+
+        this.pendientesDetalle = {
+
+          preventivo:
+            Array.isArray(
+              resp?.pendientes_detalle?.preventivo
+            )
+              ? resp.pendientes_detalle.preventivo
+              : [],
+
+          correctivo:
+            Array.isArray(
+              resp?.pendientes_detalle?.correctivo
+            )
+              ? resp.pendientes_detalle.correctivo
+              : [],
+
+          inspecciones:
+            Array.isArray(
+              resp?.pendientes_detalle?.inspecciones
+            )
+              ? resp.pendientes_detalle.inspecciones
+              : []
+
+        };
+
+
+        // =================================================
+        // REGISTROS POR TIPO (PREVENTIVO / CORRECTIVO /
+        // INSPECCIONES) - REPORTADOS, EJECUTADOS, PENDIENTES
+        // =================================================
+
+        const registros = resp?.registros_por_tipo ?? {};
+
+        this.registrosPorTipo = {
+
+          preventivo: {
+
+            reportados: registros?.preventivo?.reportados ?? [],
+            ejecutados: registros?.preventivo?.ejecutados ?? [],
+            pendientes: registros?.preventivo?.pendientes ?? []
+
+          },
+
+          correctivo: {
+
+            reportados: registros?.correctivo?.reportados ?? [],
+            ejecutados: registros?.correctivo?.ejecutados ?? [],
+            pendientes: registros?.correctivo?.pendientes ?? []
+
+          },
+
+          inspecciones: {
+
+            reportados: registros?.inspecciones?.reportados ?? [],
+            ejecutados: registros?.inspecciones?.ejecutados ?? [],
+            pendientes: registros?.inspecciones?.pendientes ?? []
+
+          }
+
+        };
+
+        this.gruposRegistros = {
+
+          preventivo:
+            this.construirGruposRegistros('preventivo'),
+
+          correctivo:
+            this.construirGruposRegistros('correctivo'),
+
+          inspecciones:
+            this.construirGruposRegistros('inspecciones')
+
+        };
+
+
         console.log(
           'INDICADOR FINAL PARA HTML:',
           this.indicadorMantenimiento
@@ -861,6 +1035,47 @@ export class ReportesComponent implements OnInit {
             fin: ''
 
           }
+
+        };
+
+
+        this.pendientesDetalle = {
+
+          preventivo: [],
+
+          correctivo: [],
+
+          inspecciones: []
+
+        };
+
+        this.registrosPorTipo = {
+
+          preventivo: {
+            reportados: [],
+            ejecutados: [],
+            pendientes: []
+          },
+
+          correctivo: {
+            reportados: [],
+            ejecutados: [],
+            pendientes: []
+          },
+
+          inspecciones: {
+            reportados: [],
+            ejecutados: [],
+            pendientes: []
+          }
+
+        };
+
+        this.gruposRegistros = {
+
+          preventivo: [],
+          correctivo: [],
+          inspecciones: []
 
         };
 
