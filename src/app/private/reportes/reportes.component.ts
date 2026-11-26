@@ -190,20 +190,12 @@ export class ReportesComponent implements OnInit {
 
     const datos = this.registrosPorTipo[tipo];
 
+    // El desplegable muestra únicamente lo que falta por solucionar,
+    // con el mismo formato de registro que se usaba antes.
     return [
 
       {
-        etiqueta: 'Reportados',
-        registros: datos?.reportados ?? []
-      },
-
-      {
-        etiqueta: 'Ejecutados',
-        registros: datos?.ejecutados ?? []
-      },
-
-      {
-        etiqueta: 'Pendientes',
+        etiqueta: 'Faltan por solucionar',
         registros: datos?.pendientes ?? []
       }
 
