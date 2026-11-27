@@ -115,7 +115,7 @@
 
             <th>Maquinaria</th>
 
-            <th>Fecha</th>
+            <th>Fecha de registro</th>
 
             <th>Mantenimiento</th>
 
@@ -127,9 +127,10 @@
 
             <th>Responsable</th>
 
-            <th>Costo</th>
 
             <th>Soporte</th>
+
+            <th>Detalle</th>
 
           </tr>
 
@@ -153,9 +154,9 @@
 
     </td>
 
-    <!-- FECHA -->
+    <!-- FECHA DE REGISTRO (CREATED_AT) -->
     <td class="conductor">
-      {{ m.fecha }}
+      {{ m.created_at | date:'dd/MM/yyyy HH:mm' }}
     </td>
 
     <!-- MANTENIMIENTO -->
@@ -192,10 +193,6 @@
       {{ m.responsable || '—' }}
     </td>
 
-    <!-- COSTO -->
-    <td class="km">
-      {{ m.costo | currency:'COP':'symbol':'1.0-0' }}
-    </td>
 
     <!-- SOPORTE -->
     <td>
@@ -216,11 +213,23 @@
 
     </td>
 
+    <!-- DETALLE -->
+    <td>
+
+      <button type="button" class="action-link detalle-btn" (click)="verDetalle(m)">
+
+        <i class="fas fa-eye"></i>
+        Ver detalle
+
+      </button>
+
+    </td>
+
   </tr>
 
   <tr *ngIf="mantenimientos.length === 0">
 
-    <td colspan="9" class="empty-row">
+    <td colspan="10" class="empty-row">
 
       <i class="fas fa-tools"></i><br>
 
@@ -505,6 +514,109 @@
 
         Guardar mantenimiento
 
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ========================= -->
+<!-- MODAL DETALLE REGISTRO -->
+<!-- ========================= -->
+<div *ngIf="registroDetalle" class="modal-backdrop">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2 class="modal-title">
+          📋 Detalle del mantenimiento #{{ registroDetalle.id }}
+        </h2>
+
+        <p class="text-sm text-slate-500">
+          {{ registroDetalle.maquinaria?.codigo }}
+          · {{ getTipoTexto(registroDetalle.tipo) }}
+        </p>
+
+      </div>
+
+      <button class="modal-close" (click)="cerrarDetalle()">✕</button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="detalle-grid">
+
+        <div><strong>ID</strong><span>#{{ registroDetalle.id }}</span></div>
+
+        <div>
+          <strong>Maquinaria</strong>
+          <span>
+            {{ registroDetalle.maquinaria?.codigo }}
+            {{ registroDetalle.maquinaria?.marca }}
+            {{ registroDetalle.maquinaria?.modelo }}
+          </span>
+        </div>
+
+        <div><strong>ID maquinaria</strong><span>{{ registroDetalle.maquinaria_id }}</span></div>
+
+        <div><strong>Mantenimiento</strong><span>{{ registroDetalle.plan_item?.nombre || '—' }}</span></div>
+
+        <div><strong>Descripción del plan</strong><span>{{ registroDetalle.plan_item?.descripcion || '—' }}</span></div>
+
+        <div><strong>Tipo</strong><span>{{ getTipoTexto(registroDetalle.tipo) }}</span></div>
+
+        <div>
+          <strong>Fecha de registro</strong>
+          <span>{{ registroDetalle.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+        </div>
+
+        <div><strong>Fecha de realización</strong><span>{{ registroDetalle.fecha || '—' }}</span></div>
+
+        <div><strong>Horómetro</strong><span>{{ registroDetalle.horas }} h</span></div>
+
+        <div><strong>Proveedor</strong><span>{{ registroDetalle.proveedor || '—' }}</span></div>
+
+        <div><strong>Lugar</strong><span>{{ registroDetalle.lugar || '—' }}</span></div>
+
+        <div><strong>Responsable</strong><span>{{ registroDetalle.responsable || '—' }}</span></div>
+
+        <div><strong>Costo</strong><span>{{ registroDetalle.costo | currency:'COP':'symbol':'1.0-0' }}</span></div>
+
+        <div><strong>Observaciones</strong><span>{{ registroDetalle.observaciones || '—' }}</span></div>
+
+        <div><strong>Completado</strong><span>{{ registroDetalle.completado ? 'Sí' : 'No' }}</span></div>
+
+        <div>
+          <strong>Soporte</strong>
+          <span>
+            <a *ngIf="registroDetalle.soporte"
+               [href]="'https://transmenasmart.com/' + registroDetalle.soporte"
+               target="_blank"
+               class="action-link">
+              <i class="fas fa-file-alt"></i> Ver archivo
+            </a>
+            <span *ngIf="!registroDetalle.soporte">Sin archivo</span>
+          </span>
+        </div>
+
+        <div><strong>ID plan</strong><span>{{ registroDetalle.plan_item_id }}</span></div>
+
+        <div><strong>ID maquinaria-plan</strong><span>{{ registroDetalle.maquinaria_plan_item_id }}</span></div>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="btn-secondary" (click)="cerrarDetalle()">
+        Cerrar
       </button>
 
     </div>

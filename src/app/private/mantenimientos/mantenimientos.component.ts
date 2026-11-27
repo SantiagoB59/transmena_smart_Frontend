@@ -33,6 +33,9 @@ export class MantenimientosComponent implements OnInit {
   // =========================
   showModal = false;
 
+  // Registro seleccionado para el modal de detalle
+  registroDetalle: any = null;
+
   // =========================
   // DATA
   // =========================
@@ -149,7 +152,22 @@ export class MantenimientosComponent implements OnInit {
   }
 
   // =========================
-  // MODAL
+  // MODAL DETALLE
+  // =========================
+  verDetalle(registro: any): void {
+
+    this.registroDetalle = registro;
+
+  }
+
+  cerrarDetalle(): void {
+
+    this.registroDetalle = null;
+
+  }
+
+  // =========================
+  // MODAL NUEVO
   // =========================
   abrirModal(): void {
 

@@ -574,3 +574,47 @@ $radius-sm: 0.75rem;
   }
 
 }
+
+/*======================================================
+  BOTÓN DETALLE
+======================================================*/
+
+.detalle-btn{
+  background:none;
+  border:0;
+  padding:0;
+  cursor:pointer;
+}
+
+/*======================================================
+  DETALLE COMPLETO
+======================================================*/
+
+.detalle-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  gap:1rem;
+}
+
+.detalle-grid > div{
+  display:flex;
+  flex-direction:column;
+  gap:.35rem;
+  padding:.85rem 1rem;
+  border:1px solid $border;
+  border-radius:$radius-sm;
+  background:#f8fafc;
+}
+
+.detalle-grid strong{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:#64748b;
+}
+
+.detalle-grid span{
+  font-size:.9rem;
+  color:#0f172a;
+  word-break:break-word;
+}

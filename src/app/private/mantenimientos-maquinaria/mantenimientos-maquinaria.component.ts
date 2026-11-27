@@ -28,6 +28,9 @@ export class MantenimientosMaquinariaComponent implements OnInit {
   // =========================
   showModal = false;
 
+  // Registro seleccionado para el modal de detalle
+  registroDetalle: any = null;
+
   // =========================
   // DATA
   // =========================
@@ -148,7 +151,22 @@ export class MantenimientosMaquinariaComponent implements OnInit {
   }
 
   // =========================
-  // ABRIR MODAL
+  // MODAL DETALLE
+  // =========================
+  verDetalle(registro: any): void {
+
+    this.registroDetalle = registro;
+
+  }
+
+  cerrarDetalle(): void {
+
+    this.registroDetalle = null;
+
+  }
+
+  // =========================
+  // ABRIR MODAL NUEVO
   // =========================
   abrirModal(): void {
 
