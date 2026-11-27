@@ -14,6 +14,7 @@ export class AlertasComponent implements OnInit {
   // DATA
   // =====================================================
   alertas: Alerta[] = [];
+  alertasFiltradas: Alerta[] = [];
   alertasPaginadas: Alerta[] = [];
   loading = false;
   ejecutandoMotor = false;
@@ -92,7 +93,6 @@ export class AlertasComponent implements OnInit {
   // =====================================================
   cargarTodo(): void {
     this.cargarAlertas();
-    this.cargarEstadisticas();
   }
 
   // =====================================================
@@ -109,22 +109,6 @@ export class AlertasComponent implements OnInit {
         next: (resp) => {
 
           let alertas = [...resp];
-
-          // Filtrar según la pestaña
-          if (this.pestanaActiva === 'VERIFICAR') {
-
-            alertas = alertas.filter(a =>
-              a.estado === 'ACTIVA'
-            );
-
-          } else {
-
-            alertas = alertas.filter(a =>
-              a.estado === 'RESUELTA' ||
-              a.estado === 'IGNORADA'
-            );
-
-          }
 
           // Filtrar prioridad
           if (this.filtros.prioridad) {
@@ -180,6 +164,29 @@ export class AlertasComponent implements OnInit {
             });
           }
 
+          // Las estadísticas se calculan sobre el conjunto ya filtrado
+          // (fechas en backend + prioridad/tipo/placa/estado aquí), antes
+          // de aplicar la pestaña. Así el contador "Por Verificar" y las
+          // tarjetas cambian junto con los filtros.
+          this.alertasFiltradas = alertas;
+          this.actualizarEstadisticas();
+
+          // Filtrar según la pestaña
+          if (this.pestanaActiva === 'VERIFICAR') {
+
+            alertas = alertas.filter(a =>
+              a.estado === 'ACTIVA'
+            );
+
+          } else {
+
+            alertas = alertas.filter(a =>
+              a.estado === 'RESUELTA' ||
+              a.estado === 'IGNORADA'
+            );
+
+          }
+
           // Ordenar
           alertas.sort(
             (a, b) =>
@@ -221,23 +228,24 @@ export class AlertasComponent implements OnInit {
   }
 
   // =====================================================
-  // CARGAR ESTADÍSTICAS
+  // ESTADÍSTICAS SEGÚN LOS FILTROS APLICADOS
   // =====================================================
-  cargarEstadisticas(): void {
-    this.alertasService
-      .obtenerEstadisticas({
-        mes: this.filtros.mes,
-        fecha_desde: this.filtros.fecha_desde,
-        fecha_hasta: this.filtros.fecha_hasta
-      })
-      .subscribe({
-        next: (resp) => {
-          this.estadisticas = resp;
-        },
-        error: (err) => {
-          console.error('Error estadísticas:', err);
-        }
-      });
+  actualizarEstadisticas(): void {
+    const alertas = this.alertasFiltradas;
+
+    this.estadisticas = {
+      total: alertas.length,
+      activas: alertas.filter(
+        a => a.estado === 'ACTIVA'
+      ).length,
+      resueltas: alertas.filter(
+        a => a.estado === 'RESUELTA'
+      ).length,
+      criticas: alertas.filter(
+        a => a.estado === 'ACTIVA' &&
+             a.prioridad === 'CRITICA'
+      ).length
+    };
   }
 
   // =====================================================
